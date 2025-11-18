@@ -6,18 +6,28 @@
   <title>MES-AI-A STAGE 1</title>
 
   <style>
-    /* 必ず GitHub Pages に置いた実際のフォント名に合わせて変更 */
+    /* ▼ STAGE 1 見出し用フォント（CC0 の新しいフォント）
+       ※ファイル名・パスは実際にアップしたものに合わせて変更してください */
     @font-face {
-      font-family: "Crackman";
-      src: url("./fonts/crackman.ttf") format("truetype");
+      font-family: "StageTitleFont";
+      src: url("./fonts/stage-title.woff2") format("woff2"),
+           url("./fonts/stage-title.woff")  format("woff");
+      font-weight: normal;
+      font-style: normal;
     }
 
+    /* ▼ 本文用フォント（ニッキョーサンなど） */
     @font-face {
       font-family: "NikkyouSans";
-      src: url("./fonts/nikkyou-sans.ttf") format("truetype");
+      src: url("./fonts/nikkyou-sans.woff2") format("woff2"),
+           url("./fonts/nikkyou-sans.woff")  format("woff");
+      font-weight: normal;
+      font-style: normal;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -46,12 +56,21 @@
     }
 
     .stage1-title {
-      font-family: "Crackman", sans-serif; /* ← STAGE 1 に強制適用 */
+      font-family: "StageTitleFont", sans-serif;  /* ← ここで必ず専用フォントを使う */
       font-size: 26px;
       text-align: center;
       color: #25124b;
       letter-spacing: 0.12em;
       margin-bottom: 20px;
+    }
+
+    .stage1-main {
+      display: flex;
+      gap: 16px;
+    }
+
+    .stage1-text {
+      flex: 1.7;
     }
 
     .stage1-text h1 {
@@ -65,9 +84,20 @@
       font-size: 14px;
       line-height: 1.7;
       margin-bottom: 10px;
+      color: #333;
     }
 
-    /* ===== セラーIDエリア ===== */
+    /* 画像スペース：枠・塗りをなくして「空白」だけ残す */
+    .stage1-visual {
+      flex: 1;
+      min-height: 160px;   /* スペースだけ確保 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* background も border も付けない → むらさき枠が消える */
+    }
+
+    /* ===== 下のセラーIDエリア ===== */
     .section-label {
       background: #25124b;
       color: #fff;
@@ -89,7 +119,6 @@
       height: 120px;
     }
 
-    /* ===== 小見出し ===== */
     .section-label-small {
       background: #25124b;
       color: #fff;
@@ -125,32 +154,36 @@
     <section class="stage1-header">
       <div class="stage1-title">STAGE 1</div>
 
-      <div class="stage1-text">
-        <h1>セラーIDからASINを一括抽出！</h1>
+      <div class="stage1-main">
+        <div class="stage1-text">
+          <h1>セラーIDからASINを一括抽出！</h1>
 
-        <p class="stage1-description">
-          Amazonでは、販売者ごとに「セラーID」が設定され、
-          商品ごとに「ASIN（商品番号）」が割り当てられています。
-        </p>
+          <p class="stage1-description">
+            Amazonでは、販売者ごとに「セラーID」が設定され、 商品ごとに「ASIN（商品番号）」が割り当てられています。
+          </p>
 
-        <p class="stage1-description">
-          売れている商品をリサーチする＝“売れているASINを見つけること”
-          ですが、まずはそのASINを取得しなければ始まりません。
-        </p>
+          <p class="stage1-description">
+            売れている商品をリサーチする＝“売れているASINを見つけること”
+            ですが、まずはそのASINを取得しなければ始まりません。
+          </p>
 
-        <p class="stage1-description">
-          このツールでは、セラーIDを入力するだけで、
-          そのセラーが出品しているASINを一括で抽出できます。
-        </p>
+          <p class="stage1-description">
+            このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。
+          </p>
 
-        <p class="stage1-description">
-          わずか数秒でASINリストを自動生成できるため、
-          売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
-        </p>
+          <p class="stage1-description">
+            わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
+          </p>
 
-        <p class="stage1-description">
-          まずは、ASINのリストを作成してみましょう！
-        </p>
+          <p class="stage1-description">
+            まずは、ASINのリストを作成してみましょう！
+          </p>
+        </div>
+
+        <!-- 画像を入れ込むための空スペース（枠なし） -->
+        <div class="stage1-visual">
+          <!-- 後でここに <img src="xxx.png" alt=""> を入れる想定 -->
+        </div>
       </div>
     </section>
 
