@@ -138,10 +138,9 @@
       white-space: nowrap;
     }
 
-    /* ドラッグ元用 */
     .seller-id-pill--source {
       cursor: grab;
-      touch-action: none; /* スマホで即ドラッグできるように */
+      touch-action: none; /* スマホで長押しなしでつかめる */
     }
 
     /* ===== セラーID貼り付けエリア ===== */
@@ -152,21 +151,25 @@
       border-top: none;
       padding: 14px 12px;
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;                 /* ここで均等な間隔 */
+      justify-content: space-between;
       align-items: center;
     }
 
-    /* スロット：中身に合わせてサイズ可変（グレー部分がぴったり） */
+    /* グレーのスロット：幅は均等・固定、高さも固定 */
     .slot {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px;             /* グレーの縁の太さ */
+      flex: 1;
+      min-width: 0;
+      min-height: 40px;
+      max-height: 40px;
       background: #e2e3ec;
       border-radius: 999px;
-      min-height: 32px;
-      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 6px;
+      overflow: hidden;          /* はみ出さない */
+      position: relative;
     }
 
     .slot.dragover {
@@ -177,15 +180,29 @@
     .slot-placeholder {
       font-size: 12px;
       color: #999;
-      padding: 4px 10px;
+      padding: 4px 8px;
+      white-space: nowrap;
     }
 
-    /* スロット内のIDピル：少し小さめ＆全部表示 */
+    /* スロット内のピル：スロットより大きくならない・文字は小さめ */
     .slot .seller-id-pill {
+      width: 100%;
+      text-align: center;
+      padding: 8px 10px;
       font-size: 12px;
-      padding: 6px 16px;
-      max-width: none;          /* 省略せず全表示 */
+      border-radius: 999px;
       white-space: nowrap;
+    }
+
+    /* はめ込み済みのスロットはグレーを消す（紫ピルだけ見える） */
+    .slot.filled {
+      background: transparent;
+      border-radius: 0;     /* 影響をなくすため一旦リセット */
+      padding: 0;
+    }
+
+    .slot.filled .seller-id-pill {
+      border-radius: 999px;
     }
 
     /* ===== ASIN抽出結果エリア（ダミー）===== */
@@ -254,7 +271,7 @@
       </div>
     </section>
 
-    <!-- セラーID貼り付け（スロット＋右端ダミー） -->
+    <!-- セラーID貼り付け -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
       <div class="drop-zone" id="dropZone">
@@ -270,7 +287,7 @@
       </div>
     </section>
 
-    <!-- セラーASIN抽出（中身はダミー） -->
+    <!-- セラーASIN抽出 -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZone"></div>
@@ -286,7 +303,7 @@
     let dragging = null;
     let ghost = null;
 
-    // ===== スマホでも使える pointer ベースドラッグ =====
+    /* ===== pointer ベースのドラッグ（スマホ対応）===== */
     sourcePills.forEach(pill => {
       pill.addEventListener("pointerdown", e => {
         dragging = pill;
@@ -326,13 +343,21 @@
           e.clientX > rect.left && e.clientX < rect.right &&
           e.clientY > rect.top && e.clientY < rect.bottom
         ) {
-          // スロットにIDをはめ込む
+          // スロットにIDをはめ込み
           slot.innerHTML = "";
           const pill = dragging.cloneNode(true);
           pill.classList.remove("seller-id-pill--source");
-          slot.appendChild(pill);
+          pill.style.fontSize = "12px"; // 初期値
+          pill.style.width = "100%";
+          pill.style.textAlign = "center";
 
-          // ダミー：ASINリストを生成（本番ではAPIなどに置き換え）
+          slot.appendChild(pill);
+          slot.classList.add("filled");
+
+          // スロットの幅内に収まるようフォントサイズを自動調整
+          fitTextToSlot(pill, slot);
+
+          // ダミー：ASINを生成（実装ではAPIに置き換え）
           const fakeAsins = generateFakeASIN(pill.textContent.trim());
           fakeAsins.forEach(a => {
             const div = document.createElement("div");
@@ -351,6 +376,24 @@
     function moveGhost(e) {
       ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
       ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
+    }
+
+    // スロット幅に収まるまでフォントサイズを縮小
+    function fitTextToSlot(pill, slot) {
+      const padding = 12; // 両端の余白分
+      let size = 12;      // 開始フォントサイズ
+      const minSize = 8;
+
+      pill.style.fontSize = size + "px";
+
+      // pill が slot より大きい間、少しずつ小さくする
+      while (
+        (pill.scrollWidth + padding) > slot.clientWidth &&
+        size > minSize
+      ) {
+        size -= 1;
+        pill.style.fontSize = size + "px";
+      }
     }
 
     // ダミーASIN生成
