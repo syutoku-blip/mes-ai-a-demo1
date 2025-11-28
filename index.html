@@ -151,12 +151,12 @@
       border-top: none;
       padding: 14px 12px;
       display: flex;
-      gap: 12px;                 /* ここで均等な間隔 */
+      gap: 12px;
       justify-content: space-between;
       align-items: center;
     }
 
-    /* グレーのスロット：幅は均等・固定、高さも固定 */
+    /* グレーのスロット：幅は均等・固定 */
     .slot {
       flex: 1;
       min-width: 0;
@@ -168,7 +168,7 @@
       align-items: center;
       justify-content: center;
       padding: 4px 6px;
-      overflow: hidden;          /* はみ出さない */
+      overflow: hidden;
       position: relative;
     }
 
@@ -194,14 +194,15 @@
       white-space: nowrap;
     }
 
-    /* はめ込み済みのスロットはグレーを消す（紫ピルだけ見える） */
+    /* はめ込み済みスロット：グレーを消してピルだけ見せる */
     .slot.filled {
       background: transparent;
-      border-radius: 0;     /* 影響をなくすため一旦リセット */
+      border-radius: 0;
       padding: 0;
     }
 
     .slot.filled .seller-id-pill {
+      width: 100%;
       border-radius: 999px;
     }
 
@@ -281,7 +282,8 @@
         <div class="slot" data-slot>
           <span class="slot-placeholder">ここにドロップ</span>
         </div>
-        <div class="slot" data-slot>
+        <!-- ダミーは最初から filled 扱いにする -->
+        <div class="slot filled" data-slot>
           <div class="seller-id-pill">AxxxxxB00</div>
         </div>
       </div>
@@ -354,7 +356,7 @@
           slot.appendChild(pill);
           slot.classList.add("filled");
 
-          // スロットの幅内に収まるようフォントサイズを自動調整
+          // フォントサイズ自動調整
           fitTextToSlot(pill, slot);
 
           // ダミー：ASINを生成（実装ではAPIに置き換え）
@@ -380,13 +382,12 @@
 
     // スロット幅に収まるまでフォントサイズを縮小
     function fitTextToSlot(pill, slot) {
-      const padding = 12; // 両端の余白分
-      let size = 12;      // 開始フォントサイズ
+      const padding = 12;
+      let size = 12;
       const minSize = 8;
 
       pill.style.fontSize = size + "px";
 
-      // pill が slot より大きい間、少しずつ小さくする
       while (
         (pill.scrollWidth + padding) > slot.clientWidth &&
         size > minSize
@@ -404,6 +405,16 @@
       }
       return list;
     }
+
+    // ===== ページ読み込み時、ダミースロットにもサイズ調整をかける =====
+    window.addEventListener("load", () => {
+      document.querySelectorAll(".slot.filled").forEach(slot => {
+        const pill = slot.querySelector(".seller-id-pill");
+        if (pill) {
+          fitTextToSlot(pill, slot);
+        }
+      });
+    });
   </script>
 </body>
 </html>
