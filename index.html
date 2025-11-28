@@ -43,6 +43,7 @@
       padding: 20px 16px 40px;
     }
 
+    /* ===== STAGE1 ヘッダー ===== */
     .stage1-header {
       background: #f5f5ff;
       border-radius: 24px;
@@ -91,6 +92,7 @@
       justify-content: center;
     }
 
+    /* ===== 共通ラベル ===== */
     .section-label {
       background: #25124b;
       color: #fff;
@@ -111,61 +113,85 @@
       border-radius: 16px 16px 0 0;
     }
 
-    /* ✅ セラーIDエリア */
+    /* ===== セラーIDプール（上）===== */
     .seller-id-container {
       background: #fff;
+      border-radius: 0 0 16px 16px;
       border: 4px solid #25124b;
       border-top: none;
-      border-radius: 0 0 16px 16px;
-      padding: 16px;
-      min-height: 120px;
+      padding: 16px 12px 20px;
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
 
     .seller-id-pill {
-      background: linear-gradient(135deg, #0c003f, #25124b);
+      background: #240049;
       color: #fff;
       font-weight: 700;
       font-size: 14px;
-      padding: 10px 20px;
+      padding: 10px 24px;
       border-radius: 999px;
       width: fit-content;
-      cursor: grab;
       user-select: none;
+      white-space: nowrap;
     }
 
-    .seller-id-pill:active {
+    /* 上のプール用：ドラッグ可能にするクラス */
+    .seller-id-pill--source {
+      cursor: grab;
+    }
+
+    .seller-id-pill--source:active {
       cursor: grabbing;
       transform: scale(0.98);
     }
 
-    /* ✅ ドロップゾーン */
+    /* ===== 貼り付けエリア ===== */
     .drop-zone {
       background: #fff;
+      border-radius: 0 0 16px 16px;
       border: 4px dashed #25124b;
       border-top: none;
-      border-radius: 0 0 16px 16px;
-      height: 70px;
-      padding: 12px;
+      padding: 16px 14px;
+      display: flex;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drop-slot {
+      flex: 1;
+      min-width: 0;
+      height: 32px;
+      background: #e2e4ee;
+      border-radius: 999px;
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      justify-content: center;
+      font-size: 12px;
+      color: #999;
+      padding: 0 10px;
     }
 
-    .drop-zone.dragover {
+    .drop-slot.dragover {
+      outline: 2px solid #25124b;
       background: #f2efff;
-      border-style: solid;
     }
 
-    /* ✅ ASIN抽出エリア（ダミー） */
+    /* スロット内のサンプルIDは少し小さめに */
+    .drop-slot .seller-id-pill {
+      font-size: 12px;
+      padding: 8px 18px;
+    }
+
+    /* ===== ASIN抽出結果エリア（ダミー）===== */
     .asin-zone {
       background: #fff;
+      border-radius: 0 0 16px 16px;
       border: 4px solid #25124b;
       border-top: none;
-      border-radius: 0 0 16px 16px;
       height: 240px;
       padding: 12px;
       overflow-y: auto;
@@ -178,7 +204,7 @@
 <body>
   <div class="frame">
 
-    <!-- ===== STAGE 1 ヘッダー ===== -->
+    <!-- STAGE 1 ヘッダー -->
     <section class="stage1-header">
       <div class="stage1-title">STAGE 1</div>
 
@@ -207,28 +233,38 @@
           </p>
         </div>
 
-        <div class="stage1-visual"></div>
+        <div class="stage1-visual">
+          <!-- ここに後で画像を入れる想定 -->
+        </div>
       </div>
     </section>
 
-    <!-- ===== セラーIDプール ===== -->
+    <!-- セラーID（横並び） -->
     <section>
       <div class="section-label">セラーID</div>
       <div class="seller-id-container" id="sellerPool">
-        <div class="seller-id-pill" draggable="true">A1EXAMPLE2345</div>
-        <div class="seller-id-pill" draggable="true">B2EXAMPLE3456</div>
+        <div class="seller-id-pill seller-id-pill--source" draggable="true">
+          A1EXAMPLE2345
+        </div>
+        <div class="seller-id-pill seller-id-pill--source" draggable="true">
+          B2EXAMPLE3456
+        </div>
       </div>
     </section>
 
-    <!-- ===== セラーID ドロップ ===== -->
+    <!-- セラーID貼り付け（スロット＋右端にダミー） -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
       <div class="drop-zone" id="dropZone">
-        <span style="color:#999;">ここにドロップ</span>
+        <div class="drop-slot" data-index="0">ここにドロップ</div>
+        <div class="drop-slot" data-index="1">ここにドロップ</div>
+        <div class="drop-slot" data-index="2">
+          <div class="seller-id-pill">AxxxxxB00</div>
+        </div>
       </div>
     </section>
 
-    <!-- ===== ASIN抽出 ===== -->
+    <!-- セラーASIN抽出（中身はダミー） -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZone"></div>
@@ -236,59 +272,63 @@
 
   </div>
 
-  <!-- ✅ ドラッグ＆ドロップ用 JS -->
   <script>
-    const sellerPills = document.querySelectorAll(".seller-id-pill");
-    const dropZone = document.getElementById("dropZone");
+    const sourcePills = document.querySelectorAll(".seller-id-pill--source");
+    const slots = document.querySelectorAll(".drop-slot");
     const asinZone = document.getElementById("asinZone");
 
-    // ドラッグ開始
-    sellerPills.forEach(pill => {
+    // セラーID（上）のドラッグ開始
+    sourcePills.forEach(pill => {
       pill.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", pill.textContent);
+        e.dataTransfer.setData("text/plain", pill.textContent.trim());
       });
     });
 
-    // ドロップエリア
-    dropZone.addEventListener("dragover", e => {
-      e.preventDefault();
-      dropZone.classList.add("dragover");
-    });
+    // 各スロットごとにドロップ受付
+    slots.forEach(slot => {
+      slot.addEventListener("dragover", e => {
+        e.preventDefault();
+        slot.classList.add("dragover");
+      });
 
-    dropZone.addEventListener("dragleave", () => {
-      dropZone.classList.remove("dragover");
-    });
+      slot.addEventListener("dragleave", () => {
+        slot.classList.remove("dragover");
+      });
 
-    dropZone.addEventListener("drop", e => {
-      e.preventDefault();
-      dropZone.classList.remove("dragover");
+      slot.addEventListener("drop", e => {
+        e.preventDefault();
+        slot.classList.remove("dragover");
 
-      const id = e.dataTransfer.getData("text/plain");
+        const id = e.dataTransfer.getData("text/plain");
+        if (!id) return;
 
-      const newPill = document.createElement("div");
-      newPill.className = "seller-id-pill";
-      newPill.textContent = id;
+        // スロットの中身を差し替え
+        slot.innerHTML = "";
+        const pill = document.createElement("div");
+        pill.className = "seller-id-pill";
+        pill.textContent = id;
+        slot.appendChild(pill);
 
-      dropZone.appendChild(newPill);
-
-      // ダミーASIN生成（仮動作）
-      const fakeAsins = generateFakeASIN(id);
-      fakeAsins.forEach(a => {
-        const div = document.createElement("div");
-        div.textContent = a;
-        asinZone.appendChild(div);
+        // ダミーでASINを生成して下の枠に追加（本実装ではAPI連携などに置き換え）
+        const fakeAsins = generateFakeASIN(id);
+        fakeAsins.forEach(a => {
+          const div = document.createElement("div");
+          div.textContent = a;
+          asinZone.appendChild(div);
+        });
       });
     });
 
-    // ダミーASIN生成ロジック
+    // ダミーASIN生成
     function generateFakeASIN(sellerId) {
       const list = [];
-      for (let i = 0; i < 10; i++) {
-        list.push("B0" + Math.random().toString(36).substring(2, 10).toUpperCase());
+      for (let i = 0; i < 5; i++) {
+        list.push(
+          "B0" + Math.random().toString(36).substring(2, 10).toUpperCase()
+        );
       }
       return list;
     }
   </script>
-
 </body>
 </html>
