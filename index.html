@@ -6,7 +6,6 @@
   <title>MES-AI-A STAGE 1</title>
 
   <style>
-    /* ▼ フォント（パスは環境に合わせて変更） */
     @font-face {
       font-family: "StageTitleFont";
       src: url("./fonts/stage-title.woff2") format("woff2"),
@@ -84,39 +83,55 @@
       transition: opacity 0.4s ease;
     }
 
+    /* TAPボタンを目立たせるための半透明オーバーレイ */
+    .hero-tap-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.9) 0%, rgba(0,0,0,0.25) 100%);
+      mix-blend-mode: normal;
+      pointer-events: none;
+    }
+
     .hero-tap-button {
       position: absolute;
       left: 50%;
       top: 56%;
       transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.95);
+      background: #ffffff;
       border-radius: 999px;
-      padding: 14px 48px;
-      border: 2px solid #222;
-      font-size: 16px;
+      padding: 14px 56px;
+      border: 3px solid #222;
+      font-size: 18px;
       font-weight: 700;
-      letter-spacing: 0.3em;
-      text-indent: 0.3em; /* 見た目用 */
+      letter-spacing: 0.35em;
+      text-indent: 0.35em;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
       transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.3s ease;
       touch-action: manipulation;
+      z-index: 2;
     }
 
     .hero-tap-button:active {
       transform: translate(-50%, -50%) scale(0.97);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+    }
+
+    /* TAP前だけオーバーレイとボタンを見せる */
+    .stage1-hero:not(.show-description) .hero-tap-overlay {
+      pointer-events: none;
+      opacity: 1;
     }
 
     .hero-text-panel {
       position: absolute;
       inset: 6% 5%;
       border-radius: 26px;
-      background: rgba(185, 239, 245, 0.96);
-      padding: 16px 18px 18px;
+      background: rgba(185, 239, 245, 0.8); /* うっすら背景が透ける */
+      padding: 18px 18px 18px;
       font-size: 13px;
-      line-height: 1.7;
-      color: #204046;
+      line-height: 1.8;
+      color: #000;                 /* 文字色は黒に統一 */
       opacity: 0;
       pointer-events: none;
       transform: translateY(8px);
@@ -125,22 +140,22 @@
     }
 
     .hero-text-panel p {
-      margin: 0 0 6px;
+      margin: 0;
     }
 
-    .hero-text-panel .accent {
-      color: #ff6a73;
-      font-weight: 700;
-    }
-
+    .hero-text-panel .accent,
     .hero-text-panel .accent-asin {
-      color: #ffb347;
       font-weight: 700;
+      color: #000;   /* 強調も黒に統一 */
     }
 
     /* TAP 後の状態 */
     .stage1-hero.show-description .hero-image {
-      opacity: 0.16;
+      opacity: 0.35;  /* うっすら見える程度に */
+    }
+
+    .stage1-hero.show-description .hero-tap-overlay {
+      opacity: 0;    /* 説明表示時はオーバーレイを消す */
     }
 
     .stage1-hero.show-description .hero-tap-button {
@@ -178,7 +193,6 @@
       border-radius: 16px 16px 0 0;
     }
 
-    /* セラーIDプール（上） */
     .seller-id-container {
       background: #fff;
       border-radius: 0 0 16px 16px;
@@ -208,7 +222,6 @@
       touch-action: none;
     }
 
-    /* 貼り付けエリア */
     .drop-zone {
       background: #fff;
       border-radius: 0 0 16px 16px;
@@ -268,7 +281,6 @@
       border-radius: 999px;
     }
 
-    /* ASIN 抽出エリア（ダミー） */
     .asin-zone {
       background: #fff;
       border-radius: 0 0 16px 16px;
@@ -298,45 +310,25 @@
       <div class="hero-visual-wrapper">
         <img src="ichimaime.gif" alt="STAGE 1 イメージ" class="hero-image" />
 
-        <!-- TAP ボタン（1枚目の状態） -->
+        <!-- TAP前のハイライト用オーバーレイ -->
+        <div class="hero-tap-overlay"></div>
+
+        <!-- TAP ボタン -->
         <button class="hero-tap-button" id="heroTapButton">
           TAP！！
         </button>
 
-        <!-- 説明テキスト（2枚目の状態） -->
+        <!-- 説明テキスト（1段落・黒文字） -->
         <div class="hero-text-panel" id="heroTextPanel">
           <p>
-            Amazonでは、販売者ごとに
-            <span class="accent">「セラーID」</span>
-            が設定され、
-          </p>
-          <p>
-            商品ごとに
-            <span class="accent-asin">「ASIN（商品番号）」</span>
-            が割り当てられています。
-          </p>
-          <p>
-            売れている商品をリサーチする＝
-            <span class="accent-asin">“売れているASINを見つけること”</span>
-            ですが、まずはそのASINを取得しなければ始まりません。
-          </p>
-          <p>
-            このツールでは、セラーIDを入力するだけで、<br />
-            そのセラーが出品しているASINを一括で抽出できます。
-          </p>
-          <p>
-            わずか数秒でASINリストを自動生成できるため、<br />
-            売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
-          </p>
-          <p>
-            まずは、ASINのリストを作成してみましょう！
+            Amazonでは、販売者ごとに<span class="accent">「セラーID」</span>が設定され、商品ごとに<span class="accent-asin">「ASIN（商品番号）」</span>が割り当てられています。売れている商品をリサーチする＝<span class="accent-asin">“売れているASINを見つけること”</span>ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
           </p>
         </div>
       </div>
     </section>
 
     <!-- ======================
-         セラーID（プール）
+         セラーID プール
          ====================== -->
     <section>
       <div class="section-label">セラーID</div>
@@ -387,7 +379,7 @@
       hero.classList.add("show-description");
     });
 
-    /* ===== セラーID ドラッグ＆ドロップ（スマホ対応） ===== */
+    /* ===== セラーID ドラッグ＆ドロップ ===== */
     const sourcePills = document.querySelectorAll(".seller-id-pill--source");
     const slots = document.querySelectorAll("[data-slot]");
     const asinZone = document.getElementById("asinZone");
@@ -434,7 +426,6 @@
           e.clientX > rect.left && e.clientX < rect.right &&
           e.clientY > rect.top && e.clientY < rect.bottom
         ) {
-          // スロットに ID をはめ込む
           slot.innerHTML = "";
           const pill = dragging.cloneNode(true);
           pill.classList.remove("seller-id-pill--source");
@@ -447,7 +438,6 @@
 
           fitTextToSlot(pill, slot);
 
-          // ダミー：ASIN を生成（本番では API などに置き換え）
           const fakeAsins = generateFakeASIN(pill.textContent.trim());
           fakeAsins.forEach(a => {
             const div = document.createElement("div");
@@ -468,7 +458,6 @@
       ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
     }
 
-    // スロット幅に収まるまでフォントサイズを縮小
     function fitTextToSlot(pill, slot) {
       const padding = 12;
       let size = 12;
@@ -485,7 +474,6 @@
       }
     }
 
-    // ダミー ASIN 生成
     function generateFakeASIN() {
       const list = [];
       for (let i = 0; i < 5; i++) {
@@ -494,7 +482,6 @@
       return list;
     }
 
-    // 初期ダミースロットのサイズ調整
     window.addEventListener("load", () => {
       document.querySelectorAll(".slot.filled").forEach(slot => {
         const pill = slot.querySelector(".seller-id-pill");
