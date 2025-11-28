@@ -1,5 +1,5 @@
 // ★ASIN データ（最新版スプレッドシート内容を完全反映）
-const asinDataSheet = {
+window.asinDataSheet = {
   'A1EXAMP1E2345': [
     { asin: 'B0AB1C2D34', ip: '○', sold30: 85, rival: 4, forecast30: 100, usPrice: '$24.99', jpPrice: '¥1,980', profit: '32%' },
     { asin: 'B0XK9Z7H12', ip: '×', sold30: 12, rival: 9, forecast30: 10, usPrice: '$14.50', jpPrice: '¥1,200', profit: '-8%' },
