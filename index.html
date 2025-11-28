@@ -96,7 +96,7 @@
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.35em;
-      text-indent: 0.35em; /* 顔文字みたいな詰めをなくす用 */
+      text-indent: 0.35em;
       color: #111;
       cursor: pointer;
       box-shadow:
@@ -107,12 +107,10 @@
       z-index: 2;
       position: absolute;
       overflow: hidden;
-      /* ほんのり脈動アニメーション */
       animation: tapPulse 1.7s ease-in-out infinite;
-      opacity: 0.9; /* 透明度を少し上げる */
+      opacity: 0.9;
     }
 
-    /* きらっと光るハイライト */
     .hero-tap-button::before {
       content: "";
       position: absolute;
@@ -131,8 +129,8 @@
       animation: shine 2.8s ease-in-out infinite;
     }
 
-    .hero-tap-button:Hover {
-      animation-play-state: paused; /* ホバー時は脈動を止めて */
+    .hero-tap-button:hover {
+      animation-play-state: paused;
       transform: translate(-50%, -50%) scale(1.05);
       box-shadow:
         0 0 0 3px rgba(255,255,255,0.9),
@@ -194,11 +192,11 @@
       position: absolute;
       inset: 6% 5%;
       border-radius: 26px;
-      background: rgba(185, 239, 245, 0.8); /* うっすら背景が透ける */
+      background: rgba(185, 239, 245, 0.8);
       padding: 18px 18px 18px;
       font-size: 13px;
       line-height: 1.8;
-      color: #000;                 /* 文字色は黒に統一 */
+      color: #000;
       opacity: 0;
       pointer-events: none;
       transform: translateY(8px);
@@ -216,7 +214,6 @@
       color: #000;
     }
 
-    /* TAP 後：画像をうっすら＋ボタン非表示＋説明表示 */
     .stage1-hero.show-description .hero-image {
       opacity: 0.35;
     }
@@ -233,7 +230,7 @@
     }
 
     /* =========================
-       以下：セラーID UI 一式
+       セラーID UI
        ========================= */
 
     .section-label {
@@ -355,6 +352,17 @@
       font-size: 12px;
       color: #333;
     }
+
+    /* ASIN行のスタイル */
+    .asin-row {
+      padding: 4px 6px;
+      border-bottom: 1px solid #eee;
+      font-size: 12px;
+    }
+
+    .asin-row:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 
@@ -373,12 +381,10 @@
       <div class="hero-visual-wrapper">
         <img src="ichimaime.gif" alt="STAGE 1 イメージ" class="hero-image" />
 
-        <!-- デザイン強めの TAP ボタン -->
         <button class="hero-tap-button" id="heroTapButton">
           TAP！！
         </button>
 
-        <!-- 説明テキスト（1段落・黒文字） -->
         <div class="hero-text-panel" id="heroTextPanel">
           <p>
             Amazonでは、販売者ごとに<span class="accent">「セラーID」</span>が設定され、商品ごとに<span class="accent-asin">「ASIN（商品番号）」</span>が割り当てられています。売れている商品をリサーチする＝<span class="accent-asin">“売れているASINを見つけること”</span>ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
@@ -393,11 +399,12 @@
     <section>
       <div class="section-label">セラーID</div>
       <div class="seller-id-container" id="sellerPool">
-        <div class="seller-id-pill seller-id-pill--source" data-id="A1EXAMPLE2345">
-          A1EXAMPLE2345
+        <!-- asinDataSheet のキーと合わせる -->
+        <div class="seller-id-pill seller-id-pill--source" data-id="A1EXAMP1E2345">
+          A1EXAMP1E2345
         </div>
-        <div class="seller-id-pill seller-id-pill--source" data-id="B2EXAMPLE3456">
-          B2EXAMPLE3456
+        <div class="seller-id-pill seller-id-pill--source" data-id="B2EXAMP1E3456">
+          B2EXAMP1E3456
         </div>
       </div>
     </section>
@@ -414,14 +421,15 @@
         <div class="slot" data-slot>
           <span class="slot-placeholder">ここにドロップ</span>
         </div>
-        <div class="slot filled" data-slot>
+        <!-- 右端はデモ用として固定（data-slot なし） -->
+        <div class="slot filled">
           <div class="seller-id-pill">AxxxxxB00</div>
         </div>
       </div>
     </section>
 
     <!-- ======================
-         セラーASIN抽出（ダミー）
+         セラーASIN抽出
          ====================== -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
@@ -430,6 +438,10 @@
 
   </div>
 
+  <!-- ASINデータ（別ファイル） -->
+  <script src="./asin-data.js"></script>
+
+  <!-- メインスクリプト -->
   <script>
     /* ===== TOP ヒーロー：TAP で説明表示 ===== */
     const hero = document.getElementById("stage1Hero");
@@ -441,6 +453,7 @@
 
     /* ===== セラーID ドラッグ＆ドロップ ===== */
     const sourcePills = document.querySelectorAll(".seller-id-pill--source");
+    // 右端のデモスロットは data-slot がないので除外される
     const slots = document.querySelectorAll("[data-slot]");
     const asinZone = document.getElementById("asinZone");
 
@@ -453,22 +466,88 @@
         const sourceId = pill.dataset.sourceId;
         if (!sourceId) return;
 
+        // 元のプール内のピルを再表示
         const source = document.querySelector(
           '.seller-id-pill--source[data-id="' + sourceId + '"]'
         );
-
         if (source) {
           source.style.visibility = "visible";
         }
 
+        // スロットを空に戻す
         const slot = pill.parentElement;
         if (slot && slot.classList.contains("filled")) {
           slot.classList.remove("filled");
           slot.innerHTML = '<span class="slot-placeholder">ここにドロップ</span>';
         }
+
+        // 表示中のASINもクリア（シンプルに全部消す）
+        asinZone.innerHTML = "";
       });
     }
 
+    // セラーID → ASIN リストを表示する処理
+    function renderAsinsForSeller(sellerId) {
+      asinZone.innerHTML = "";
+
+      // asinDataSheet が存在するかチェック
+      if (!window.asinDataSheet) {
+        asinZone.textContent = "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
+        return;
+      }
+
+      const dataList = asinDataSheet[sellerId];
+
+      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
+        const div = document.createElement("div");
+        div.textContent = "このセラーIDに対応するASINデータが見つかりません。";
+        asinZone.appendChild(div);
+        return;
+      }
+
+      // タイトル（セラーID）
+      const title = document.createElement("div");
+      title.style.fontWeight = "700";
+      title.style.marginBottom = "6px";
+      title.textContent = "セラーID: " + sellerId;
+      asinZone.appendChild(title);
+
+      // ASIN を縦に並べる（必要なら sold30 等もここで足せる）
+      dataList.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "asin-row";
+        row.textContent = item.asin;
+        asinZone.appendChild(row);
+      });
+    }
+
+    // ゴースト要素を移動
+    function moveGhost(e) {
+      if (!ghost) return;
+      ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
+      ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
+    }
+
+    // ピルの文字サイズをスロット幅にフィットさせる
+    function fitTextToSlot(pill, slot) {
+      const padding = 12;
+      let size = 12;
+      const minSize = 8;
+
+      pill.style.fontSize = size + "px";
+
+      while (
+        (pill.scrollWidth + padding) > slot.clientWidth &&
+        size > minSize
+      ) {
+        size -= 1;
+        pill.style.fontSize = size + "px";
+      }
+    }
+
+    // ===== イベント登録 =====
+
+    // セラーIDプール側のピルをドラッグ開始
     sourcePills.forEach(pill => {
       pill.addEventListener("pointerdown", e => {
         dragging = pill;
@@ -482,6 +561,7 @@
       });
     });
 
+    // ポインタ移動中：ゴースト移動＋スロットへのホバー判定
     document.addEventListener("pointermove", e => {
       if (!ghost) return;
       moveGhost(e);
@@ -499,10 +579,12 @@
       });
     });
 
+    // ポインタ離したとき：どこかのスロットにドロップされたか判定
     document.addEventListener("pointerup", e => {
       if (!ghost || !dragging) return;
 
       let dropped = false;
+      let droppedSellerId = null;
 
       slots.forEach(slot => {
         const rect = slot.getBoundingClientRect();
@@ -512,70 +594,45 @@
         ) {
           dropped = true;
 
+          // スロットをこのセラーIDで埋める
           slot.innerHTML = "";
           const pill = dragging.cloneNode(true);
           pill.classList.remove("seller-id-pill--source");
           pill.style.fontSize = "12px";
           pill.style.width = "100%";
           pill.style.textAlign = "center";
-          pill.dataset.sourceId = dragging.dataset.id || "";
+
+          // data-id を sourceId として保持（戻すときに使う）
+          const sourceId = dragging.dataset.id || dragging.textContent.trim();
+          pill.dataset.sourceId = sourceId;
 
           attachReturnHandler(pill);
 
           slot.appendChild(pill);
           slot.classList.add("filled");
-
           fitTextToSlot(pill, slot);
 
-          const fakeAsins = generateFakeASIN(pill.textContent.trim());
-          fakeAsins.forEach(a => {
-            const div = document.createElement("div");
-            div.textContent = a;
-            asinZone.appendChild(div);
-          });
+          droppedSellerId = sourceId;
         }
         slot.classList.remove("dragover");
       });
 
-      // ドロップ成功時のみ元のセラーIDを非表示にする
+      // ドロップ成功時だけ元ピルを非表示にしてASIN表示
       if (dropped) {
         dragging.style.visibility = "hidden";
+
+        if (droppedSellerId) {
+          renderAsinsForSeller(droppedSellerId);
+        }
       }
 
+      // ゴーストとフラグを掃除
       ghost.remove();
       ghost = null;
       dragging = null;
     });
 
-    function moveGhost(e) {
-      ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
-      ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
-    }
-
-    function fitTextToSlot(pill, slot) {
-      const padding = 12;
-      let size = 12;
-      const minSize = 8;
-
-      pill.style.fontSize = size + "px";
-
-      while (
-        (pill.scrollWidth + padding) > slot.clientWidth &&
-        size > minSize
-      ) {
-        size -= 1;
-        pill.style.fontSize = size + "px";
-      }
-    }
-
-    function generateFakeASIN() {
-      const list = [];
-      for (let i = 0; i < 5; i++) {
-        list.push("B0" + Math.random().toString(36).substring(2, 10).toUpperCase());
-      }
-      return list;
-    }
-
+    // 画面読み込み時：すでに埋まっているスロットがあれば文字サイズ調整
     window.addEventListener("load", () => {
       document.querySelectorAll(".slot.filled").forEach(slot => {
         const pill = slot.querySelector(".seller-id-pill");
