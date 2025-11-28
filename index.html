@@ -1,334 +1,192 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MES-AI-A STAGE 1</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MES-AI-A STAGE 1</title>
 
-  <style>
-    @font-face {
-      font-family: "StageTitleFont";
-      src: url("./fonts/stage-title.woff2") format("woff2"),
-           url("./fonts/stage-title.woff")  format("woff");
-      font-weight: normal;
-      font-style: normal;
-    }
+<style>
+  body {
+    margin:0;
+    font-family: sans-serif;
+    background:#c6ece7;
+    display:flex;
+    justify-content:center;
+  }
 
-    @font-face {
-      font-family: "NikkyouSans";
-      src: url("./fonts/nikkyou-sans.woff2") format("woff2"),
-           url("./fonts/nikkyou-sans.woff")  format("woff");
-      font-weight: normal;
-      font-style: normal;
-    }
+  .frame {
+    width:100%;
+    max-width:420px;
+    padding:20px;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  .label {
+    background:#220043;
+    color:#fff;
+    text-align:center;
+    padding:12px;
+    font-weight:bold;
+    border-radius:20px 20px 0 0;
+  }
 
-    body {
-      margin: 0;
-      width: 100vw;
-      min-height: 100vh;
-      background: linear-gradient(to bottom, #93dee0 0%, #93dee0 50%, #f8e088 100%);
-      display: flex;
-      justify-content: center;
-      padding: 0;
-      font-family: "NikkyouSans", system-ui, sans-serif;
-    }
+  /* ---------- セラーIDプール ---------- */
+  .pool {
+    background:#fff;
+    border:4px solid #220043;
+    border-top:none;
+    border-radius:0 0 20px 20px;
+    padding:16px;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+  }
 
-    .frame {
-      width: 100vw;
-      max-width: 420px;
-      padding: 20px 16px 40px;
-    }
+  .pill {
+    background:#220043;
+    color:#fff;
+    border-radius:999px;
+    padding:10px 28px;
+    font-size:14px;
+    font-weight:bold;
+    white-space:nowrap;
+    user-select:none;
+    cursor:grab;
+    touch-action:none;
+  }
 
-    /* ===== STAGE1 ヘッダー ===== */
-    .stage1-header {
-      background: #f5f5ff;
-      border-radius: 24px;
-      padding: 24px 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      margin-bottom: 24px;
-    }
+  /* ---------- 貼り付けエリア ---------- */
+  .drop-zone {
+    background:#fff;
+    border:4px dashed #220043;
+    border-top:none;
+    border-radius:0 0 20px 20px;
+    padding:14px;
+    display:flex;
+    gap:8px;
+    justify-content:space-between;
+    align-items:center;
+  }
 
-    .stage1-title {
-      font-family: "StageTitleFont", sans-serif;
-      font-size: 26px;
-      text-align: center;
-      color: #25124b;
-      letter-spacing: 0.12em;
-      margin-bottom: 20px;
-    }
+  .slot {
+    background:#e2e3ec;
+    border-radius:999px;
+    height:36px;
+    flex:1;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-width:0;
+    padding:0 8px;
+    font-size:12px;
+    white-space:nowrap;
+    overflow:hidden;
+  }
 
-    .stage1-main {
-      display: flex;
-      gap: 16px;
-    }
+  .slot.dragover {
+    outline:2px solid #220043;
+    background:#dcdcff;
+  }
 
-    .stage1-text {
-      flex: 1.7;
-    }
-
-    .stage1-text h1 {
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 12px;
-      color: #25124b;
-    }
-
-    .stage1-description {
-      font-size: 14px;
-      line-height: 1.7;
-      margin-bottom: 10px;
-      color: #333;
-    }
-
-    .stage1-visual {
-      flex: 1;
-      min-height: 160px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* ===== 共通ラベル ===== */
-    .section-label {
-      background: #25124b;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      text-align: center;
-      padding: 10px;
-      border-radius: 16px 16px 0 0;
-    }
-
-    .section-label-small {
-      background: #25124b;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 8px;
-      text-align: center;
-      border-radius: 16px 16px 0 0;
-    }
-
-    /* ===== セラーIDプール（上）===== */
-    .seller-id-container {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
-      border-top: none;
-      padding: 16px 12px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .seller-id-pill {
-      background: #240049;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px 24px;
-      border-radius: 999px;
-      width: fit-content;
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    /* 上のプール用：ドラッグ可能にするクラス */
-    .seller-id-pill--source {
-      cursor: grab;
-    }
-
-    .seller-id-pill--source:active {
-      cursor: grabbing;
-      transform: scale(0.98);
-    }
-
-    /* ===== 貼り付けエリア ===== */
-    .drop-zone {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px dashed #25124b;
-      border-top: none;
-      padding: 16px 14px;
-      display: flex;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .drop-slot {
-      flex: 1;
-      min-width: 0;
-      height: 32px;
-      background: #e2e4ee;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: #999;
-      padding: 0 10px;
-    }
-
-    .drop-slot.dragover {
-      outline: 2px solid #25124b;
-      background: #f2efff;
-    }
-
-    /* スロット内のサンプルIDは少し小さめに */
-    .drop-slot .seller-id-pill {
-      font-size: 12px;
-      padding: 8px 18px;
-    }
-
-    /* ===== ASIN抽出結果エリア（ダミー）===== */
-    .asin-zone {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
-      border-top: none;
-      height: 240px;
-      padding: 12px;
-      overflow-y: auto;
-      font-size: 12px;
-      color: #333;
-    }
-  </style>
+  /* スロット中のpillを自動縮小 */
+  .slot .pill {
+    padding:6px 14px;
+    font-size:12px;
+    max-width:100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+</style>
 </head>
 
 <body>
-  <div class="frame">
+<div class="frame">
 
-    <!-- STAGE 1 ヘッダー -->
-    <section class="stage1-header">
-      <div class="stage1-title">STAGE 1</div>
-
-      <div class="stage1-main">
-        <div class="stage1-text">
-          <h1>セラーIDからASINを一括抽出！</h1>
-
-          <p class="stage1-description">
-            Amazonでは、販売者ごとに「セラーID」が設定され、商品ごとに「ASIN（商品番号）」が割り当てられています。
-          </p>
-
-          <p class="stage1-description">
-            売れている商品をリサーチする＝“売れているASINを見つけること”ですが、まずはそのASINを取得しなければ始まりません。
-          </p>
-
-          <p class="stage1-description">
-            このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。
-          </p>
-
-          <p class="stage1-description">
-            わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
-          </p>
-
-          <p class="stage1-description">
-            まずは、ASINのリストを作成してみましょう！
-          </p>
-        </div>
-
-        <div class="stage1-visual">
-          <!-- ここに後で画像を入れる想定 -->
-        </div>
-      </div>
-    </section>
-
-    <!-- セラーID（横並び） -->
-    <section>
-      <div class="section-label">セラーID</div>
-      <div class="seller-id-container" id="sellerPool">
-        <div class="seller-id-pill seller-id-pill--source" draggable="true">
-          A1EXAMPLE2345
-        </div>
-        <div class="seller-id-pill seller-id-pill--source" draggable="true">
-          B2EXAMPLE3456
-        </div>
-      </div>
-    </section>
-
-    <!-- セラーID貼り付け（スロット＋右端にダミー） -->
-    <section style="margin-top: 24px;">
-      <div class="section-label-small">セラーID貼り付け</div>
-      <div class="drop-zone" id="dropZone">
-        <div class="drop-slot" data-index="0">ここにドロップ</div>
-        <div class="drop-slot" data-index="1">ここにドロップ</div>
-        <div class="drop-slot" data-index="2">
-          <div class="seller-id-pill">AxxxxxB00</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- セラーASIN抽出（中身はダミー） -->
-    <section style="margin-top: 16px;">
-      <div class="section-label-small">セラーASIN抽出</div>
-      <div class="asin-zone" id="asinZone"></div>
-    </section>
-
+  <!-- セラーID -->
+  <div class="label">セラーID</div>
+  <div class="pool">
+    <div class="pill" data-id="A1EXAMPLE2345">A1EXAMPLE2345</div>
+    <div class="pill" data-id="B2EXAMPLE3456">B2EXAMPLE3456</div>
   </div>
 
-  <script>
-    const sourcePills = document.querySelectorAll(".seller-id-pill--source");
-    const slots = document.querySelectorAll(".drop-slot");
-    const asinZone = document.getElementById("asinZone");
+  <!-- 貼り付け -->
+  <div style="margin-top:20px">
+    <div class="label">セラーID貼り付け</div>
+    <div class="drop-zone">
+      <div class="slot" data-slot>ここにドロップ</div>
+      <div class="slot" data-slot>ここにドロップ</div>
+      <div class="slot" data-slot>
+        <div class="pill">AxxxxxB00</div>
+      </div>
+    </div>
+  </div>
 
-    // セラーID（上）のドラッグ開始
-    sourcePills.forEach(pill => {
-      pill.addEventListener("dragstart", e => {
-        e.dataTransfer.setData("text/plain", pill.textContent.trim());
-      });
+</div>
+
+<script>
+  let dragging = null;
+  let clone = null;
+
+  const pills = document.querySelectorAll('.pool .pill');
+  const slots = document.querySelectorAll('[data-slot]');
+
+  /* ✅ スマホ最適化ドラッグ */
+  pills.forEach(pill => {
+    pill.addEventListener('pointerdown', e => {
+      dragging = pill;
+      clone = pill.cloneNode(true);
+      clone.style.position = 'fixed';
+      clone.style.pointerEvents = 'none';
+      clone.style.zIndex = '9999';
+      document.body.appendChild(clone);
+      moveClone(e);
     });
+  });
 
-    // 各スロットごとにドロップ受付
+  document.addEventListener('pointermove', e => {
+    if (!clone) return;
+    moveClone(e);
+
     slots.forEach(slot => {
-      slot.addEventListener("dragover", e => {
-        e.preventDefault();
-        slot.classList.add("dragover");
-      });
+      const rect = slot.getBoundingClientRect();
+      if (
+        e.clientX > rect.left && e.clientX < rect.right &&
+        e.clientY > rect.top && e.clientY < rect.bottom
+      ) {
+        slot.classList.add('dragover');
+      } else {
+        slot.classList.remove('dragover');
+      }
+    });
+  });
 
-      slot.addEventListener("dragleave", () => {
-        slot.classList.remove("dragover");
-      });
+  document.addEventListener('pointerup', e => {
+    if (!clone) return;
 
-      slot.addEventListener("drop", e => {
-        e.preventDefault();
-        slot.classList.remove("dragover");
-
-        const id = e.dataTransfer.getData("text/plain");
-        if (!id) return;
-
-        // スロットの中身を差し替え
-        slot.innerHTML = "";
-        const pill = document.createElement("div");
-        pill.className = "seller-id-pill";
-        pill.textContent = id;
+    slots.forEach(slot => {
+      const rect = slot.getBoundingClientRect();
+      if (
+        e.clientX > rect.left && e.clientX < rect.right &&
+        e.clientY > rect.top && e.clientY < rect.bottom
+      ) {
+        slot.innerHTML = '';
+        const pill = dragging.cloneNode(true);
+        pill.style.width = 'auto';
         slot.appendChild(pill);
-
-        // ダミーでASINを生成して下の枠に追加（本実装ではAPI連携などに置き換え）
-        const fakeAsins = generateFakeASIN(id);
-        fakeAsins.forEach(a => {
-          const div = document.createElement("div");
-          div.textContent = a;
-          asinZone.appendChild(div);
-        });
-      });
+      }
+      slot.classList.remove('dragover');
     });
 
-    // ダミーASIN生成
-    function generateFakeASIN(sellerId) {
-      const list = [];
-      for (let i = 0; i < 5; i++) {
-        list.push(
-          "B0" + Math.random().toString(36).substring(2, 10).toUpperCase()
-        );
-      }
-      return list;
-    }
-  </script>
+    clone.remove();
+    clone = null;
+    dragging = null;
+  });
+
+  function moveClone(e){
+    clone.style.left = e.clientX - clone.offsetWidth / 2 + 'px';
+    clone.style.top = e.clientY - clone.offsetHeight / 2 + 'px';
+  }
+</script>
+
 </body>
 </html>
