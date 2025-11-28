@@ -6,8 +6,6 @@
   <title>MES-AI-A STAGE 1</title>
 
   <style>
-    /* ▼ STAGE 1 見出し用フォント（CC0 の新しいフォント）
-       ※ファイル名・パスは実際にアップしたものに合わせて変更してください */
     @font-face {
       font-family: "StageTitleFont";
       src: url("./fonts/stage-title.woff2") format("woff2"),
@@ -16,7 +14,6 @@
       font-style: normal;
     }
 
-    /* ▼ 本文用フォント（ニッキョーサンなど） */
     @font-face {
       font-family: "NikkyouSans";
       src: url("./fonts/nikkyou-sans.woff2") format("woff2"),
@@ -46,7 +43,6 @@
       padding: 20px 16px 40px;
     }
 
-    /* ===== STAGE 1 ヘッダー ===== */
     .stage1-header {
       background: #f5f5ff;
       border-radius: 24px;
@@ -56,7 +52,7 @@
     }
 
     .stage1-title {
-      font-family: "StageTitleFont", sans-serif;  /* ← ここで必ず専用フォントを使う */
+      font-family: "StageTitleFont", sans-serif;
       font-size: 26px;
       text-align: center;
       color: #25124b;
@@ -87,17 +83,14 @@
       color: #333;
     }
 
-    /* 画像スペース：枠・塗りをなくして「空白」だけ残す */
     .stage1-visual {
       flex: 1;
-      min-height: 160px;   /* スペースだけ確保 */
+      min-height: 160px;
       display: flex;
       align-items: center;
       justify-content: center;
-      /* background も border も付けない → むらさき枠が消える */
     }
 
-    /* ===== 下のセラーIDエリア ===== */
     .section-label {
       background: #25124b;
       color: #fff;
@@ -106,17 +99,6 @@
       text-align: center;
       padding: 10px;
       border-radius: 16px 16px 0 0;
-    }
-
-    .placeholder-box {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
-      border-top: none;
-    }
-
-    .placeholder-large {
-      height: 120px;
     }
 
     .section-label-small {
@@ -129,20 +111,66 @@
       border-radius: 16px 16px 0 0;
     }
 
-    .placeholder-medium {
-      height: 70px;
+    /* ✅ セラーIDエリア */
+    .seller-id-container {
       background: #fff;
-      border-radius: 0 0 16px 16px;
       border: 4px solid #25124b;
       border-top: none;
+      border-radius: 0 0 16px 16px;
+      padding: 16px;
+      min-height: 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .placeholder-tall {
-      height: 240px;
+    .seller-id-pill {
+      background: linear-gradient(135deg, #0c003f, #25124b);
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      width: fit-content;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .seller-id-pill:active {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    /* ✅ ドロップゾーン */
+    .drop-zone {
       background: #fff;
+      border: 4px dashed #25124b;
+      border-top: none;
       border-radius: 0 0 16px 16px;
+      height: 70px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .drop-zone.dragover {
+      background: #f2efff;
+      border-style: solid;
+    }
+
+    /* ✅ ASIN抽出エリア（ダミー） */
+    .asin-zone {
+      background: #fff;
       border: 4px solid #25124b;
       border-top: none;
+      border-radius: 0 0 16px 16px;
+      height: 240px;
+      padding: 12px;
+      overflow-y: auto;
+      font-size: 12px;
+      color: #333;
     }
   </style>
 </head>
@@ -150,7 +178,7 @@
 <body>
   <div class="frame">
 
-    <!-- STAGE 1 ヘッダー -->
+    <!-- ===== STAGE 1 ヘッダー ===== -->
     <section class="stage1-header">
       <div class="stage1-title">STAGE 1</div>
 
@@ -159,12 +187,11 @@
           <h1>セラーIDからASINを一括抽出！</h1>
 
           <p class="stage1-description">
-            Amazonでは、販売者ごとに「セラーID」が設定され、 商品ごとに「ASIN（商品番号）」が割り当てられています。
+            Amazonでは、販売者ごとに「セラーID」が設定され、商品ごとに「ASIN（商品番号）」が割り当てられています。
           </p>
 
           <p class="stage1-description">
-            売れている商品をリサーチする＝“売れているASINを見つけること”
-            ですが、まずはそのASINを取得しなければ始まりません。
+            売れている商品をリサーチする＝“売れているASINを見つけること”ですが、まずはそのASINを取得しなければ始まりません。
           </p>
 
           <p class="stage1-description">
@@ -180,31 +207,88 @@
           </p>
         </div>
 
-        <!-- 画像を入れ込むための空スペース（枠なし） -->
-        <div class="stage1-visual">
-          <!-- 後でここに <img src="xxx.png" alt=""> を入れる想定 -->
-        </div>
+        <div class="stage1-visual"></div>
       </div>
     </section>
 
-    <!-- セラーID -->
+    <!-- ===== セラーIDプール ===== -->
     <section>
       <div class="section-label">セラーID</div>
-      <div class="placeholder-box placeholder-large"></div>
+      <div class="seller-id-container" id="sellerPool">
+        <div class="seller-id-pill" draggable="true">A1EXAMPLE2345</div>
+        <div class="seller-id-pill" draggable="true">B2EXAMPLE3456</div>
+      </div>
     </section>
 
-    <!-- セラーID貼り付け -->
+    <!-- ===== セラーID ドロップ ===== -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
-      <div class="placeholder-medium"></div>
+      <div class="drop-zone" id="dropZone">
+        <span style="color:#999;">ここにドロップ</span>
+      </div>
     </section>
 
-    <!-- セラーASIN抽出 -->
+    <!-- ===== ASIN抽出 ===== -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
-      <div class="placeholder-tall"></div>
+      <div class="asin-zone" id="asinZone"></div>
     </section>
 
   </div>
+
+  <!-- ✅ ドラッグ＆ドロップ用 JS -->
+  <script>
+    const sellerPills = document.querySelectorAll(".seller-id-pill");
+    const dropZone = document.getElementById("dropZone");
+    const asinZone = document.getElementById("asinZone");
+
+    // ドラッグ開始
+    sellerPills.forEach(pill => {
+      pill.addEventListener("dragstart", e => {
+        e.dataTransfer.setData("text/plain", pill.textContent);
+      });
+    });
+
+    // ドロップエリア
+    dropZone.addEventListener("dragover", e => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+
+    dropZone.addEventListener("drop", e => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+
+      const id = e.dataTransfer.getData("text/plain");
+
+      const newPill = document.createElement("div");
+      newPill.className = "seller-id-pill";
+      newPill.textContent = id;
+
+      dropZone.appendChild(newPill);
+
+      // ダミーASIN生成（仮動作）
+      const fakeAsins = generateFakeASIN(id);
+      fakeAsins.forEach(a => {
+        const div = document.createElement("div");
+        div.textContent = a;
+        asinZone.appendChild(div);
+      });
+    });
+
+    // ダミーASIN生成ロジック
+    function generateFakeASIN(sellerId) {
+      const list = [];
+      for (let i = 0; i < 10; i++) {
+        list.push("B0" + Math.random().toString(36).substring(2, 10).toUpperCase());
+      }
+      return list;
+    }
+  </script>
+
 </body>
 </html>
