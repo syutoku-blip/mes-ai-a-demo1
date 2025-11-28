@@ -83,44 +83,110 @@
       transition: opacity 0.4s ease;
     }
 
-    /* TAPボタンを目立たせるための半透明オーバーレイ */
-    .hero-tap-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at center, rgba(255,255,255,0.9) 0%, rgba(0,0,0,0.25) 100%);
-      mix-blend-mode: normal;
-      pointer-events: none;
-    }
-
+    /* ==== TAPボタン（エフェクト付き） ==== */
     .hero-tap-button {
       position: absolute;
       left: 50%;
-      top: 56%;
+      top: 60%;
       transform: translate(-50%, -50%);
-      background: #ffffff;
+      padding: 16px 64px;
       border-radius: 999px;
-      padding: 14px 56px;
-      border: 3px solid #222;
+      border: 0;
+      background: linear-gradient(135deg, #ffffff, #f3f9ff);
       font-size: 18px;
       font-weight: 700;
       letter-spacing: 0.35em;
-      text-indent: 0.35em;
+      text-indent: 0.35em; /* 顔文字みたいな詰めをなくす用 */
+      color: #111;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-      transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.3s ease;
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,0.9),
+        0 14px 24px rgba(0,0,0,0.35),
+        0 0 20px rgba(255,255,255,0.85);
       touch-action: manipulation;
       z-index: 2;
+      position: absolute;
+      overflow: hidden;
+      /* ほんのり脈動アニメーション */
+      animation: tapPulse 1.7s ease-in-out infinite;
+    }
+
+    /* きらっと光るハイライト */
+    .hero-tap-button::before {
+      content: "";
+      position: absolute;
+      top: -120%;
+      left: -30%;
+      width: 60%;
+      height: 340%;
+      background: linear-gradient(
+        120deg,
+        rgba(255,255,255,0.18),
+        rgba(255,255,255,0.8),
+        rgba(255,255,255,0.18)
+      );
+      transform: translateX(-100%) rotate(20deg);
+      pointer-events: none;
+      animation: shine 2.8s ease-in-out infinite;
+    }
+
+    .hero-tap-button:Hover {
+      animation-play-state: paused; /* ホバー時は脈動を止めて */
+      transform: translate(-50%, -50%) scale(1.05);
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,0.9),
+        0 16px 26px rgba(0,0,0,0.4),
+        0 0 26px rgba(255,255,255,1);
     }
 
     .hero-tap-button:active {
       transform: translate(-50%, -50%) scale(0.97);
-      box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      box-shadow:
+        0 0 0 3px rgba(255,255,255,0.9),
+        0 8px 14px rgba(0,0,0,0.4),
+        0 0 18px rgba(255,255,255,0.9);
     }
 
-    /* TAP前だけオーバーレイとボタンを見せる */
-    .stage1-hero:not(.show-description) .hero-tap-overlay {
-      pointer-events: none;
-      opacity: 1;
+    @keyframes tapPulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 0 3px rgba(255,255,255,0.9),
+          0 12px 20px rgba(0,0,0,0.32),
+          0 0 18px rgba(255,255,255,0.8);
+      }
+      50% {
+        transform: translate(-50%, -50%) scale(1.05);
+        box-shadow:
+          0 0 0 3px rgba(255,255,255,1),
+          0 18px 28px rgba(0,0,0,0.4),
+          0 0 26px rgba(255,255,255,1);
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+        box-shadow:
+          0 0 0 3px rgba(255,255,255,0.9),
+          0 12px 20px rgba(0,0,0,0.32),
+          0 0 18px rgba(255,255,255,0.8);
+      }
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-130%) rotate(20deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      60% {
+        transform: translateX(220%) rotate(20deg);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(220%) rotate(20deg);
+        opacity: 0;
+      }
     }
 
     .hero-text-panel {
@@ -146,16 +212,12 @@
     .hero-text-panel .accent,
     .hero-text-panel .accent-asin {
       font-weight: 700;
-      color: #000;   /* 強調も黒に統一 */
+      color: #000;
     }
 
-    /* TAP 後の状態 */
+    /* TAP 後：画像をうっすら＋ボタン非表示＋説明表示 */
     .stage1-hero.show-description .hero-image {
-      opacity: 0.35;  /* うっすら見える程度に */
-    }
-
-    .stage1-hero.show-description .hero-tap-overlay {
-      opacity: 0;    /* 説明表示時はオーバーレイを消す */
+      opacity: 0.35;
     }
 
     .stage1-hero.show-description .hero-tap-button {
@@ -310,10 +372,7 @@
       <div class="hero-visual-wrapper">
         <img src="ichimaime.gif" alt="STAGE 1 イメージ" class="hero-image" />
 
-        <!-- TAP前のハイライト用オーバーレイ -->
-        <div class="hero-tap-overlay"></div>
-
-        <!-- TAP ボタン -->
+        <!-- デザイン強めの TAP ボタン -->
         <button class="hero-tap-button" id="heroTapButton">
           TAP！！
         </button>
