@@ -8,105 +8,97 @@
 <style>
   body {
     margin: 0;
-    background: #9fe0e5;
-    font-family: system-ui, sans-serif;
-    display: flex;
-    justify-content: center;
+    background:#9fe0e5;
+    font-family:sans-serif;
+    display:flex;
+    justify-content:center;
   }
 
   .frame {
-    width: 100%;
-    max-width: 420px;
-    padding: 20px;
-    position: relative;
+    width:100%;
+    max-width:420px;
+    padding:20px;
   }
 
-  /* 見出し */
-  .stage-title {
-    text-align: center;
-    font-weight: 900;
-    font-size: 28px;
-    margin-bottom: 8px;
+  /* ===== 共通見出し ===== */
+  .section-title {
+    background:#220043;
+    color:#fff;
+    padding:12px;
+    border-radius:16px 16px 0 0;
+    font-weight:bold;
+    text-align:center;
   }
 
-  .stage-subtitle {
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 16px;
+  /* ===== STAGE1 HERO ===== */
+  .stage-title{
+    text-align:center;
+    font-size:28px;
+    font-weight:900;
+  }
+  .stage-subtitle{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:16px;
+  }
+  .hero-wrapper{position:relative;text-align:center}
+  .hero-image{
+    width:80%;max-width:300px;border-radius:24px;
+    transition:opacity .4s ease;
+  }
+  .hero-image.fade{opacity:.35}
+  .tap-button{
+    position:absolute;left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;border:4px solid #000;
+    border-radius:999px;padding:16px 36px;
+    font-weight:900;font-size:20px;
+    box-shadow:0 0 20px rgba(0,0,0,.4);
+    cursor:pointer;z-index:10;
+  }
+  .hero-text-panel{
+    display:none;position:absolute;
+    inset:8px;padding:16px;background:rgba(255,255,255,.6);
+    border-radius:20px;font-size:14px;line-height:1.8;color:#000
+  }
+  .hero-text-panel.visible{display:block}
+  .accent{color:#ff6a73;font-weight:700}
+  .accent-asin{color:#ffb347;font-weight:700}
+
+  /* ===== セラーIDエリア ===== */
+  .pool{
+    background:#fff;border:4px solid #220043;border-top:none;
+    border-radius:0 0 20px 20px;padding:16px;
+    display:flex;justify-content:center;gap:10px;flex-wrap:wrap
+  }
+  .pill{
+    background:#220043;color:#fff;border-radius:999px;
+    padding:10px 24px;font-size:14px;font-weight:bold;
+    white-space:nowrap;cursor:grab
   }
 
-  /* ヒーローエリア */
-  .hero-wrapper {
-    position: relative;
+  /* ===== 貼り付けゾーン ===== */
+  .drop-zone{
+    background:#fff;border:4px dashed #220043;border-top:none;
+    border-radius:0 0 20px 20px;padding:14px;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:8px
+  }
+  .slot{
+    background:#e3e4ed;border-radius:999px;
+    height:40px;display:flex;justify-content:center;align-items:center;
+    font-size:12px;color:#777;overflow:hidden
+  }
+  .slot .pill{
+    background:#220043;color:#fff;font-size:12px;
+    padding:6px 14px;max-width:100%
   }
 
-  .hero-image {
-    width: 100%;
-    border-radius: 24px;
-    transition: opacity 0.4s ease;
-  }
-
-  .hero-image.fade {
-    opacity: 0.35;
-  }
-
-  /* ボタン（強調エフェクト付き） */
-  .tap-button {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    background: #ffffff;
-    padding: 18px 38px;
-    border-radius: 999px;
-    font-weight: 900;
-    font-size: 20px;
-    border: 4px solid #000;
-    box-shadow: 
-      0 0 10px rgba(255,255,255,0.9),
-      0 0 35px rgba(0,0,0,0.4);
-    cursor: pointer;
-    animation: pulse 1.2s infinite ease-in-out;
-    z-index: 10;
-  }
-
-  @keyframes pulse {
-    0%   { transform: translate(-50%, -50%) scale(1); }
-    50%  { transform: translate(-50%, -50%) scale(1.08); }
-    100% { transform: translate(-50%, -50%) scale(1); }
-  }
-
-  /* 説明テキストパネル */
-  .hero-text-panel {
-    display: none;
-    position: absolute;
-    top: 16px;
-    left: 16px;
-    right: 16px;
-    bottom: 16px;
-    padding: 18px;
-    border-radius: 20px;
-    background: rgba(255,255,255,0.6);
-    color: #000;
-    font-size: 15px;
-    line-height: 1.8;
-    z-index: 5;
-  }
-
-  .hero-text-panel.visible {
-    display: block;
-  }
-
-  /* 太字カラー */
-  .accent {
-    font-weight: 700;
-    color: #ff6a73;   /* セラーID */
-  }
-
-  .accent-asin {
-    font-weight: 700;
-    color: #ffb347;   /* ASIN */
+  /* ===== ASINエリア ===== */
+  .asin-area{
+    background:#fff;border:4px solid #220043;border-top:none;
+    border-radius:0 0 24px 24px;
+    min-height:160px;padding:12px;font-size:12px
   }
 </style>
 </head>
@@ -114,70 +106,67 @@
 <body>
 <div class="frame">
 
-  <!-- 見出し -->
-  <div class="stage-title">STAGE 1</div>
-  <div class="stage-subtitle">セラーIDからASINを一括抽出！</div>
-
-  <!-- ヒーロー画面 -->
-  <div class="hero-wrapper">
-
-    <!-- 画像（GIF） -->
-    <img src="ichimaime.gif" class="hero-image" id="heroImage" alt="stage image" />
-
-    <!-- TAPボタン -->
-    <div class="tap-button" id="tapBtn">T A P ! !</div>
-
-    <!-- 説明テキスト -->
-    <div class="hero-text-panel" id="heroText">
-
-      <p>
-        Amazonでは、販売者ごとに
-        <span class="accent">「セラーID」</span>
-        が設定され、商品ごとに
-        <span class="accent-asin">「ASIN（商品番号）」</span>
-        が割り当てられています。
-      </p>
-
-      <p>
-        売れている商品をリサーチする＝
-        <span class="accent-asin">“売れているASINを見つけること”</span>
-        ですが、まずはそのASINを取得しなければ始まりません。
-      </p>
-
-      <p>
-        このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。
-        わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
-      </p>
-
-      <p>
-        まずは、ASINのリストを作成してみましょう！
-      </p>
-    </div>
-
+<!-- ヒーロー -->
+<div class="stage-title">STAGE 1</div>
+<div class="stage-subtitle">セラーIDからASINを一括抽出！</div>
+<div class="hero-wrapper">
+  <img src="ichimaime.gif" class="hero-image" id="heroImage">
+  <div class="tap-button" id="tapBtn">T A P ! !</div>
+  <div class="hero-text-panel" id="heroText">
+    <p>Amazonでは、販売者ごとに <span class="accent">「セラーID」</span> が設定され、
+    商品ごとに <span class="accent-asin">「ASIN（商品番号）」</span> が割り当てられています。</p>
+    <p>売れている商品をリサーチする＝ <span class="accent-asin">“売れているASINを見つけること”</span> ですが、まずはそのASINを取得しなければ始まりません。</p>
+    <p>このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。</p>
   </div>
+</div>
+
+<!-- セラーID -->
+<div class="section-title">セラーID</div>
+<div class="pool" id="sellerPool">
+  <div class="pill" draggable="true">A1EXAMPLE2345</div>
+  <div class="pill" draggable="true">B2EXAMPLE3456</div>
+</div>
+
+<!-- 貼り付け -->
+<div style="margin-top:20px">
+<div class="section-title">セラーID貼り付け</div>
+<div class="drop-zone" id="dropZone">
+  <div class="slot">ここにドロップ</div>
+  <div class="slot">ここにドロップ</div>
+  <div class="slot"><div class="pill">AxxxxxB00</div></div>
+</div>
+</div>
+
+<!-- ASIN -->
+<div style="margin-top:20px">
+<div class="section-title">セラーASIN抽出</div>
+<div class="asin-area" id="asinArea">ここにASINが表示されます</div>
+</div>
 
 </div>
 
 <script>
-  const btn = document.getElementById("tapBtn");
-  const img = document.getElementById("heroImage");
-  const text = document.getElementById("heroText");
+const btn=document.getElementById("tapBtn");
+const img=document.getElementById("heroImage");
+const txt=document.getElementById("heroText");
+btn.onclick=()=>{img.classList.add("fade");txt.classList.add("visible");btn.style.display="none";}
 
-  let opened = false;
-
-  btn.addEventListener("click", () => {
-    opened = !opened;
-
-    if(opened){
-      img.classList.add("fade");
-      text.classList.add("visible");
-      btn.style.display = "none";
-    } else {
-      img.classList.remove("fade");
-      text.classList.remove("visible");
-      btn.style.display = "block";
-    }
+// drag
+const pills=document.querySelectorAll(".pool .pill");
+const slots=document.querySelectorAll(".slot");
+pills.forEach(p=>{
+  p.addEventListener("dragstart",e=>{
+    e.dataTransfer.setData("text/plain",p.textContent)
   });
+});
+slots.forEach(s=>{
+  s.addEventListener("dragover",e=>e.preventDefault());
+  s.addEventListener("drop",e=>{
+    e.preventDefault();
+    const id=e.dataTransfer.getData("text/plain");
+    s.innerHTML='<div class="pill">'+id+'</div>';
+  });
+});
 </script>
 
 </body>
