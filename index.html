@@ -1,554 +1,184 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MES-AI-A STAGE 1</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>MES-AI-A STAGE 1</title>
 
-  <style>
-    @font-face {
-      font-family: "StageTitleFont";
-      src: url("./fonts/stage-title.woff2") format("woff2"),
-           url("./fonts/stage-title.woff")  format("woff");
-      font-weight: normal;
-      font-style: normal;
-    }
+<style>
+  body {
+    margin: 0;
+    background: #9fe0e5;
+    font-family: system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+  }
 
-    @font-face {
-      font-family: "NikkyouSans";
-      src: url("./fonts/nikkyou-sans.woff2") format("woff2"),
-           url("./fonts/nikkyou-sans.woff")  format("woff");
-      font-weight: normal;
-      font-style: normal;
-    }
+  .frame {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+    position: relative;
+  }
 
-    * {
-      box-sizing: border-box;
-    }
+  /* 見出し */
+  .stage-title {
+    text-align: center;
+    font-weight: 900;
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
 
-    body {
-      margin: 0;
-      width: 100vw;
-      min-height: 100vh;
-      background: #7fd6de;
-      display: flex;
-      justify-content: center;
-      padding: 0;
-      font-family: "NikkyouSans", system-ui, sans-serif;
-    }
+  .stage-subtitle {
+    text-align: center;
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
 
-    .frame {
-      width: 100vw;
-      max-width: 420px;
-      padding: 20px 16px 40px;
-    }
+  /* ヒーローエリア */
+  .hero-wrapper {
+    position: relative;
+  }
 
-    /* =========================
-       TOP ヒーロー（画像＋TAP）
-       ========================= */
-    .stage1-hero {
-      margin-bottom: 24px;
-    }
+  .hero-image {
+    width: 100%;
+    border-radius: 24px;
+    transition: opacity 0.4s ease;
+  }
 
-    .hero-title-block {
-      text-align: center;
-      color: #f5ffff;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
+  .hero-image.fade {
+    opacity: 0.35;
+  }
 
-    .hero-stage-label {
-      font-family: "StageTitleFont", sans-serif;
-      font-size: 24px;
-      letter-spacing: 0.18em;
-      margin-bottom: 6px;
-    }
+  /* ボタン（強調エフェクト付き） */
+  .tap-button {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    padding: 18px 38px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 20px;
+    border: 4px solid #000;
+    box-shadow: 
+      0 0 10px rgba(255,255,255,0.9),
+      0 0 35px rgba(0,0,0,0.4);
+    cursor: pointer;
+    animation: pulse 1.2s infinite ease-in-out;
+    z-index: 10;
+  }
 
-    .hero-main-title {
-      font-family: "StageTitleFont", sans-serif;
-      font-size: 20px;
-      letter-spacing: 0.08em;
-    }
+  @keyframes pulse {
+    0%   { transform: translate(-50%, -50%) scale(1); }
+    50%  { transform: translate(-50%, -50%) scale(1.08); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
 
-    .hero-visual-wrapper {
-      position: relative;
-      margin-top: 14px;
-      border-radius: 28px;
-      overflow: hidden;
-    }
+  /* 説明テキストパネル */
+  .hero-text-panel {
+    display: none;
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    padding: 18px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.6);
+    color: #000;
+    font-size: 15px;
+    line-height: 1.8;
+    z-index: 5;
+  }
 
-    .hero-image {
-      width: 100%;
-      display: block;
-      border-radius: 28px;
-      transition: opacity 0.4s ease;
-    }
+  .hero-text-panel.visible {
+    display: block;
+  }
 
-    /* ==== TAPボタン（エフェクト付き） ==== */
-    .hero-tap-button {
-      position: absolute;
-      left: 50%;
-      top: 60%;
-      transform: translate(-50%, -50%);
-      padding: 16px 64px;
-      border-radius: 999px;
-      border: 0;
-      background: linear-gradient(135deg, #ffffff, #f3f9ff);
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: 0.35em;
-      text-indent: 0.35em; /* 顔文字みたいな詰めをなくす用 */
-      color: #111;
-      cursor: pointer;
-      box-shadow:
-        0 0 0 3px rgba(255,255,255,0.9),
-        0 14px 24px rgba(0,0,0,0.35),
-        0 0 20px rgba(255,255,255,0.85);
-      touch-action: manipulation;
-      z-index: 2;
-      position: absolute;
-      overflow: hidden;
-      /* ほんのり脈動アニメーション */
-      animation: tapPulse 1.7s ease-in-out infinite;
-    }
+  /* 太字カラー */
+  .accent {
+    font-weight: 700;
+    color: #ff6a73;   /* セラーID */
+  }
 
-    /* きらっと光るハイライト */
-    .hero-tap-button::before {
-      content: "";
-      position: absolute;
-      top: -120%;
-      left: -30%;
-      width: 60%;
-      height: 340%;
-      background: linear-gradient(
-        120deg,
-        rgba(255,255,255,0.18),
-        rgba(255,255,255,0.8),
-        rgba(255,255,255,0.18)
-      );
-      transform: translateX(-100%) rotate(20deg);
-      pointer-events: none;
-      animation: shine 2.8s ease-in-out infinite;
-    }
-
-    .hero-tap-button:Hover {
-      animation-play-state: paused; /* ホバー時は脈動を止めて */
-      transform: translate(-50%, -50%) scale(1.05);
-      box-shadow:
-        0 0 0 3px rgba(255,255,255,0.9),
-        0 16px 26px rgba(0,0,0,0.4),
-        0 0 26px rgba(255,255,255,1);
-    }
-
-    .hero-tap-button:active {
-      transform: translate(-50%, -50%) scale(0.97);
-      box-shadow:
-        0 0 0 3px rgba(255,255,255,0.9),
-        0 8px 14px rgba(0,0,0,0.4),
-        0 0 18px rgba(255,255,255,0.9);
-    }
-
-    @keyframes tapPulse {
-      0% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow:
-          0 0 0 3px rgba(255,255,255,0.9),
-          0 12px 20px rgba(0,0,0,0.32),
-          0 0 18px rgba(255,255,255,0.8);
-      }
-      50% {
-        transform: translate(-50%, -50%) scale(1.05);
-        box-shadow:
-          0 0 0 3px rgba(255,255,255,1),
-          0 18px 28px rgba(0,0,0,0.4),
-          0 0 26px rgba(255,255,255,1);
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1);
-        box-shadow:
-          0 0 0 3px rgba(255,255,255,0.9),
-          0 12px 20px rgba(0,0,0,0.32),
-          0 0 18px rgba(255,255,255,0.8);
-      }
-    }
-
-    @keyframes shine {
-      0% {
-        transform: translateX(-130%) rotate(20deg);
-        opacity: 0;
-      }
-      10% {
-        opacity: 1;
-      }
-      60% {
-        transform: translateX(220%) rotate(20deg);
-        opacity: 0;
-      }
-      100% {
-        transform: translateX(220%) rotate(20deg);
-        opacity: 0;
-      }
-    }
-
-    .hero-text-panel {
-      position: absolute;
-      inset: 6% 5%;
-      border-radius: 26px;
-      background: rgba(185, 239, 245, 0.8); /* うっすら背景が透ける */
-      padding: 18px 18px 18px;
-      font-size: 13px;
-      line-height: 1.8;
-      color: #000;                 /* 文字色は黒に統一 */
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(8px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      overflow-y: auto;
-    }
-
-    .hero-text-panel p {
-      margin: 0;
-    }
-
-    .hero-text-panel .accent,
-    .hero-text-panel .accent-asin {
-      font-weight: 700;
-      color: #000;
-    }
-
-    /* TAP 後：画像をうっすら＋ボタン非表示＋説明表示 */
-    .stage1-hero.show-description .hero-image {
-      opacity: 0.35;
-    }
-
-    .stage1-hero.show-description .hero-tap-button {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .stage1-hero.show-description .hero-text-panel {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    /* =========================
-       以下：セラーID UI 一式
-       ========================= */
-
-    .section-label {
-      background: #25124b;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 700;
-      text-align: center;
-      padding: 10px;
-      border-radius: 16px 16px 0 0;
-    }
-
-    .section-label-small {
-      background: #25124b;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 700;
-      padding: 8px;
-      text-align: center;
-      border-radius: 16px 16px 0 0;
-    }
-
-    .seller-id-container {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
-      border-top: none;
-      padding: 16px 12px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .seller-id-pill {
-      background: #240049;
-      color: #fff;
-      font-weight: 700;
-      font-size: 14px;
-      padding: 10px 24px;
-      border-radius: 999px;
-      width: fit-content;
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    .seller-id-pill--source {
-      cursor: grab;
-      touch-action: none;
-    }
-
-    .drop-zone {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px dashed #25124b;
-      border-top: none;
-      padding: 14px 12px;
-      display: flex;
-      gap: 12px;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .slot {
-      flex: 1;
-      min-width: 0;
-      min-height: 40px;
-      max-height: 40px;
-      background: #e2e3ec;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 4px 6px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .slot.dragover {
-      outline: 2px solid #25124b;
-      background: #dcdcff;
-    }
-
-    .slot-placeholder {
-      font-size: 12px;
-      color: #999;
-      padding: 4px 8px;
-      white-space: nowrap;
-    }
-
-    .slot .seller-id-pill {
-      width: 100%;
-      text-align: center;
-      padding: 8px 10px;
-      font-size: 12px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .slot.filled {
-      background: transparent;
-      border-radius: 0;
-      padding: 0;
-    }
-
-    .slot.filled .seller-id-pill {
-      width: 100%;
-      border-radius: 999px;
-    }
-
-    .asin-zone {
-      background: #fff;
-      border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
-      border-top: none;
-      height: 240px;
-      padding: 12px;
-      overflow-y: auto;
-      font-size: 12px;
-      color: #333;
-    }
-  </style>
+  .accent-asin {
+    font-weight: 700;
+    color: #ffb347;   /* ASIN */
+  }
+</style>
 </head>
 
 <body>
-  <div class="frame">
+<div class="frame">
 
-    <!-- ======================
-         TOP STAGE1 ヒーロー
-         ====================== -->
-    <section class="stage1-hero" id="stage1Hero">
-      <div class="hero-title-block">
-        <div class="hero-stage-label">STAGE 1</div>
-        <div class="hero-main-title">セラーIDからASINを一括抽出！</div>
-      </div>
+  <!-- 見出し -->
+  <div class="stage-title">STAGE 1</div>
+  <div class="stage-subtitle">セラーIDからASINを一括抽出！</div>
 
-      <div class="hero-visual-wrapper">
-        <img src="ichimaime.gif" alt="STAGE 1 イメージ" class="hero-image" />
+  <!-- ヒーロー画面 -->
+  <div class="hero-wrapper">
 
-        <!-- デザイン強めの TAP ボタン -->
-        <button class="hero-tap-button" id="heroTapButton">
-          TAP！！
-        </button>
+    <!-- 画像（GIF） -->
+    <img src="ichimaime.gif" class="hero-image" id="heroImage" alt="stage image" />
 
-        <!-- 説明テキスト（1段落・黒文字） -->
-        <div class="hero-text-panel" id="heroTextPanel">
-          <p>
-            Amazonでは、販売者ごとに<span class="accent">「セラーID」</span>が設定され、商品ごとに<span class="accent-asin">「ASIN（商品番号）」</span>が割り当てられています。売れている商品をリサーチする＝<span class="accent-asin">“売れているASINを見つけること”</span>ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
-          </p>
-        </div>
-      </div>
-    </section>
+    <!-- TAPボタン -->
+    <div class="tap-button" id="tapBtn">T A P ! !</div>
 
-    <!-- ======================
-         セラーID プール
-         ====================== -->
-    <section>
-      <div class="section-label">セラーID</div>
-      <div class="seller-id-container" id="sellerPool">
-        <div class="seller-id-pill seller-id-pill--source" data-id="A1EXAMPLE2345">
-          A1EXAMPLE2345
-        </div>
-        <div class="seller-id-pill seller-id-pill--source" data-id="B2EXAMPLE3456">
-          B2EXAMPLE3456
-        </div>
-      </div>
-    </section>
+    <!-- 説明テキスト -->
+    <div class="hero-text-panel" id="heroText">
 
-    <!-- ======================
-         セラーID貼り付け
-         ====================== -->
-    <section style="margin-top: 24px;">
-      <div class="section-label-small">セラーID貼り付け</div>
-      <div class="drop-zone" id="dropZone">
-        <div class="slot" data-slot>
-          <span class="slot-placeholder">ここにドロップ</span>
-        </div>
-        <div class="slot" data-slot>
-          <span class="slot-placeholder">ここにドロップ</span>
-        </div>
-        <div class="slot filled" data-slot>
-          <div class="seller-id-pill">AxxxxxB00</div>
-        </div>
-      </div>
-    </section>
+      <p>
+        Amazonでは、販売者ごとに
+        <span class="accent">「セラーID」</span>
+        が設定され、商品ごとに
+        <span class="accent-asin">「ASIN（商品番号）」</span>
+        が割り当てられています。
+      </p>
 
-    <!-- ======================
-         セラーASIN抽出（ダミー）
-         ====================== -->
-    <section style="margin-top: 16px;">
-      <div class="section-label-small">セラーASIN抽出</div>
-      <div class="asin-zone" id="asinZone"></div>
-    </section>
+      <p>
+        売れている商品をリサーチする＝
+        <span class="accent-asin">“売れているASINを見つけること”</span>
+        ですが、まずはそのASINを取得しなければ始まりません。
+      </p>
+
+      <p>
+        このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。
+        わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！
+      </p>
+
+      <p>
+        まずは、ASINのリストを作成してみましょう！
+      </p>
+    </div>
 
   </div>
 
-  <script>
-    /* ===== TOP ヒーロー：TAP で説明表示 ===== */
-    const hero = document.getElementById("stage1Hero");
-    const tapButton = document.getElementById("heroTapButton");
+</div>
 
-    tapButton.addEventListener("click", () => {
-      hero.classList.add("show-description");
-    });
+<script>
+  const btn = document.getElementById("tapBtn");
+  const img = document.getElementById("heroImage");
+  const text = document.getElementById("heroText");
 
-    /* ===== セラーID ドラッグ＆ドロップ ===== */
-    const sourcePills = document.querySelectorAll(".seller-id-pill--source");
-    const slots = document.querySelectorAll("[data-slot]");
-    const asinZone = document.getElementById("asinZone");
+  let opened = false;
 
-    let dragging = null;
-    let ghost = null;
+  btn.addEventListener("click", () => {
+    opened = !opened;
 
-    sourcePills.forEach(pill => {
-      pill.addEventListener("pointerdown", e => {
-        dragging = pill;
-        ghost = pill.cloneNode(true);
-        ghost.style.position = "fixed";
-        ghost.style.pointerEvents = "none";
-        ghost.style.zIndex = "9999";
-        ghost.style.opacity = "0.9";
-        document.body.appendChild(ghost);
-        moveGhost(e);
-      });
-    });
-
-    document.addEventListener("pointermove", e => {
-      if (!ghost) return;
-      moveGhost(e);
-
-      slots.forEach(slot => {
-        const rect = slot.getBoundingClientRect();
-        if (
-          e.clientX > rect.left && e.clientX < rect.right &&
-          e.clientY > rect.top && e.clientY < rect.bottom
-        ) {
-          slot.classList.add("dragover");
-        } else {
-          slot.classList.remove("dragover");
-        }
-      });
-    });
-
-    document.addEventListener("pointerup", e => {
-      if (!ghost) return;
-
-      slots.forEach(slot => {
-        const rect = slot.getBoundingClientRect();
-        if (
-          e.clientX > rect.left && e.clientX < rect.right &&
-          e.clientY > rect.top && e.clientY < rect.bottom
-        ) {
-          slot.innerHTML = "";
-          const pill = dragging.cloneNode(true);
-          pill.classList.remove("seller-id-pill--source");
-          pill.style.fontSize = "12px";
-          pill.style.width = "100%";
-          pill.style.textAlign = "center";
-
-          slot.appendChild(pill);
-          slot.classList.add("filled");
-
-          fitTextToSlot(pill, slot);
-
-          const fakeAsins = generateFakeASIN(pill.textContent.trim());
-          fakeAsins.forEach(a => {
-            const div = document.createElement("div");
-            div.textContent = a;
-            asinZone.appendChild(div);
-          });
-        }
-        slot.classList.remove("dragover");
-      });
-
-      ghost.remove();
-      ghost = null;
-      dragging = null;
-    });
-
-    function moveGhost(e) {
-      ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
-      ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
+    if(opened){
+      img.classList.add("fade");
+      text.classList.add("visible");
+      btn.style.display = "none";
+    } else {
+      img.classList.remove("fade");
+      text.classList.remove("visible");
+      btn.style.display = "block";
     }
+  });
+</script>
 
-    function fitTextToSlot(pill, slot) {
-      const padding = 12;
-      let size = 12;
-      const minSize = 8;
-
-      pill.style.fontSize = size + "px";
-
-      while (
-        (pill.scrollWidth + padding) > slot.clientWidth &&
-        size > minSize
-      ) {
-        size -= 1;
-        pill.style.fontSize = size + "px";
-      }
-    }
-
-    function generateFakeASIN() {
-      const list = [];
-      for (let i = 0; i < 5; i++) {
-        list.push("B0" + Math.random().toString(36).substring(2, 10).toUpperCase());
-      }
-      return list;
-    }
-
-    window.addEventListener("load", () => {
-      document.querySelectorAll(".slot.filled").forEach(slot => {
-        const pill = slot.querySelector(".seller-id-pill");
-        if (pill) {
-          fitTextToSlot(pill, slot);
-        }
-      });
-    });
-  </script>
 </body>
 </html>
