@@ -109,6 +109,7 @@
       overflow: hidden;
       /* ほんのり脈動アニメーション */
       animation: tapPulse 1.7s ease-in-out infinite;
+      opacity: 0.9; /* 透明度を少し上げる */
     }
 
     /* きらっと光るハイライト */
@@ -446,6 +447,28 @@
     let dragging = null;
     let ghost = null;
 
+    // スロット内のピルをタップすると元のセラーIDプールに戻す
+    function attachReturnHandler(pill) {
+      pill.addEventListener("click", () => {
+        const sourceId = pill.dataset.sourceId;
+        if (!sourceId) return;
+
+        const source = document.querySelector(
+          '.seller-id-pill--source[data-id="' + sourceId + '"]'
+        );
+
+        if (source) {
+          source.style.visibility = "visible";
+        }
+
+        const slot = pill.parentElement;
+        if (slot && slot.classList.contains("filled")) {
+          slot.classList.remove("filled");
+          slot.innerHTML = '<span class="slot-placeholder">ここにドロップ</span>';
+        }
+      });
+    }
+
     sourcePills.forEach(pill => {
       pill.addEventListener("pointerdown", e => {
         dragging = pill;
@@ -477,7 +500,9 @@
     });
 
     document.addEventListener("pointerup", e => {
-      if (!ghost) return;
+      if (!ghost || !dragging) return;
+
+      let dropped = false;
 
       slots.forEach(slot => {
         const rect = slot.getBoundingClientRect();
@@ -485,12 +510,17 @@
           e.clientX > rect.left && e.clientX < rect.right &&
           e.clientY > rect.top && e.clientY < rect.bottom
         ) {
+          dropped = true;
+
           slot.innerHTML = "";
           const pill = dragging.cloneNode(true);
           pill.classList.remove("seller-id-pill--source");
           pill.style.fontSize = "12px";
           pill.style.width = "100%";
           pill.style.textAlign = "center";
+          pill.dataset.sourceId = dragging.dataset.id || "";
+
+          attachReturnHandler(pill);
 
           slot.appendChild(pill);
           slot.classList.add("filled");
@@ -506,6 +536,11 @@
         }
         slot.classList.remove("dragover");
       });
+
+      // ドロップ成功時のみ元のセラーIDを非表示にする
+      if (dropped) {
+        dragging.style.visibility = "hidden";
+      }
 
       ghost.remove();
       ghost = null;
