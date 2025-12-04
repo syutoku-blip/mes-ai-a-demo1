@@ -341,27 +341,46 @@
       border-radius: 999px;
     }
 
+    /* =========================
+       セラーASIN 抽出列
+       ========================= */
     .asin-zone {
       background: #fff;
       border-radius: 0 0 16px 16px;
       border: 4px solid #25124b;
       border-top: none;
-      height: 240px;
       padding: 12px;
-      overflow-y: auto;
-      font-size: 12px;
-      color: #333;
+      display: flex;
+      gap: 8px;
+      height: 240px;
     }
 
-    /* ASIN行のスタイル */
+    .asin-column {
+      flex: 1;
+      background: #f5f5fb;
+      border-radius: 12px;
+      padding: 6px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+
     .asin-row {
       padding: 4px 6px;
-      border-bottom: 1px solid #eee;
+      margin-bottom: 4px;
+      border-radius: 999px;
+      background: #e2e3ec;
+      text-align: center;
       font-size: 12px;
+      white-space: nowrap;
     }
 
     .asin-row:last-child {
-      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .demo-column .asin-row {
+      background: #b24972;
+      color: #fff;
     }
   </style>
 </head>
@@ -415,10 +434,10 @@
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
       <div class="drop-zone" id="dropZone">
-        <div class="slot" data-slot>
+        <div class="slot" data-slot="0">
           <span class="slot-placeholder">ここにドロップ</span>
         </div>
-        <div class="slot" data-slot>
+        <div class="slot" data-slot="1">
           <span class="slot-placeholder">ここにドロップ</span>
         </div>
         <!-- 右端はデモ用として固定（data-slot なし） -->
@@ -433,7 +452,16 @@
          ====================== -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
-      <div class="asin-zone" id="asinZone"></div>
+      <div class="asin-zone" id="asinZone">
+        <!-- セラーIDスロットと 1:1 で対応させる列 -->
+        <div class="asin-column" data-asin-column="0"></div>
+        <div class="asin-column" data-asin-column="1"></div>
+
+        <!-- 右端はデモ用の固定列（必要に応じて編集） -->
+        <div class="asin-column demo-column">
+          <!-- デモ用に固定ASINを出したいならここに書く -->
+        </div>
+      </div>
     </section>
 
   </div>
@@ -455,13 +483,44 @@
     const sourcePills = document.querySelectorAll(".seller-id-pill--source");
     // 右端のデモスロットは data-slot がないので除外される
     const slots = document.querySelectorAll("[data-slot]");
-    const asinZone = document.getElementById("asinZone");
+    const asinColumns = document.querySelectorAll("[data-asin-column]");
 
     let dragging = null;
     let ghost = null;
 
+    // セラーID → 指定列に ASIN リストを表示する処理
+    function renderAsinsForSeller(sellerId, columnIndex) {
+      const column = asinColumns[columnIndex];
+      if (!column) return;
+
+      column.innerHTML = "";
+
+      // asinDataSheet が存在するかチェック
+      if (!window.asinDataSheet) {
+        column.textContent =
+          "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
+        return;
+      }
+
+      const dataList = asinDataSheet[sellerId];
+
+      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
+        const div = document.createElement("div");
+        div.textContent = "ASINデータが見つかりません。";
+        column.appendChild(div);
+        return;
+      }
+
+      dataList.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "asin-row";
+        row.textContent = item.asin;
+        column.appendChild(row);
+      });
+    }
+
     // スロット内のピルをタップすると元のセラーIDプールに戻す
-    function attachReturnHandler(pill) {
+    function attachReturnHandler(pill, columnIndex) {
       pill.addEventListener("click", () => {
         const sourceId = pill.dataset.sourceId;
         if (!sourceId) return;
@@ -481,43 +540,11 @@
           slot.innerHTML = '<span class="slot-placeholder">ここにドロップ</span>';
         }
 
-        // 表示中のASINもクリア（シンプルに全部消す）
-        asinZone.innerHTML = "";
-      });
-    }
-
-    // セラーID → ASIN リストを表示する処理
-    function renderAsinsForSeller(sellerId) {
-      asinZone.innerHTML = "";
-
-      // asinDataSheet が存在するかチェック
-      if (!window.asinDataSheet) {
-        asinZone.textContent = "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
-        return;
-      }
-
-      const dataList = asinDataSheet[sellerId];
-
-      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
-        const div = document.createElement("div");
-        div.textContent = "このセラーIDに対応するASINデータが見つかりません。";
-        asinZone.appendChild(div);
-        return;
-      }
-
-      // タイトル（セラーID）
-      const title = document.createElement("div");
-      title.style.fontWeight = "700";
-      title.style.marginBottom = "6px";
-      title.textContent = "セラーID: " + sellerId;
-      asinZone.appendChild(title);
-
-      // ASIN を縦に並べる（必要なら sold30 等もここで足せる）
-      dataList.forEach(item => {
-        const row = document.createElement("div");
-        row.className = "asin-row";
-        row.textContent = item.asin;
-        asinZone.appendChild(row);
+        // 対応するASIN列だけクリア
+        const column = asinColumns[columnIndex];
+        if (column) {
+          column.innerHTML = "";
+        }
       });
     }
 
@@ -584,9 +611,8 @@
       if (!ghost || !dragging) return;
 
       let dropped = false;
-      let droppedSellerId = null;
 
-      slots.forEach(slot => {
+      slots.forEach((slot, index) => {
         const rect = slot.getBoundingClientRect();
         if (
           e.clientX > rect.left && e.clientX < rect.right &&
@@ -606,24 +632,21 @@
           const sourceId = dragging.dataset.id || dragging.textContent.trim();
           pill.dataset.sourceId = sourceId;
 
-          attachReturnHandler(pill);
+          attachReturnHandler(pill, index);
 
           slot.appendChild(pill);
           slot.classList.add("filled");
           fitTextToSlot(pill, slot);
 
-          droppedSellerId = sourceId;
+          // このスロットに対応する列にASINを表示
+          renderAsinsForSeller(sourceId, index);
         }
         slot.classList.remove("dragover");
       });
 
-      // ドロップ成功時だけ元ピルを非表示にしてASIN表示
+      // ドロップ成功時だけ元ピルを非表示
       if (dropped) {
         dragging.style.visibility = "hidden";
-
-        if (droppedSellerId) {
-          renderAsinsForSeller(droppedSellerId);
-        }
       }
 
       // ゴーストとフラグを掃除
