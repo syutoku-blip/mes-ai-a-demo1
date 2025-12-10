@@ -413,38 +413,42 @@
       min-height: 1.2em;
     }
 
+    .asin-research-controls {
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
     /* =========================
        ASIN リサーチテーブル
        ========================= */
     .asin-research-wrapper {
-      background: #fff;
+      background: #ffffff;
       border-radius: 0 0 16px 16px;
-      border: 4px solid #25124b;
+      border: 4px solid #25124b;   /* 周りと揃える */
       border-top: none;
-      overflow-x: auto;
+      overflow-x: auto;            /* 横スクロール可能に */
     }
 
     .asin-research-table {
       width: 100%;
+      min-width: 750px;            /* 内容に合わせて横に広がる */
       border-collapse: collapse;
       font-size: 11px;
-      table-layout: fixed;
+      table-layout: auto;
     }
 
     .asin-research-table thead {
-      background: #6a3fd0;
+      background: #25124b;         /* 他と同じ濃い紫 */
       color: #fff;
     }
 
     .asin-research-table th,
     .asin-research-table td {
-      padding: 4px 6px;
-      border-bottom: 1px solid #cfd6dc;
-      border-right: 1px dotted #cfd6dc;
+      padding: 6px 8px;
+      border-bottom: 1px solid #d7dde5;
+      border-right: 1px dotted #c2c8d6;
       text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap;         /* 折り返さず横に伸ばす */
     }
 
     .asin-research-table th:last-child,
@@ -453,14 +457,14 @@
     }
 
     .asin-research-table tbody tr:nth-child(odd) {
-      background: #e4edf1;
+      background: #f5f5fb;
     }
     .asin-research-table tbody tr:nth-child(even) {
-      background: #d9e5ea;
+      background: #e2e3ec;
     }
 
     .asin-research-table td[data-role="asin-cell"] {
-      color: #777;
+      color: #555;
       font-weight: 700;
       cursor: text;
     }
@@ -619,24 +623,34 @@
          ====================== -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">ASINリサーチ</div>
+
+      <!-- ボタン：Stage2から／クリップボードから 表に流し込む -->
+      <div class="asin-copy-controls asin-research-controls">
+        <button class="asin-copy-button" id="sendSelectedToResearchBtn">
+          選択ASINを表に反映
+        </button>
+        <button class="asin-copy-button" id="pasteClipboardToResearchBtn">
+          クリップボードから貼り付け
+        </button>
+      </div>
+      <div class="copy-feedback" id="researchFeedback"></div>
+
       <div class="asin-research-wrapper">
         <table class="asin-research-table" id="asinResearchTable">
           <thead>
             <tr>
-              <th style="width: 20%;">ASIN貼り付け</th>
-              <th style="width: 8%;">知財</th>
-              <th style="width: 12%;">30日販売数</th>
-              <th style="width: 12%;">ライバルセラー</th>
-              <th style="width: 14%;">予測30日販売数</th>
-              <th style="width: 14%;">米Amazon最安値</th>
-              <th style="width: 10%;">日本最安値</th>
-              <th style="width: 10%;">利益率</th>
+              <th>ASIN貼り付け</th>
+              <th>知財</th>
+              <th>30日販売数</th>
+              <th>ライバルセラー</th>
+              <th>予測30日販売数</th>
+              <th>米Amazon最安値</th>
+              <th>日本最安値</th>
+              <th>利益率</th>
             </tr>
           </thead>
           <tbody>
-            <!-- 10行分くらい用意しておく -->
-            <!-- 必要に応じて行数は増やせる -->
-            <!-- 1行目 -->
+            <!-- 必要な行数だけ用意（ここでは10行） -->
             <tr>
               <td data-role="asin-cell"></td>
               <td data-field="ip"></td>
@@ -647,8 +661,6 @@
               <td data-field="jpPrice"></td>
               <td data-field="profit"></td>
             </tr>
-            <!-- 2〜10行目 -->
-            <!-- コピペで同じ構造 -->
             <tr>
               <td data-role="asin-cell"></td>
               <td data-field="ip"></td>
@@ -1032,6 +1044,19 @@
       updateResearchRowFromAsin(row, asin);
     }
 
+    // 表の行を ASINリストで埋める共通関数
+    function fillResearchTableWithAsins(list) {
+      if (!researchTable) return;
+      const rows = researchTable.querySelectorAll("tbody tr");
+      rows.forEach((row, index) => {
+        const asin = list[index] || "";
+        const asinCell = row.querySelector('td[data-role="asin-cell"]');
+        if (asinCell) asinCell.textContent = asin;
+        updateResearchRowFromAsin(row, asin);
+      });
+    }
+
+    // ASINセルの直接入力・複数ペースト
     if (researchTable) {
       const asinCells = researchTable.querySelectorAll('td[data-role="asin-cell"]');
       asinCells.forEach(cell => {
@@ -1048,7 +1073,7 @@
           e.preventDefault();
 
           let currentRow = cell.parentElement;
-          asins.forEach((asin, index) => {
+          asins.forEach(asin => {
             if (!currentRow) return;
             const asinCell = currentRow.querySelector('td[data-role="asin-cell"]');
             if (asinCell) {
@@ -1058,6 +1083,50 @@
             currentRow = currentRow.nextElementSibling;
           });
         });
+      });
+    }
+
+    /* ===== ASINリサーチ用ボタン ===== */
+    const sendSelectedToResearchBtn   = document.getElementById("sendSelectedToResearchBtn");
+    const pasteClipboardToResearchBtn = document.getElementById("pasteClipboardToResearchBtn");
+    const researchFeedback            = document.getElementById("researchFeedback");
+
+    if (sendSelectedToResearchBtn) {
+      sendSelectedToResearchBtn.addEventListener("click", () => {
+        let list = getStage2AsinTexts(true);
+        if (list.length === 0) {
+          list = getStage2AsinTexts(false);
+          if (list.length === 0) {
+            researchFeedback.textContent = "Stage2にASINがありません。";
+            return;
+          }
+          researchFeedback.textContent = "未選択だったので、すべてのASINを表に反映しました。";
+        } else {
+          researchFeedback.textContent = "選択したASINを表に反映しました。";
+        }
+        fillResearchTableWithAsins(list);
+      });
+    }
+
+    if (pasteClipboardToResearchBtn) {
+      pasteClipboardToResearchBtn.addEventListener("click", async () => {
+        if (!(navigator.clipboard && navigator.clipboard.readText)) {
+          researchFeedback.textContent = "クリップボード読み取りに非対応のブラウザです。セルに直接貼り付けてください。";
+          return;
+        }
+        try {
+          const text = await navigator.clipboard.readText();
+          const list = text.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+          if (list.length === 0) {
+            researchFeedback.textContent = "クリップボードにASINらしき文字列がありません。";
+            return;
+          }
+          fillResearchTableWithAsins(list);
+          researchFeedback.textContent = "クリップボードのASINを表に反映しました。";
+        } catch (err) {
+          console.error(err);
+          researchFeedback.textContent = "クリップボードの読み取りに失敗しました。";
+        }
       });
     }
   </script>
