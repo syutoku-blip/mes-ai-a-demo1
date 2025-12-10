@@ -352,7 +352,7 @@
 
     .asin-row:last-child { margin-bottom: 0; }
 
-    /* 左2列：選択可能 ASIN */
+    /* Stage2 左2列：選択可能 ASIN */
     .asin-row-selectable {
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
@@ -373,7 +373,7 @@
       opacity: 0.9;
     }
 
-    /* コピー用ボタン */
+    /* コピー用ボタン（Stage2 用） */
     .asin-copy-controls {
       display: flex;
       gap: 8px;
@@ -472,13 +472,13 @@
       </div>
     </section>
 
-    <!-- STAGE1 セラーASIN抽出 -->
+    <!-- STAGE1 セラーASIN抽出（表示だけ） -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZone">
         <div class="asin-column" data-asin-column="0"></div>
         <div class="asin-column" data-asin-column="1"></div>
-        <!-- 右端：固定デモ ASIN（選択不可） -->
+        <!-- 右端：固定デモ ASIN -->
         <div class="asin-column demo-column">
           <div class="asin-row">B1xxxxxx</div>
           <div class="asin-row">B2OOOOOO</div>
@@ -492,13 +492,6 @@
           <div class="asin-row">B10OOOOO</div>
         </div>
       </div>
-
-      <!-- コピー用ボタン -->
-      <div class="asin-copy-controls">
-        <button class="asin-copy-button" id="copySelectedBtn">選択したASINをコピー</button>
-        <button class="asin-copy-button" id="copyAllBtn">すべてのASINをコピー</button>
-      </div>
-      <div class="copy-feedback" id="copyFeedback"></div>
     </section>
 
     <!-- ======================
@@ -534,7 +527,7 @@
       </div>
     </section>
 
-    <!-- STAGE2 ASIN表示（STAGE1と連動・表示のみ） -->
+    <!-- STAGE2 ASIN表示（選択 & コピー） -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZoneStage2">
@@ -554,6 +547,13 @@
           <div class="asin-row">B10OOOOO</div>
         </div>
       </div>
+
+      <!-- コピー用ボタン（Stage2 用） -->
+      <div class="asin-copy-controls">
+        <button class="asin-copy-button" id="copySelectedBtn">選択したASINをコピー</button>
+        <button class="asin-copy-button" id="copyAllBtn">すべてのASINをコピー</button>
+      </div>
+      <div class="copy-feedback" id="copyFeedback"></div>
     </section>
 
   </div>
@@ -592,7 +592,8 @@
       return row;
     }
 
-    // セラーID → 指定列に ASINリスト反映（STAGE1:選択可 / STAGE2:表示のみ）
+    // セラーID → 指定列に ASINリスト反映
+    // Stage1: 表示のみ / Stage2: 選択可能
     function renderAsinsForSeller(sellerId, columnIndex) {
       const column1 = asinColumnsStage1[columnIndex];
       const column2 = asinColumnsStage2[columnIndex];
@@ -611,18 +612,14 @@
       if (column2) column2.innerHTML = "";
 
       if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
-        if (column1) {
-          column1.appendChild(createAsinRow("ASINデータが見つかりません。", false));
-        }
-        if (column2) {
-          column2.appendChild(createAsinRow("ASINデータが見つかりません。", false));
-        }
+        if (column1) column1.appendChild(createAsinRow("ASINデータが見つかりません。", false));
+        if (column2) column2.appendChild(createAsinRow("ASINデータが見つかりません。", false));
         return;
       }
 
       dataList.forEach(item => {
-        if (column1) column1.appendChild(createAsinRow(item.asin, true));   // 選択可
-        if (column2) column2.appendChild(createAsinRow(item.asin, false));  // 表示のみ
+        if (column1) column1.appendChild(createAsinRow(item.asin, false)); // Stage1: 非選択
+        if (column2) column2.appendChild(createAsinRow(item.asin, true));  // Stage2: 選択可
       });
     }
 
@@ -730,22 +727,22 @@
       dragging = null;
     });
 
-    /* ===== ASIN 選択（タップ） ===== */
+    /* ===== Stage2 ASIN 選択（タップ） ===== */
     document.addEventListener("click", e => {
-      const row = e.target.closest(".asin-row-selectable");
+      const row = e.target.closest("#asinZoneStage2 .asin-row-selectable");
       if (!row) return;
       row.classList.toggle("selected");
     });
 
-    /* ===== コピー処理 ===== */
+    /* ===== Stage2 コピー処理 ===== */
     const copySelectedBtn = document.getElementById("copySelectedBtn");
     const copyAllBtn = document.getElementById("copyAllBtn");
     const copyFeedback = document.getElementById("copyFeedback");
 
-    function getStage1AsinTexts(selectedOnly) {
+    function getStage2AsinTexts(selectedOnly) {
       const selector = selectedOnly
-        ? "#asinZone .asin-row-selectable.selected"
-        : "#asinZone .asin-row-selectable";
+        ? "#asinZoneStage2 .asin-row-selectable.selected"
+        : "#asinZoneStage2 .asin-row-selectable";
       const rows = document.querySelectorAll(selector);
       return Array.from(rows).map(r => r.textContent.trim()).filter(t => t);
     }
@@ -773,7 +770,7 @@
     }
 
     copySelectedBtn.addEventListener("click", async () => {
-      const list = getStage1AsinTexts(true);
+      const list = getStage2AsinTexts(true);
       if (list.length === 0) {
         copyFeedback.textContent = "ASINが選択されていません。";
         return;
@@ -783,7 +780,7 @@
     });
 
     copyAllBtn.addEventListener("click", async () => {
-      const list = getStage1AsinTexts(false);
+      const list = getStage2AsinTexts(false);
       if (list.length === 0) {
         copyFeedback.textContent = "コピーできるASINがありません。";
         return;
