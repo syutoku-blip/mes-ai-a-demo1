@@ -412,6 +412,64 @@
       color: #240049;
       min-height: 1.2em;
     }
+
+    /* =========================
+       ASIN リサーチテーブル
+       ========================= */
+    .asin-research-wrapper {
+      background: #fff;
+      border-radius: 0 0 16px 16px;
+      border: 4px solid #25124b;
+      border-top: none;
+      overflow-x: auto;
+    }
+
+    .asin-research-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      table-layout: fixed;
+    }
+
+    .asin-research-table thead {
+      background: #6a3fd0;
+      color: #fff;
+    }
+
+    .asin-research-table th,
+    .asin-research-table td {
+      padding: 4px 6px;
+      border-bottom: 1px solid #cfd6dc;
+      border-right: 1px dotted #cfd6dc;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .asin-research-table th:last-child,
+    .asin-research-table td:last-child {
+      border-right: none;
+    }
+
+    .asin-research-table tbody tr:nth-child(odd) {
+      background: #e4edf1;
+    }
+    .asin-research-table tbody tr:nth-child(even) {
+      background: #d9e5ea;
+    }
+
+    .asin-research-table td[data-role="asin-cell"] {
+      color: #777;
+      font-weight: 700;
+      cursor: text;
+    }
+
+    .asin-research-table td[data-role="asin-cell"]:focus {
+      outline: 2px solid #240049;
+      background: #f5f0ff;
+      color: #240049;
+    }
   </style>
 </head>
 
@@ -556,6 +614,136 @@
       <div class="copy-feedback" id="copyFeedback"></div>
     </section>
 
+    <!-- ======================
+         ASINリサーチテーブル
+         ====================== -->
+    <section style="margin-top: 24px;">
+      <div class="section-label-small">ASINリサーチ</div>
+      <div class="asin-research-wrapper">
+        <table class="asin-research-table" id="asinResearchTable">
+          <thead>
+            <tr>
+              <th style="width: 20%;">ASIN貼り付け</th>
+              <th style="width: 8%;">知財</th>
+              <th style="width: 12%;">30日販売数</th>
+              <th style="width: 12%;">ライバルセラー</th>
+              <th style="width: 14%;">予測30日販売数</th>
+              <th style="width: 14%;">米Amazon最安値</th>
+              <th style="width: 10%;">日本最安値</th>
+              <th style="width: 10%;">利益率</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- 10行分くらい用意しておく -->
+            <!-- 必要に応じて行数は増やせる -->
+            <!-- 1行目 -->
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <!-- 2〜10行目 -->
+            <!-- コピペで同じ構造 -->
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+            <tr>
+              <td data-role="asin-cell"></td>
+              <td data-field="ip"></td>
+              <td data-field="sold30"></td>
+              <td data-field="rival"></td>
+              <td data-field="forecast30"></td>
+              <td data-field="usPrice"></td>
+              <td data-field="jpPrice"></td>
+              <td data-field="profit"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </div>
 
   <!-- ASINデータ -->
@@ -618,8 +806,8 @@
       }
 
       dataList.forEach(item => {
-        if (column1) column1.appendChild(createAsinRow(item.asin, false)); // Stage1: 非選択
-        if (column2) column2.appendChild(createAsinRow(item.asin, true));  // Stage2: 選択可
+        if (column1) column1.appendChild(createAsinRow(item.asin, false)); // Stage1
+        if (column2) column2.appendChild(createAsinRow(item.asin, true));  // Stage2
       });
     }
 
@@ -722,7 +910,7 @@
         dragging.style.visibility = "hidden";
       }
 
-      ghost.remove();
+      if (ghost) ghost.remove();
       ghost = null;
       dragging = null;
     });
@@ -788,6 +976,90 @@
       const ok = await copyTextToClipboard(list.join("\n"));
       copyFeedback.textContent = ok ? "すべてのASINをコピーしました。" : "コピーに失敗しました。";
     });
+
+    /* ===== ASINリサーチ：ASIN → データ表示 ===== */
+
+    // asinDataSheet から ASIN 逆引きマップを作る
+    const asinIndex = {};
+    if (window.asinDataSheet) {
+      Object.values(window.asinDataSheet).forEach(list => {
+        if (!Array.isArray(list)) return;
+        list.forEach(item => {
+          if (item && item.asin) {
+            asinIndex[item.asin] = item;
+          }
+        });
+      });
+    }
+
+    const researchTable = document.getElementById("asinResearchTable");
+
+    function updateResearchRowFromAsin(row, asin) {
+      const ipCell        = row.querySelector('[data-field="ip"]');
+      const soldCell      = row.querySelector('[data-field="sold30"]');
+      const rivalCell     = row.querySelector('[data-field="rival"]');
+      const forecastCell  = row.querySelector('[data-field="forecast30"]');
+      const usPriceCell   = row.querySelector('[data-field="usPrice"]');
+      const jpPriceCell   = row.querySelector('[data-field="jpPrice"]');
+      const profitCell    = row.querySelector('[data-field="profit"]');
+
+      const cells = [ipCell, soldCell, rivalCell, forecastCell, usPriceCell, jpPriceCell, profitCell];
+
+      if (!asin) {
+        cells.forEach(td => { if (td) td.textContent = ""; });
+        return;
+      }
+
+      const data = asinIndex[asin];
+      if (!data) {
+        cells.forEach(td => { if (td) td.textContent = "-"; });
+        return;
+      }
+
+      if (ipCell)       ipCell.textContent       = data.ip ?? "";
+      if (soldCell)     soldCell.textContent     = data.sold30 ?? "";
+      if (rivalCell)    rivalCell.textContent    = data.rival ?? "";
+      if (forecastCell) forecastCell.textContent = data.forecast30 ?? "";
+      if (usPriceCell)  usPriceCell.textContent  = data.usPrice ?? "";
+      if (jpPriceCell)  jpPriceCell.textContent  = data.jpPrice ?? "";
+      if (profitCell)   profitCell.textContent   = data.profit ?? "";
+    }
+
+    function handleAsinCellChange(e) {
+      const cell = e.target;
+      const asin = cell.textContent.trim();
+      const row  = cell.parentElement;
+      updateResearchRowFromAsin(row, asin);
+    }
+
+    if (researchTable) {
+      const asinCells = researchTable.querySelectorAll('td[data-role="asin-cell"]');
+      asinCells.forEach(cell => {
+        cell.contentEditable = "true";
+
+        cell.addEventListener("input", handleAsinCellChange);
+        cell.addEventListener("blur", handleAsinCellChange);
+
+        // 複数ASINまとめ貼り付け対応
+        cell.addEventListener("paste", e => {
+          const text = (e.clipboardData || window.clipboardData).getData("text");
+          const asins = text.split(/[\s,]+/).map(s => s.trim()).filter(Boolean);
+          if (asins.length <= 1) return; // 通常通り貼り付け
+          e.preventDefault();
+
+          let currentRow = cell.parentElement;
+          asins.forEach((asin, index) => {
+            if (!currentRow) return;
+            const asinCell = currentRow.querySelector('td[data-role="asin-cell"]');
+            if (asinCell) {
+              asinCell.textContent = asin;
+              updateResearchRowFromAsin(currentRow, asin);
+            }
+            currentRow = currentRow.nextElementSibling;
+          });
+        });
+      });
+    }
   </script>
 </body>
 </html>
