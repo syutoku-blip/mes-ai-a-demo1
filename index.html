@@ -352,7 +352,8 @@
       padding: 12px;
       display: flex;
       gap: 8px;
-      height: 240px;
+      height: auto;              /* 中身に合わせて高さ可変 */
+      align-items: flex-start;   /* 上揃え */
     }
 
     .asin-column {
@@ -360,7 +361,7 @@
       background: #f5f5fb;
       border-radius: 12px;
       padding: 6px;
-      overflow-y: auto;
+      overflow-y: visible;       /* スクロールなしで全部表示 */
       font-size: 12px;
     }
 
@@ -457,10 +458,8 @@
         <div class="asin-column" data-asin-column="0"></div>
         <div class="asin-column" data-asin-column="1"></div>
 
-        <!-- 右端はデモ用の固定列（必要に応じて編集） -->
-        <div class="asin-column demo-column">
-          <!-- デモ用に固定ASINを出したいならここに書く -->
-        </div>
+        <!-- 右端はデモ用の固定列 -->
+        <div class="asin-column demo-column"></div>
       </div>
     </section>
 
@@ -485,17 +484,20 @@
     const slots = document.querySelectorAll("[data-slot]");
     const asinColumns = document.querySelectorAll("[data-asin-column]");
 
+    // 右端のデモ列 & デモ用セラーID
+    const demoColumn = document.querySelector(".demo-column");
+    const DEMO_SELLER_ID = "AxxxxxB00";
+
     let dragging = null;
     let ghost = null;
 
-    // セラーID → 指定列に ASIN リストを表示する処理
+    // セラーID → 指定列に ASIN リストを表示
     function renderAsinsForSeller(sellerId, columnIndex) {
       const column = asinColumns[columnIndex];
       if (!column) return;
 
       column.innerHTML = "";
 
-      // asinDataSheet が存在するかチェック
       if (!window.asinDataSheet) {
         column.textContent =
           "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
@@ -519,13 +521,41 @@
       });
     }
 
+    // デモ用セラーIDのASINを右端の列に表示
+    function renderDemoAsins() {
+      if (!demoColumn) return;
+
+      demoColumn.innerHTML = "";
+
+      if (!window.asinDataSheet) {
+        demoColumn.textContent =
+          "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
+        return;
+      }
+
+      const dataList = asinDataSheet[DEMO_SELLER_ID];
+
+      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
+        const div = document.createElement("div");
+        div.textContent = "ASINデータが見つかりません。";
+        demoColumn.appendChild(div);
+        return;
+      }
+
+      dataList.forEach(item => {
+        const row = document.createElement("div");
+        row.className = "asin-row";
+        row.textContent = item.asin;
+        demoColumn.appendChild(row);
+      });
+    }
+
     // スロット内のピルをタップすると元のセラーIDプールに戻す
     function attachReturnHandler(pill, columnIndex) {
       pill.addEventListener("click", () => {
         const sourceId = pill.dataset.sourceId;
         if (!sourceId) return;
 
-        // 元のプール内のピルを再表示
         const source = document.querySelector(
           '.seller-id-pill--source[data-id="' + sourceId + '"]'
         );
@@ -533,14 +563,12 @@
           source.style.visibility = "visible";
         }
 
-        // スロットを空に戻す
         const slot = pill.parentElement;
         if (slot && slot.classList.contains("filled")) {
           slot.classList.remove("filled");
           slot.innerHTML = '<span class="slot-placeholder">ここにドロップ</span>';
         }
 
-        // 対応するASIN列だけクリア
         const column = asinColumns[columnIndex];
         if (column) {
           column.innerHTML = "";
@@ -620,7 +648,6 @@
         ) {
           dropped = true;
 
-          // スロットをこのセラーIDで埋める
           slot.innerHTML = "";
           const pill = dragging.cloneNode(true);
           pill.classList.remove("seller-id-pill--source");
@@ -628,7 +655,6 @@
           pill.style.width = "100%";
           pill.style.textAlign = "center";
 
-          // data-id を sourceId として保持（戻すときに使う）
           const sourceId = dragging.dataset.id || dragging.textContent.trim();
           pill.dataset.sourceId = sourceId;
 
@@ -638,24 +664,21 @@
           slot.classList.add("filled");
           fitTextToSlot(pill, slot);
 
-          // このスロットに対応する列にASINを表示
           renderAsinsForSeller(sourceId, index);
         }
         slot.classList.remove("dragover");
       });
 
-      // ドロップ成功時だけ元ピルを非表示
       if (dropped) {
         dragging.style.visibility = "hidden";
       }
 
-      // ゴーストとフラグを掃除
       ghost.remove();
       ghost = null;
       dragging = null;
     });
 
-    // 画面読み込み時：すでに埋まっているスロットがあれば文字サイズ調整
+    // 画面読み込み時
     window.addEventListener("load", () => {
       document.querySelectorAll(".slot.filled").forEach(slot => {
         const pill = slot.querySelector(".seller-id-pill");
@@ -663,6 +686,9 @@
           fitTextToSlot(pill, slot);
         }
       });
+
+      // 右端デモASIN表示
+      renderDemoAsins();
     });
   </script>
 </body>
