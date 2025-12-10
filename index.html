@@ -44,7 +44,7 @@
     }
 
     /* =========================
-       TOP ヒーロー（画像＋TAP）
+       TOP ヒーロー
        ========================= */
     .stage1-hero {
       margin-bottom: 24px;
@@ -83,7 +83,6 @@
       transition: opacity 0.4s ease;
     }
 
-    /* ==== TAPボタン（エフェクト付き） ==== */
     .hero-tap-button {
       position: absolute;
       left: 50%;
@@ -105,7 +104,6 @@
         0 0 20px rgba(255,255,255,0.85);
       touch-action: manipulation;
       z-index: 2;
-      position: absolute;
       overflow: hidden;
       animation: tapPulse 1.7s ease-in-out infinite;
       opacity: 0.9;
@@ -232,7 +230,6 @@
     /* =========================
        セラーID UI
        ========================= */
-
     .section-label {
       background: #25124b;
       color: #fff;
@@ -341,6 +338,12 @@
       border-radius: 999px;
     }
 
+    /* 右端デモ枠用 */
+    .demo-slot {
+      border: 2px solid #b24972;
+      background: #fbe9f2;
+    }
+
     /* =========================
        セラーASIN 抽出列
        ========================= */
@@ -352,8 +355,8 @@
       padding: 12px;
       display: flex;
       gap: 8px;
-      height: auto;              /* 中身に合わせて高さ可変 */
-      align-items: flex-start;   /* 上揃え */
+      height: auto;            /* 中身に合わせて高さ可変 */
+      align-items: flex-start; /* 上揃え */
     }
 
     .asin-column {
@@ -361,7 +364,7 @@
       background: #f5f5fb;
       border-radius: 12px;
       padding: 6px;
-      overflow-y: visible;       /* スクロールなしで全部表示 */
+      overflow-y: visible;     /* スクロールなしで全部表示 */
       font-size: 12px;
     }
 
@@ -388,10 +391,7 @@
 
 <body>
   <div class="frame">
-
-    <!-- ======================
-         TOP STAGE1 ヒーロー
-         ====================== -->
+    <!-- ヒーロー -->
     <section class="stage1-hero" id="stage1Hero">
       <div class="hero-title-block">
         <div class="hero-stage-label">STAGE 1</div>
@@ -400,11 +400,7 @@
 
       <div class="hero-visual-wrapper">
         <img src="ichimaime.gif" alt="STAGE 1 イメージ" class="hero-image" />
-
-        <button class="hero-tap-button" id="heroTapButton">
-          TAP！！
-        </button>
-
+        <button class="hero-tap-button" id="heroTapButton">TAP！！</button>
         <div class="hero-text-panel" id="heroTextPanel">
           <p>
             Amazonでは、販売者ごとに<span class="accent">「セラーID」</span>が設定され、商品ごとに<span class="accent-asin">「ASIN（商品番号）」</span>が割り当てられています。売れている商品をリサーチする＝<span class="accent-asin">“売れているASINを見つけること”</span>ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
@@ -413,13 +409,10 @@
       </div>
     </section>
 
-    <!-- ======================
-         セラーID プール
-         ====================== -->
+    <!-- セラーID プール -->
     <section>
       <div class="section-label">セラーID</div>
       <div class="seller-id-container" id="sellerPool">
-        <!-- asinDataSheet のキーと合わせる -->
         <div class="seller-id-pill seller-id-pill--source" data-id="A1EXAMP1E2345">
           A1EXAMP1E2345
         </div>
@@ -429,9 +422,7 @@
       </div>
     </section>
 
-    <!-- ======================
-         セラーID貼り付け
-         ====================== -->
+    <!-- セラーID貼り付け -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
       <div class="drop-zone" id="dropZone">
@@ -441,36 +432,43 @@
         <div class="slot" data-slot="1">
           <span class="slot-placeholder">ここにドロップ</span>
         </div>
-        <!-- 右端はデモ用として固定（data-slot なし） -->
-        <div class="slot filled">
+        <!-- 右端：最初からはめ込み済みのデモID -->
+        <div class="slot filled demo-slot">
           <div class="seller-id-pill">AxxxxxB00</div>
         </div>
       </div>
     </section>
 
-    <!-- ======================
-         セラーASIN抽出
-         ====================== -->
+    <!-- セラーASIN抽出 -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZone">
-        <!-- セラーIDスロットと 1:1 で対応させる列 -->
+        <!-- 左２列：ドラッグしたIDに応じてJSで書き換え -->
         <div class="asin-column" data-asin-column="0"></div>
         <div class="asin-column" data-asin-column="1"></div>
 
-        <!-- 右端はデモ用の固定列 -->
-        <div class="asin-column demo-column"></div>
+        <!-- 右端：常に固定表示のデモASIN -->
+        <div class="asin-column demo-column">
+          <div class="asin-row">B1xxxxxx</div>
+          <div class="asin-row">B2OOOOOO</div>
+          <div class="asin-row">B3xxxxxx</div>
+          <div class="asin-row">B4OOOOOO</div>
+          <div class="asin-row">B5xxxxxx</div>
+          <div class="asin-row">B6OOOOOO</div>
+          <div class="asin-row">B7xxxxxx</div>
+          <div class="asin-row">B8OOOOOO</div>
+          <div class="asin-row">B9xxxxxx</div>
+          <div class="asin-row">B10OOOOO</div>
+        </div>
       </div>
     </section>
-
   </div>
 
-  <!-- ASINデータ（別ファイル） -->
+  <!-- ASINデータ -->
   <script src="./asin-data.js"></script>
 
-  <!-- メインスクリプト -->
+  <!-- メインスクリプト（左2列だけ制御） -->
   <script>
-    /* ===== TOP ヒーロー：TAP で説明表示 ===== */
     const hero = document.getElementById("stage1Hero");
     const tapButton = document.getElementById("heroTapButton");
 
@@ -478,20 +476,13 @@
       hero.classList.add("show-description");
     });
 
-    /* ===== セラーID ドラッグ＆ドロップ ===== */
     const sourcePills = document.querySelectorAll(".seller-id-pill--source");
-    // 右端のデモスロットは data-slot がないので除外される
     const slots = document.querySelectorAll("[data-slot]");
     const asinColumns = document.querySelectorAll("[data-asin-column]");
-
-    // 右端のデモ列 & デモ用セラーID
-    const demoColumn = document.querySelector(".demo-column");
-    const DEMO_SELLER_ID = "AxxxxxB00";
 
     let dragging = null;
     let ghost = null;
 
-    // セラーID → 指定列に ASIN リストを表示
     function renderAsinsForSeller(sellerId, columnIndex) {
       const column = asinColumns[columnIndex];
       if (!column) return;
@@ -521,36 +512,6 @@
       });
     }
 
-    // デモ用セラーIDのASINを右端の列に表示
-    function renderDemoAsins() {
-      if (!demoColumn) return;
-
-      demoColumn.innerHTML = "";
-
-      if (!window.asinDataSheet) {
-        demoColumn.textContent =
-          "ASINデータが読み込まれていません（asin-data.js を確認してください）。";
-        return;
-      }
-
-      const dataList = asinDataSheet[DEMO_SELLER_ID];
-
-      if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
-        const div = document.createElement("div");
-        div.textContent = "ASINデータが見つかりません。";
-        demoColumn.appendChild(div);
-        return;
-      }
-
-      dataList.forEach(item => {
-        const row = document.createElement("div");
-        row.className = "asin-row";
-        row.textContent = item.asin;
-        demoColumn.appendChild(row);
-      });
-    }
-
-    // スロット内のピルをタップすると元のセラーIDプールに戻す
     function attachReturnHandler(pill, columnIndex) {
       pill.addEventListener("click", () => {
         const sourceId = pill.dataset.sourceId;
@@ -576,14 +537,12 @@
       });
     }
 
-    // ゴースト要素を移動
     function moveGhost(e) {
       if (!ghost) return;
       ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
       ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
     }
 
-    // ピルの文字サイズをスロット幅にフィットさせる
     function fitTextToSlot(pill, slot) {
       const padding = 12;
       let size = 12;
@@ -600,9 +559,7 @@
       }
     }
 
-    // ===== イベント登録 =====
-
-    // セラーIDプール側のピルをドラッグ開始
+    // ドラッグ開始
     sourcePills.forEach(pill => {
       pill.addEventListener("pointerdown", e => {
         dragging = pill;
@@ -616,7 +573,7 @@
       });
     });
 
-    // ポインタ移動中：ゴースト移動＋スロットへのホバー判定
+    // 移動中
     document.addEventListener("pointermove", e => {
       if (!ghost) return;
       moveGhost(e);
@@ -634,7 +591,7 @@
       });
     });
 
-    // ポインタ離したとき：どこかのスロットにドロップされたか判定
+    // ドロップ
     document.addEventListener("pointerup", e => {
       if (!ghost || !dragging) return;
 
@@ -678,7 +635,7 @@
       dragging = null;
     });
 
-    // 画面読み込み時
+    // ロード時：既に埋まっているスロット（今回は右端デモ）だけ文字サイズ調整
     window.addEventListener("load", () => {
       document.querySelectorAll(".slot.filled").forEach(slot => {
         const pill = slot.querySelector(".seller-id-pill");
@@ -686,9 +643,6 @@
           fitTextToSlot(pill, slot);
         }
       });
-
-      // 右端デモASIN表示
-      renderDemoAsins();
     });
   </script>
 </body>
