@@ -22,9 +22,7 @@
       font-style: normal;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -44,11 +42,9 @@
     }
 
     /* =========================
-       TOP ヒーロー（共通）
+       HERO 共通
        ========================= */
-    .stage-hero {
-      margin-bottom: 24px;
-    }
+    .stage-hero { margin-bottom: 24px; }
 
     .hero-title-block {
       text-align: center;
@@ -83,7 +79,6 @@
       transition: opacity 0.4s ease;
     }
 
-    /* ==== TAPボタン ==== */
     .hero-tap-button {
       position: absolute;
       left: 50%;
@@ -174,9 +169,7 @@
         transform: translateX(-130%) rotate(20deg);
         opacity: 0;
       }
-      10% {
-        opacity: 1;
-      }
+      10% { opacity: 1; }
       60% {
         transform: translateX(220%) rotate(20deg);
         opacity: 0;
@@ -203,19 +196,15 @@
       overflow-y: auto;
     }
 
-    .hero-text-panel p {
-      margin: 0;
-    }
+    .hero-text-panel p { margin: 0; }
 
     .stage-hero.show-description .hero-image {
       opacity: 0.35;
     }
-
     .stage-hero.show-description .hero-tap-button {
       opacity: 0;
       pointer-events: none;
     }
-
     .stage-hero.show-description .hero-text-panel {
       opacity: 1;
       pointer-events: auto;
@@ -225,7 +214,6 @@
     /* =========================
        セラーID UI
        ========================= */
-
     .section-label {
       background: #25124b;
       color: #fff;
@@ -362,8 +350,67 @@
       white-space: nowrap;
     }
 
-    .asin-row:last-child {
-      margin-bottom: 0;
+    .asin-row:last-child { margin-bottom: 0; }
+
+    /* 左2列：選択可能 ASIN */
+    .asin-row-selectable {
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease, transform 0.1s ease;
+    }
+    .asin-row-selectable:hover {
+      background: #d2d4e4;
+      transform: translateY(-1px);
+    }
+    .asin-row-selectable.selected {
+      background: #240049;
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* 右端デモ列：触れない */
+    .demo-column .asin-row {
+      pointer-events: none;
+      opacity: 0.9;
+    }
+
+    /* コピー用ボタン */
+    .asin-copy-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin: 10px 0 0;
+    }
+
+    .asin-copy-button {
+      flex: 1;
+      padding: 8px 6px;
+      border-radius: 999px;
+      border: none;
+      background: #240049;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.25);
+    }
+
+    .asin-copy-button:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    }
+
+    .asin-copy-button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.25);
+    }
+
+    .copy-feedback {
+      margin-top: 4px;
+      text-align: center;
+      font-size: 11px;
+      color: #240049;
+      min-height: 1.2em;
     }
   </style>
 </head>
@@ -389,15 +436,13 @@
 
         <div class="hero-text-panel" id="heroTextPanel">
           <p>
-            Amazonでは、販売者ごとに<span class="accent">「セラーID」</span>が設定され、商品ごとに<span class="accent-asin">「ASIN（商品番号）」</span>が割り当てられています。売れている商品をリサーチする＝<span class="accent-asin">“売れているASINを見つけること”</span>ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
+            Amazonでは、販売者ごとに「セラーID」が設定され、商品ごとに「ASIN（商品番号）」が割り当てられています。売れている商品をリサーチする＝“売れているASINを見つけること”ですが、まずはそのASINを取得しなければ始まりません。このツールでは、セラーIDを入力するだけで、そのセラーが出品しているASINを一括で抽出できます。わずか数秒でASINリストを自動生成できるため、売れ筋商品のリサーチを圧倒的に効率化できるのが特徴です！まずは、ASINのリストを作成してみましょう！
           </p>
         </div>
       </div>
     </section>
 
-    <!-- ======================
-         セラーID プール
-         ====================== -->
+    <!-- セラーID プール -->
     <section>
       <div class="section-label">セラーID</div>
       <div class="seller-id-container" id="sellerPool">
@@ -410,9 +455,7 @@
       </div>
     </section>
 
-    <!-- ======================
-         セラーID貼り付け
-         ====================== -->
+    <!-- セラーID貼り付け -->
     <section style="margin-top: 24px;">
       <div class="section-label-small">セラーID貼り付け</div>
       <div class="drop-zone" id="dropZone">
@@ -429,16 +472,14 @@
       </div>
     </section>
 
-    <!-- ======================
-         STAGE1 セラーASIN抽出
-         ====================== -->
+    <!-- STAGE1 セラーASIN抽出 -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZone">
         <div class="asin-column" data-asin-column="0"></div>
         <div class="asin-column" data-asin-column="1"></div>
-        <!-- 右端：固定デモ ASIN -->
-        <div class="asin-column">
+        <!-- 右端：固定デモ ASIN（選択不可） -->
+        <div class="asin-column demo-column">
           <div class="asin-row">B1xxxxxx</div>
           <div class="asin-row">B2OOOOOO</div>
           <div class="asin-row">B3xxxxxx</div>
@@ -451,6 +492,13 @@
           <div class="asin-row">B10OOOOO</div>
         </div>
       </div>
+
+      <!-- コピー用ボタン -->
+      <div class="asin-copy-controls">
+        <button class="asin-copy-button" id="copySelectedBtn">選択したASINをコピー</button>
+        <button class="asin-copy-button" id="copyAllBtn">すべてのASINをコピー</button>
+      </div>
+      <div class="copy-feedback" id="copyFeedback"></div>
     </section>
 
     <!-- ======================
@@ -463,7 +511,7 @@
       </div>
 
       <div class="hero-visual-wrapper">
-        <!-- イラスト画像：ファイル名 stage2.gif （必要に応じて変更） -->
+        <!-- イラスト画像 -->
         <img src="stage2.gif" alt="STAGE 2 イメージ" class="hero-image" />
 
         <button class="hero-tap-button" id="heroTapButton2">
@@ -486,16 +534,14 @@
       </div>
     </section>
 
-    <!-- ======================
-         STAGE2 ASIN表示（STAGE1と連動）
-         ====================== -->
+    <!-- STAGE2 ASIN表示（STAGE1と連動・表示のみ） -->
     <section style="margin-top: 16px;">
       <div class="section-label-small">セラーASIN抽出</div>
       <div class="asin-zone" id="asinZoneStage2">
         <div class="asin-column" data-asin-column="0"></div>
         <div class="asin-column" data-asin-column="1"></div>
-        <!-- 右端：固定デモ ASIN（STAGE1と同じ） -->
-        <div class="asin-column">
+        <!-- 右端：固定デモ ASIN -->
+        <div class="asin-column demo-column">
           <div class="asin-row">B1xxxxxx</div>
           <div class="asin-row">B2OOOOOO</div>
           <div class="asin-row">B3xxxxxx</div>
@@ -512,22 +558,19 @@
 
   </div>
 
-  <!-- ASINデータ（別ファイル） -->
+  <!-- ASINデータ -->
   <script src="./asin-data.js"></script>
 
   <!-- メインスクリプト -->
   <script>
-    /* ===== STAGE1 ヒーロー TAP ===== */
+    /* ===== ヒーロー TAP ===== */
     const hero1 = document.getElementById("stage1Hero");
-    const tapButton1 = document.getElementById("heroTapButton");
-    tapButton1.addEventListener("click", () => {
+    document.getElementById("heroTapButton").addEventListener("click", () => {
       hero1.classList.add("show-description");
     });
 
-    /* ===== STAGE2 ヒーロー TAP ===== */
     const hero2 = document.getElementById("stage2Hero");
-    const tapButton2 = document.getElementById("heroTapButton2");
-    tapButton2.addEventListener("click", () => {
+    document.getElementById("heroTapButton2").addEventListener("click", () => {
       hero2.classList.add("show-description");
     });
 
@@ -535,14 +578,21 @@
     const sourcePills = document.querySelectorAll(".seller-id-pill--source");
     const slots = document.querySelectorAll("[data-slot]");
 
-    // STAGE1 & STAGE2 の ASIN 列を別々に取得
     const asinColumnsStage1 = document.querySelectorAll("#asinZone [data-asin-column]");
     const asinColumnsStage2 = document.querySelectorAll("#asinZoneStage2 [data-asin-column]");
 
     let dragging = null;
     let ghost = null;
 
-    // セラーID → 指定列に ASIN リストを表示（STAGE1 と STAGE2 両方）
+    function createAsinRow(text, selectable) {
+      const row = document.createElement("div");
+      row.className = "asin-row";
+      if (selectable) row.classList.add("asin-row-selectable");
+      row.textContent = text;
+      return row;
+    }
+
+    // セラーID → 指定列に ASINリスト反映（STAGE1:選択可 / STAGE2:表示のみ）
     function renderAsinsForSeller(sellerId, columnIndex) {
       const column1 = asinColumnsStage1[columnIndex];
       const column2 = asinColumnsStage2[columnIndex];
@@ -562,31 +612,17 @@
 
       if (!dataList || !Array.isArray(dataList) || dataList.length === 0) {
         if (column1) {
-          const div = document.createElement("div");
-          div.textContent = "ASINデータが見つかりません。";
-          column1.appendChild(div);
+          column1.appendChild(createAsinRow("ASINデータが見つかりません。", false));
         }
         if (column2) {
-          const div = document.createElement("div");
-          div.textContent = "ASINデータが見つかりません。";
-          column2.appendChild(div);
+          column2.appendChild(createAsinRow("ASINデータが見つかりません。", false));
         }
         return;
       }
 
       dataList.forEach(item => {
-        if (column1) {
-          const row1 = document.createElement("div");
-          row1.className = "asin-row";
-          row1.textContent = item.asin;
-          column1.appendChild(row1);
-        }
-        if (column2) {
-          const row2 = document.createElement("div");
-          row2.className = "asin-row";
-          row2.textContent = item.asin;
-          column2.appendChild(row2);
-        }
+        if (column1) column1.appendChild(createAsinRow(item.asin, true));   // 選択可
+        if (column2) column2.appendChild(createAsinRow(item.asin, false));  // 表示のみ
       });
     }
 
@@ -609,7 +645,6 @@
           slot.innerHTML = '<span class="slot-placeholder">ここにドロップ</span>';
         }
 
-        // 対応する ASIN 列を両方ともクリア
         const column1 = asinColumnsStage1[columnIndex];
         const column2 = asinColumnsStage2[columnIndex];
         if (column1) column1.innerHTML = "";
@@ -617,14 +652,12 @@
       });
     }
 
-    // ゴースト要素を移動
     function moveGhost(e) {
       if (!ghost) return;
       ghost.style.left = e.clientX - ghost.offsetWidth / 2 + "px";
       ghost.style.top  = e.clientY - ghost.offsetHeight / 2 + "px";
     }
 
-    // セラーIDプール側のピルをドラッグ開始
     sourcePills.forEach(pill => {
       pill.addEventListener("pointerdown", e => {
         dragging = pill;
@@ -638,7 +671,6 @@
       });
     });
 
-    // ポインタ移動中：ゴースト移動＋スロットへのホバー判定
     document.addEventListener("pointermove", e => {
       if (!ghost) return;
       moveGhost(e);
@@ -656,7 +688,6 @@
       });
     });
 
-    // ポインタ離したとき：どこかのスロットにドロップされたか判定
     document.addEventListener("pointerup", e => {
       if (!ghost || !dragging) return;
 
@@ -685,7 +716,6 @@
           slot.appendChild(pill);
           slot.classList.add("filled");
 
-          // このスロットに対応する列に ASIN を表示（STAGE1 & 2 両方）
           renderAsinsForSeller(sourceId, index);
         }
         slot.classList.remove("dragover");
@@ -700,14 +730,66 @@
       dragging = null;
     });
 
-    // 画面読み込み時：既に埋まっているスロットがあれば文字サイズ調整
-    window.addEventListener("load", () => {
-      document.querySelectorAll(".slot.filled").forEach(slot => {
-        const pill = slot.querySelector(".seller-id-pill");
-        if (pill) {
-          // 今回はフォントサイズ固定でOKなので特に処理不要
+    /* ===== ASIN 選択（タップ） ===== */
+    document.addEventListener("click", e => {
+      const row = e.target.closest(".asin-row-selectable");
+      if (!row) return;
+      row.classList.toggle("selected");
+    });
+
+    /* ===== コピー処理 ===== */
+    const copySelectedBtn = document.getElementById("copySelectedBtn");
+    const copyAllBtn = document.getElementById("copyAllBtn");
+    const copyFeedback = document.getElementById("copyFeedback");
+
+    function getStage1AsinTexts(selectedOnly) {
+      const selector = selectedOnly
+        ? "#asinZone .asin-row-selectable.selected"
+        : "#asinZone .asin-row-selectable";
+      const rows = document.querySelectorAll(selector);
+      return Array.from(rows).map(r => r.textContent.trim()).filter(t => t);
+    }
+
+    async function copyTextToClipboard(text) {
+      if (!text) return false;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement("textarea");
+          textarea.value = text;
+          textarea.style.position = "fixed";
+          textarea.style.opacity = "0";
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand("copy");
+          textarea.remove();
         }
-      });
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    }
+
+    copySelectedBtn.addEventListener("click", async () => {
+      const list = getStage1AsinTexts(true);
+      if (list.length === 0) {
+        copyFeedback.textContent = "ASINが選択されていません。";
+        return;
+      }
+      const ok = await copyTextToClipboard(list.join("\n"));
+      copyFeedback.textContent = ok ? "選択したASINをコピーしました。" : "コピーに失敗しました。";
+    });
+
+    copyAllBtn.addEventListener("click", async () => {
+      const list = getStage1AsinTexts(false);
+      if (list.length === 0) {
+        copyFeedback.textContent = "コピーできるASINがありません。";
+        return;
+      }
+      const ok = await copyTextToClipboard(list.join("\n"));
+      copyFeedback.textContent = ok ? "すべてのASINをコピーしました。" : "コピーに失敗しました。";
     });
   </script>
 </body>
