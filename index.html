@@ -224,7 +224,7 @@
     }
     .metrics-card .bottom-pills{ margin-top:auto; }
 
-    /* 主要項目：追加の入力列 */
+    /* 主要項目：固定値（入力不可） */
     .inputs-grid{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -255,11 +255,13 @@
       padding: 10px 12px;
       font-weight:1000;
       outline:none;
-      background:#fff;
+      background:#f8fafc;          /* 固定値っぽく */
       text-align:left;
+      cursor: not-allowed;
+      color:#111;
     }
     .m-input input[readonly]{
-      background:#f8fafc;
+      pointer-events:none;          /* 動かない */
     }
 
     /* Lower row */
@@ -374,6 +376,8 @@
       position:sticky;
       top:16px;
     }
+
+    /* 赤い枠（最安値）には“入力欄を入れない” */
     .top-pill{
       background: var(--topbtn);
       color:#fff;
@@ -392,27 +396,58 @@
       opacity:.92;
       margin-top:8px;
     }
-    .top-pill button{
-      margin-top:12px;
-      border:0;
-      background: rgba(255,255,255,.18);
-      color:#fff;
+
+    /* 上位3ショップ表示エリア */
+    .top3-wrap{
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.35);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+    }
+    .top3-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 8px;
+    }
+    .top3-title{
       font-weight:1000;
-      padding: 12px 14px;
+      letter-spacing:.02em;
+      font-size:13px;
+      opacity:.92;
+    }
+    .morebtn{
+      border:0;
+      background: rgba(0,0,0,.10);
+      color:#111;
+      font-weight:1000;
+      padding: 10px 12px;
       border-radius: 999px;
       cursor:pointer;
-      width: 100%;
+      white-space:nowrap;
+    }
+    .morebtn:disabled{
+      cursor:not-allowed;
+      opacity:.55;
+    }
+    .top3-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
     }
 
-    /* ★ 上部へ移動した入力欄（最安値の下） */
+    /* 入力欄：赤枠の外（下） */
     .top-inputs{
       margin-top: 10px;
       display:flex;
       flex-direction:column;
       gap:10px;
-    }
-    .top-inputs .sfield{
-      margin:0;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.35);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
     }
 
     .section-title{
@@ -459,6 +494,36 @@
       align-items:center;
       gap:10px;
       margin-left:auto;
+    }
+
+    /* rank badge */
+    .rank{
+      width:28px;height:28px;
+      border-radius:999px;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.14);
+      font-weight:1000;
+      color:#111;
+      flex:0 0 auto;
+    }
+    .row .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 150px;
+    }
+    .shopname{
+      font-weight:1000;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 92px;
+    }
+    .stockmini{
+      font-size:12px;
+      font-weight:1000;
+      opacity:.85;
+      white-space:nowrap;
     }
 
     /* qty stepper */
@@ -798,11 +863,11 @@
           </div>
         </section>
 
-        <!-- 主要項目（指定の行構成へ） -->
+        <!-- 主要項目 -->
         <section class="card-ui metrics-card">
           <h4>主要項目</h4>
 
-          <!-- 1段目：実績（そのまま） -->
+          <!-- 1段目：実績 -->
           <div class="metric-grid">
             <div class="metric">
               <div class="label">180日販売数（実績）</div>
@@ -818,39 +883,23 @@
             </div>
           </div>
 
-          <!-- 2段目：予測 180/90/30（左から） -->
+          <!-- 2段目：予測 180/90/30（固定値・動かない） -->
           <div class="inputs-grid" style="margin-top:10px;">
             <div class="m-input">
               <div class="label">予測180日販売数</div>
-              <input id="pred180" inputmode="numeric" placeholder="例：600">
+              <input id="pred180" value="620" readonly aria-readonly="true">
             </div>
             <div class="m-input">
               <div class="label">予測90日販売数</div>
-              <input id="pred90" inputmode="numeric" placeholder="例：320">
+              <input id="pred90" value="330" readonly aria-readonly="true">
             </div>
             <div class="m-input">
               <div class="label">予測30日販売数</div>
-              <input id="pred30" inputmode="numeric" placeholder="例：110">
+              <input id="pred30" value="120" readonly aria-readonly="true">
             </div>
           </div>
 
-          <!-- 3段目：複数在庫45/60、予測販売数（自由記入） -->
-          <div class="inputs-grid" style="margin-top:10px;">
-            <div class="m-input">
-              <div class="label">複数在庫45日</div>
-              <input id="multi45" inputmode="numeric" placeholder="例：18">
-            </div>
-            <div class="m-input">
-              <div class="label">複数在庫60日</div>
-              <input id="multi60" inputmode="numeric" placeholder="例：24">
-            </div>
-            <div class="m-input">
-              <div class="label">予測販売数（自由記入）</div>
-              <input id="freeForecast" placeholder="例：施策後は月150想定">
-            </div>
-          </div>
-
-          <!-- 下段：販売価格/粗利益（そのまま下に） -->
+          <!-- 下段：販売価格/粗利益 -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -899,31 +948,41 @@
 
     <!-- RIGHT (cart) -->
     <aside class="side" aria-label="カート">
+      <!-- 赤枠は最安値だけ（モーダルは別ボタンに移動） -->
       <div class="top-pill">
         <div class="min">最安値： <span id="minPrice">¥—</span></div>
-        <small>各ショップを見る</small>
-        <button id="openModalBtn" type="button">ショップ別の価格・在庫を表示</button>
+        <small>上位3ショップは下に表示</small>
+      </div>
 
-        <!-- ★ 販売価格/仕入れ額をここへ移動 -->
-        <div class="top-inputs" aria-label="上部入力">
-          <div class="sfield">
-            <div class="label">販売価格（$）</div>
-            <div class="control">
-              <input id="sellPriceUsd" inputmode="decimal" placeholder="例：39.99" />
-            </div>
+      <!-- 上位3ショップ（モーダルではなくカート場に表示） -->
+      <div class="top3-wrap" aria-label="上位3ショップ">
+        <div class="top3-head">
+          <div class="top3-title">上位3ショップ（価格の安い順）</div>
+          <button class="morebtn" id="openModalBtn" type="button">4件目以降を見る</button>
+        </div>
+        <div class="top3-list" id="top3List"></div>
+        <div class="hinttxt" style="margin:10px 2px 0;">※ここでも数量を＋/−で変更できます</div>
+      </div>
+
+      <!-- 入力欄は赤枠の外（下） -->
+      <div class="top-inputs" aria-label="上部入力">
+        <div class="sfield">
+          <div class="label">販売価格（$）</div>
+          <div class="control">
+            <input id="sellPriceUsd" inputmode="decimal" placeholder="例：39.99" />
           </div>
+        </div>
 
-          <div class="sfield">
-            <div class="label">仕入れ額（¥）</div>
-            <div class="control">
-              <input id="avgCostJpy" inputmode="numeric" />
-              <button class="reset" id="resetAvgBtn" type="button" title="自動計算の値に戻す">↺</button>
-            </div>
+        <div class="sfield">
+          <div class="label">仕入れ額（¥）</div>
+          <div class="control">
+            <input id="avgCostJpy" inputmode="numeric" />
+            <button class="reset" id="resetAvgBtn" type="button" title="自動計算の値に戻す">↺</button>
           </div>
         </div>
       </div>
 
-      <div class="hinttxt" style="margin:8px 8px 0;">
+      <div class="hinttxt" style="margin:10px 8px 0;">
         ※カート内（価格×数量）の合計 ÷ 合計数量＝平均仕入れ額（自動）。手動変更した場合は↺で戻せます。
       </div>
 
@@ -939,11 +998,11 @@
     </aside>
   </div>
 
-  <!-- Modal: shop list -->
+  <!-- Modal: shop list (4件目以降) -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格と在庫">
     <div class="modal">
       <button class="close" id="closeBtn" type="button">×</button>
-      <h3>ショップ別の価格・在庫（価格の安い順）</h3>
+      <h3>4件目以降のショップ（価格の安い順）</h3>
       <div class="modal-list" id="modalList"></div>
       <div class="okwrap"><button class="ok" id="okBtn" type="button">OK</button></div>
       <div class="hinttxt" style="margin:0 8px 2px;">※この画面でも数量を＋/−で変更できます</div>
@@ -1171,17 +1230,89 @@
     return items;
   }
 
+  /* ===== 上位3ショップをカート場に表示 ===== */
+  function renderTop3(){
+    const list = document.getElementById("top3List");
+    list.innerHTML = "";
+
+    const items = flattenShopOffersSorted();
+    const top3 = items.slice(0, 3);
+
+    if (top3.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "row dim";
+      empty.innerHTML = `
+        <div class="left">
+          <div class="rank">—</div>
+          <div class="shopname">—</div>
+          <div class="stockmini">在庫：—</div>
+        </div>
+        <div class="price">¥—</div>
+        <div class="right"></div>
+      `;
+      const st = renderStepper("", ()=>{}, ()=>{});
+      st.style.opacity = ".55";
+      st.querySelector("[data-minus]").disabled = true;
+      st.querySelector("[data-plus]").disabled = true;
+      empty.querySelector(".right").appendChild(st);
+      list.appendChild(empty);
+    } else {
+      top3.forEach(({shop, offer}, i) => {
+        const r = document.createElement("div");
+        r.className = `row ${shopClass(shop.slug)}`;
+        r.innerHTML = `
+          <div class="left">
+            <div class="rank">${i+1}</div>
+            <div class="shopname">${escapeHTML(shop.shop)}</div>
+            <div class="stockmini">在庫：${escapeHTML(String(offer.stock))}</div>
+          </div>
+          <div class="price">${yen(offer.price)}</div>
+          <div class="right"></div>
+        `;
+        const st = renderStepper(offer.qty,
+          ()=>{ incQty(offer.id, -1); renderAll(false); },
+          ()=>{ incQty(offer.id, +1); renderAll(false); }
+        );
+        r.querySelector(".right").appendChild(st);
+        list.appendChild(r);
+      });
+    }
+
+    // 4件目以降があるときだけモーダルボタン有効
+    const moreBtn = document.getElementById("openModalBtn");
+    const hasMore = items.length > 3;
+    moreBtn.disabled = !hasMore;
+    moreBtn.textContent = hasMore ? `4件目以降を見る（${items.length - 3}件）` : "4件目以降を見る";
+  }
+
   function renderModal(){
     const list = document.getElementById("modalList");
     list.innerHTML = "";
 
-    const items = flattenShopOffersSorted();
-    items.forEach(({shop, offer}) => {
+    const items = flattenShopOffersSorted().slice(3); // 4件目以降のみ
+    if (items.length === 0){
+      const card = document.createElement("div");
+      card.className = "card shop-other";
+      card.innerHTML = `
+        <div class="card-head">
+          <div>表示できるショップがありません</div>
+          <div style="font-size:12px; font-weight:1000; opacity:.86;">—</div>
+        </div>
+        <div class="meta">
+          <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
+          <div class="pill"><span>数量</span><span style="font-weight:1000;">—</span></div>
+        </div>
+      `;
+      list.appendChild(card);
+      return;
+    }
+
+    items.forEach(({shop, offer}, idx) => {
       const card = document.createElement("div");
       card.className = `card ${shopClass(shop.slug)}`;
       card.innerHTML = `
         <div class="card-head">
-          <div>ショップ名：${escapeHTML(shop.shop)}</div>
+          <div>${idx+1}. ショップ名：${escapeHTML(shop.shop)}</div>
           <div style="font-size:12px; font-weight:1000; opacity:.86;">在庫：${escapeHTML(String(offer.stock))}</div>
         </div>
         <div class="meta">
@@ -1251,7 +1382,13 @@
   const closeBtn = document.getElementById("closeBtn");
   const okBtn = document.getElementById("okBtn");
 
-  function openModal(){ renderModal(); overlay.classList.add("open"); }
+  function openModal(){
+    // 4件目以降がないなら開かない
+    const hasMore = flattenShopOffersSorted().length > 3;
+    if (!hasMore) return;
+    renderModal();
+    overlay.classList.add("open");
+  }
   function closeModal(){ overlay.classList.remove("open"); }
 
   openModalBtn.addEventListener("click", openModal);
@@ -1270,6 +1407,7 @@
   function renderAll(rerenderModalToo=true){
     shopData.forEach(sortOffersByPrice);
     renderMinPrice();
+    renderTop3();
     renderWishList();
     if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
   }
