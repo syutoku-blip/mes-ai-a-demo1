@@ -328,10 +328,7 @@
       position:relative;
       overflow:hidden;
     }
-    .fake-line{
-      position:absolute;
-      inset:0;
-    }
+    .fake-line{ position:absolute; inset:0; }
     .fake-line::before{
       content:"";
       position:absolute;
@@ -363,9 +360,7 @@
       font-weight:1000;
       color:var(--muted);
     }
-    .dot{
-      width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px;
-    }
+    .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
 
     /* ===== Right: cart ===== */
     .side{
@@ -377,30 +372,10 @@
       top:16px;
     }
 
-    /* 赤い枠（最安値）には“入力欄を入れない” */
-    .top-pill{
-      background: var(--topbtn);
-      color:#fff;
-      border-radius: 24px;
-      padding: 16px 14px 14px;
-      text-align:center;
-      line-height:1.25;
-      font-weight:900;
-      letter-spacing:.02em;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
-    }
-    .top-pill .min{ font-size:20px; font-weight:1000; }
-    .top-pill small{
-      display:block;
-      font-weight:800;
-      opacity:.92;
-      margin-top:8px;
-    }
-
-    /* 上位3ショップ表示エリア */
+    /* 上位ショップ表示エリア（最安値バーは削除） */
     .top3-wrap{
-      margin-top: 10px;
-      padding: 10px;
+      margin-top: 0;
+      padding: 12px;
       border-radius: 18px;
       background: rgba(255,255,255,.35);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
@@ -410,13 +385,14 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     .top3-title{
       font-weight:1000;
       letter-spacing:.02em;
       font-size:13px;
       opacity:.92;
+      line-height:1.2;
     }
     .morebtn{
       border:0;
@@ -428,17 +404,14 @@
       cursor:pointer;
       white-space:nowrap;
     }
-    .morebtn:disabled{
-      cursor:not-allowed;
-      opacity:.55;
-    }
+    .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
     .top3-list{
       display:flex;
       flex-direction:column;
       gap:10px;
     }
 
-    /* 入力欄：赤枠の外（下） */
+    /* 入力欄 */
     .top-inputs{
       margin-top: 10px;
       display:flex;
@@ -458,25 +431,7 @@
       font-size:18px;
     }
 
-    .shop-block{ margin: 12px 6px; }
-    .shop-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      font-weight:1000;
-      margin-bottom:8px;
-    }
-    .shop-head .name{ display:flex; align-items:center; gap:8px; }
-    .plus{
-      width:26px;height:26px;
-      border-radius:999px;
-      border:0;
-      background: rgba(0,0,0,.14);
-      cursor:pointer;
-      display:grid;place-items:center;
-      font-weight:1000;
-      transform: translateY(-1px);
-    }
+    /* rows */
     .rows{ display:flex; flex-direction:column; gap:10px; }
     .row{
       border-radius: 999px;
@@ -487,13 +442,15 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
       font-weight:900;
       gap:10px;
+      overflow:hidden;
     }
-    .row .price{ min-width: 96px; font-size:18px; }
+    .row .price{ min-width: 90px; font-size:18px; }
     .row .right{
       display:flex;
       align-items:center;
-      gap:10px;
+      gap:8px;
       margin-left:auto;
+      flex: 0 0 auto;
     }
 
     /* rank badge */
@@ -510,23 +467,19 @@
       display:flex;
       align-items:center;
       gap:10px;
-      min-width: 150px;
+      min-width: 120px;
+      overflow:hidden;
+      flex: 1 1 auto;
     }
     .shopname{
       font-weight:1000;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 92px;
-    }
-    .stockmini{
-      font-size:12px;
-      font-weight:1000;
-      opacity:.85;
-      white-space:nowrap;
+      max-width: 120px;
     }
 
-    /* qty stepper */
+    /* qty stepper（入らない問題対策：横幅を縮める + ラベルを小さく） */
     .stepper{
       display:flex;
       align-items:center;
@@ -534,14 +487,17 @@
       background: var(--chip);
       padding: 6px 8px;
       border-radius: 999px;
-      min-width: 160px;
+      min-width: 132px;             /* ここが効く */
       justify-content:space-between;
+      flex: 0 0 auto;
     }
     .stepper .label{
       font-weight:1000;
       opacity:.92;
-      padding-left:4px;
+      padding-left:2px;
       white-space:nowrap;
+      font-size:12px;               /* 小さく */
+      letter-spacing:.02em;
     }
     .stepper .controls{
       display:flex;
@@ -549,18 +505,21 @@
       gap:6px;
     }
     .stepper .qbtn{
-      width:30px;height:30px;
+      width:28px;height:28px;       /* 少し小さく */
       border-radius:999px;
       border:0;
       cursor:pointer;
       background: rgba(0,0,0,.12);
       font-weight:1000;
       line-height:1;
+      flex:0 0 auto;
     }
     .stepper .qval{
-      min-width: 30px;
+      min-width: 24px;
       text-align:center;
       font-weight:1000;
+      font-size:13px;
+      flex:0 0 auto;
     }
 
     .del{
@@ -590,12 +549,6 @@
       margin: 18px 6px 14px;
     }
 
-    .summary{
-      margin: 6px 6px 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
     .sfield{
       display:flex;
       align-items:center;
@@ -659,6 +612,36 @@
       width: 50%;
     }
     .btn.primary{ background: rgba(255,255,255,.85); }
+
+    /* カート（表示を小さめに） */
+    .cart-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      margin: 8px 6px 0;
+    }
+    .cart-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 10px 12px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.45);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      overflow:hidden;
+    }
+    .cart-row .txt{
+      font-size:13px;               /* 文字を少し小さめ */
+      font-weight:1000;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 150px;
+    }
+    .cart-row .txt .shop{ font-weight:1000; }
+    .cart-row .txt .val{ opacity:.95; }
+    .cart-row .right{ flex:0 0 auto; }
 
     /* Modal */
     .overlay{
@@ -834,7 +817,7 @@
           </div>
         </section>
 
-        <!-- 商品情報（注意事項を一番上） -->
+        <!-- 商品情報 -->
         <section class="card-ui scrollable">
           <h4>商品情報</h4>
           <div class="scroll-area">
@@ -883,7 +866,7 @@
             </div>
           </div>
 
-          <!-- 2段目：予測 180/90/30（固定値・動かない） -->
+          <!-- 2段目：予測 180/90/30（固定値） -->
           <div class="inputs-grid" style="margin-top:10px;">
             <div class="m-input">
               <div class="label">予測180日販売数</div>
@@ -946,25 +929,20 @@
       </div>
     </main>
 
-    <!-- RIGHT (cart) -->
+    <!-- RIGHT -->
     <aside class="side" aria-label="カート">
-      <!-- 赤枠は最安値だけ（モーダルは別ボタンに移動） -->
-      <div class="top-pill">
-        <div class="min">最安値： <span id="minPrice">¥—</span></div>
-        <small>上位3ショップは下に表示</small>
-      </div>
 
-      <!-- 上位3ショップ（モーダルではなくカート場に表示） -->
+      <!-- 上位3ショップ（在庫表示は削除） -->
       <div class="top3-wrap" aria-label="上位3ショップ">
         <div class="top3-head">
           <div class="top3-title">上位3ショップ（価格の安い順）</div>
-          <button class="morebtn" id="openModalBtn" type="button">4件目以降を見る</button>
+          <button class="morebtn" id="openModalBtn" type="button">全ショップを見る</button>
         </div>
         <div class="top3-list" id="top3List"></div>
         <div class="hinttxt" style="margin:10px 2px 0;">※ここでも数量を＋/−で変更できます</div>
       </div>
 
-      <!-- 入力欄は赤枠の外（下） -->
+      <!-- 入力欄 -->
       <div class="top-inputs" aria-label="上部入力">
         <div class="sfield">
           <div class="label">販売価格（$）</div>
@@ -987,7 +965,9 @@
       </div>
 
       <div class="section-title">《カート》</div>
-      <div id="wishList"></div>
+
+      <!-- カート表示（ショップブロックをやめて、行リストで表示） -->
+      <div class="cart-list" id="wishList"></div>
 
       <div class="dash"></div>
 
@@ -998,11 +978,11 @@
     </aside>
   </div>
 
-  <!-- Modal: shop list (4件目以降) -->
+  <!-- Modal: shop list（1件目から全部表示） -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格と在庫">
     <div class="modal">
       <button class="close" id="closeBtn" type="button">×</button>
-      <h3>4件目以降のショップ（価格の安い順）</h3>
+      <h3>ショップ別の価格（価格の安い順）</h3>
       <div class="modal-list" id="modalList"></div>
       <div class="okwrap"><button class="ok" id="okBtn" type="button">OK</button></div>
       <div class="hinttxt" style="margin:0 8px 2px;">※この画面でも数量を＋/−で変更できます</div>
@@ -1084,18 +1064,6 @@
     setQty(id, (Number(found.offer.qty)||0) + delta);
   }
 
-  function computeMinPrice() {
-    const prices = [];
-    shopData.forEach(s => s.offers.forEach(o => {
-      if (o.price && o.price > 0 && (o.stock ?? 1) > 0) prices.push(o.price);
-    }));
-    return prices.length ? Math.min(...prices) : null;
-  }
-  function renderMinPrice(){
-    const mp = computeMinPrice();
-    document.getElementById("minPrice").textContent = mp ? yen(mp) : "¥—";
-  }
-
   function computeAvgCostJpy(){
     let totalCost = 0, totalQty = 0;
     shopData.forEach(s => s.offers.forEach(o => {
@@ -1142,73 +1110,6 @@
     return wrap;
   }
 
-  function renderWishList(){
-    const root = document.getElementById("wishList");
-    root.innerHTML = "";
-
-    shopData.forEach((s) => {
-      sortOffersByPrice(s);
-      const picked = s.offers.filter(o => (o.qty ?? 0) > 0);
-
-      const block = document.createElement("div");
-      block.className = "shop-block";
-
-      const head = document.createElement("div");
-      head.className = "shop-head";
-      head.innerHTML = `
-        <div class="name">${escapeHTML(s.shop)}
-          <button class="plus" type="button" title="手入力で追加" data-plus="${escapeHTML(s.slug)}">＋</button>
-        </div>
-      `;
-
-      const rows = document.createElement("div");
-      rows.className = "rows";
-
-      if (picked.length === 0){
-        const empty = document.createElement("div");
-        empty.className = "row dim";
-        empty.innerHTML = `<div class="price">¥—</div><div class="right"></div>`;
-        const st = renderStepper("", ()=>{}, ()=>{});
-        st.style.opacity = ".55";
-        st.querySelector("[data-minus]").disabled = true;
-        st.querySelector("[data-plus]").disabled = true;
-        empty.querySelector(".right").appendChild(st);
-        rows.appendChild(empty);
-      } else {
-        picked.forEach(o => {
-          const r = document.createElement("div");
-          r.className = `row ${shopClass(s.slug)}`;
-          r.innerHTML = `<div class="price">${yen(o.price)}</div><div class="right"></div>`;
-
-          const st = renderStepper(o.qty,
-            ()=>{ incQty(o.id, -1); renderAll(false); },
-            ()=>{ incQty(o.id, +1); renderAll(false); }
-          );
-          r.querySelector(".right").appendChild(st);
-
-          if (o.manual){
-            const del = document.createElement("button");
-            del.className = "del";
-            del.type = "button";
-            del.title = "削除";
-            del.textContent = "×";
-            del.addEventListener("click", () => { removeOfferById(o.id); });
-            r.querySelector(".right").appendChild(del);
-          }
-          rows.appendChild(r);
-        });
-      }
-
-      block.appendChild(head);
-      block.appendChild(rows);
-      root.appendChild(block);
-
-      head.querySelector("[data-plus]").addEventListener("click", () => openManualAdd(s.slug));
-    });
-
-    renderAvgCost();
-  }
-
   function removeOfferById(offerId){
     for (const s of shopData){
       const idx = s.offers.findIndex(o => o.id === offerId);
@@ -1230,7 +1131,7 @@
     return items;
   }
 
-  /* ===== 上位3ショップをカート場に表示 ===== */
+  /* 上位3ショップ（在庫表示なし） */
   function renderTop3(){
     const list = document.getElementById("top3List");
     list.innerHTML = "";
@@ -1245,7 +1146,6 @@
         <div class="left">
           <div class="rank">—</div>
           <div class="shopname">—</div>
-          <div class="stockmini">在庫：—</div>
         </div>
         <div class="price">¥—</div>
         <div class="right"></div>
@@ -1264,7 +1164,6 @@
           <div class="left">
             <div class="rank">${i+1}</div>
             <div class="shopname">${escapeHTML(shop.shop)}</div>
-            <div class="stockmini">在庫：${escapeHTML(String(offer.stock))}</div>
           </div>
           <div class="price">${yen(offer.price)}</div>
           <div class="right"></div>
@@ -1278,18 +1177,77 @@
       });
     }
 
-    // 4件目以降があるときだけモーダルボタン有効
+    // ボタンは常に「全ショップを見る」
     const moreBtn = document.getElementById("openModalBtn");
-    const hasMore = items.length > 3;
-    moreBtn.disabled = !hasMore;
-    moreBtn.textContent = hasMore ? `4件目以降を見る（${items.length - 3}件）` : "4件目以降を見る";
+    moreBtn.disabled = items.length === 0;
   }
 
+  /* 《カート》：ショップブロックをやめて、選択（qty>0）の行だけ小さめに出す */
+  function renderWishList(){
+    const root = document.getElementById("wishList");
+    root.innerHTML = "";
+
+    const picked = [];
+    shopData.forEach(s => s.offers.forEach(o => {
+      if ((o.qty ?? 0) > 0) picked.push({shop:s, offer:o});
+    }));
+
+    if (picked.length === 0){
+      const empty = document.createElement("div");
+      empty.className = "cart-row";
+      empty.style.opacity = ".75";
+      empty.innerHTML = `
+        <div class="txt"><span class="shop">—</span> <span class="val">¥—</span></div>
+        <div class="right"></div>
+      `;
+      const st = renderStepper("", ()=>{}, ()=>{});
+      st.style.opacity = ".55";
+      st.querySelector("[data-minus]").disabled = true;
+      st.querySelector("[data-plus]").disabled = true;
+      empty.querySelector(".right").appendChild(st);
+      root.appendChild(empty);
+    } else {
+      // 表示順：価格の安い順
+      picked.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
+
+      picked.forEach(({shop, offer}) => {
+        const row = document.createElement("div");
+        row.className = "cart-row";
+        row.innerHTML = `
+          <div class="txt"><span class="shop">${escapeHTML(shop.shop)}</span> <span class="val">${yen(offer.price)}</span></div>
+          <div class="right"></div>
+        `;
+        const st = renderStepper(offer.qty,
+          ()=>{ incQty(offer.id, -1); renderAll(false); },
+          ()=>{ incQty(offer.id, +1); renderAll(false); }
+        );
+        row.querySelector(".right").appendChild(st);
+
+        // 手入力だけ削除ボタン（必要なら）
+        if (offer.manual){
+          const del = document.createElement("button");
+          del.className = "del";
+          del.type = "button";
+          del.title = "削除";
+          del.textContent = "×";
+          del.addEventListener("click", () => { removeOfferById(offer.id); });
+          row.querySelector(".right").appendChild(del);
+        }
+
+        root.appendChild(row);
+      });
+    }
+
+    renderAvgCost();
+  }
+
+  /* モーダル：1件目から全部のセルを表示（在庫表示は削除） */
   function renderModal(){
     const list = document.getElementById("modalList");
     list.innerHTML = "";
 
-    const items = flattenShopOffersSorted().slice(3); // 4件目以降のみ
+    const items = flattenShopOffersSorted(); // 全部
+
     if (items.length === 0){
       const card = document.createElement("div");
       card.className = "card shop-other";
@@ -1313,7 +1271,7 @@
       card.innerHTML = `
         <div class="card-head">
           <div>${idx+1}. ショップ名：${escapeHTML(shop.shop)}</div>
-          <div style="font-size:12px; font-weight:1000; opacity:.86;">在庫：${escapeHTML(String(offer.stock))}</div>
+          <div style="font-size:12px; font-weight:1000; opacity:.86;">&nbsp;</div>
         </div>
         <div class="meta">
           <div class="pill"><span>価格</span><span style="font-weight:1000;">${yen(offer.price)}</span></div>
@@ -1383,9 +1341,8 @@
   const okBtn = document.getElementById("okBtn");
 
   function openModal(){
-    // 4件目以降がないなら開かない
-    const hasMore = flattenShopOffersSorted().length > 3;
-    if (!hasMore) return;
+    const hasAny = flattenShopOffersSorted().length > 0;
+    if (!hasAny) return;
     renderModal();
     overlay.classList.add("open");
   }
@@ -1406,7 +1363,6 @@
 
   function renderAll(rerenderModalToo=true){
     shopData.forEach(sortOffersByPrice);
-    renderMinPrice();
     renderTop3();
     renderWishList();
     if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
