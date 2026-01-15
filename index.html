@@ -62,7 +62,7 @@
     .side{
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 18px 18px 14px;
+      padding: 16px 18px 12px; /* ← 少しだけ縦を詰めた */
       box-shadow: var(--shadow);
       position:sticky;
       top:16px;
@@ -97,7 +97,7 @@
       width: 100%;
     }
     .section-title{
-      margin:16px 0 10px;
+      margin:12px 0 8px; /* ← 少しだけ縦を詰めた */
       font-weight:1000;
       letter-spacing:.04em;
       text-align:center;
@@ -429,18 +429,18 @@
     <div class="mock" aria-hidden="true">
       <div class="hint">
         商品ページや分析画面の右側に<br/>
-        この「欲しいものリスト（カート）」が表示される想定
+        この「カート」が表示される想定
       </div>
     </div>
 
-    <aside class="side" aria-label="欲しいものリスト">
+    <aside class="side" aria-label="カート">
       <div class="top-pill">
         <div class="min">最安値： <span id="minPrice">¥—</span></div>
         <small>各ショップを見る</small>
         <button id="openModalBtn" type="button">ショップ別の価格・在庫を表示</button>
       </div>
 
-      <div class="section-title">《欲しいものリスト》</div>
+      <div class="section-title">《カート》</div>
       <div id="wishList"></div>
 
       <div class="dash"></div>
