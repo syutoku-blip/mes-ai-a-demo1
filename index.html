@@ -28,7 +28,9 @@
       --stroke: rgba(0,0,0,.08);
       --softshadow: 0 8px 24px rgba(0,0,0,.08);
       --muted:#6b7280;
-      --primary:#5865f2;
+
+      /* ===== top row height (match "主要項目") ===== */
+      --topRowH: 420px;
     }
 
     *{box-sizing:border-box}
@@ -57,12 +59,7 @@
       overflow:visible;
       min-height: 680px;
     }
-    .left-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:14px;
-      align-items:start;
-    }
+
     .card-ui{
       background: var(--cardbg);
       border-radius: 18px;
@@ -83,13 +80,27 @@
       font-weight:900;
     }
 
+    /* ====== TOP ROW: match heights ====== */
+    .top-row{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:14px;
+      align-items:stretch;
+      grid-auto-rows: var(--topRowH);
+    }
+    .top-row .card-ui{
+      height: var(--topRowH);
+      display:flex;
+      flex-direction:column;
+    }
+
     /* Product image card */
     .product-image{
       display:flex;
-      align-items:flex-start;
-      justify-content:flex-start;
+      flex-direction:column;
       gap:12px;
-      min-height: 320px;
+      flex:1;
+      min-height:0;
     }
     .img-frame{
       width: 100%;
@@ -101,12 +112,12 @@
       justify-content:center;
       overflow:hidden;
       padding: 12px;
-      min-height: 260px;
+      flex:1;
+      min-height:0;
     }
     .img-frame img{
       width:100%;
-      height:auto;
-      max-height: 260px;
+      height:100%;
       object-fit:contain;
       display:block;
     }
@@ -128,10 +139,7 @@
     .info-list .v{
       font-weight:1000;
     }
-    .stars{
-      letter-spacing:.06em;
-      color:#111;
-    }
+    .stars{ letter-spacing:.06em; color:#111; }
     .badge-row{
       display:flex;
       flex-wrap:wrap;
@@ -149,6 +157,14 @@
     .badge.red{ color:#b91c1c; background:#fee2e2; border-color: rgba(185,28,28,.18); }
     .badge.blue{ color:#1d4ed8; background:#dbeafe; border-color: rgba(29,78,216,.18); }
     .badge.orange{ color:#9a3412; background:#ffedd5; border-color: rgba(154,52,18,.18); }
+
+    /* scroll area inside product info */
+    .card-ui.scrollable .scroll-area{
+      overflow:auto;
+      padding-right: 6px;
+      flex:1;
+      min-height:0;
+    }
 
     /* Main metrics card */
     .metric-grid{
@@ -206,6 +222,8 @@
       font-size:16px;
       font-weight:1000;
     }
+    /* metrics card: keep bottom pills at the bottom */
+    .metrics-card .bottom-pills{ margin-top:auto; }
 
     /* Lower row: keepa + demand-supply */
     .lower{
@@ -219,13 +237,15 @@
       border-radius: 14px;
       border: 1px dashed rgba(0,0,0,.18);
       background: #f6f7f9;
-      min-height: 220px;
+      min-height: 260px;
       display:flex;
       align-items:center;
       justify-content:center;
       color:#9aa0a6;
       font-weight:1000;
       user-select:none;
+      text-align:center;
+      padding:12px;
     }
     .chart-wrap{
       border-radius: 14px;
@@ -258,7 +278,7 @@
       user-select:none;
     }
     .fake-graph{
-      height: 220px;
+      height: 260px;
       border-radius: 12px;
       background:
         linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px) 0 0/32px 32px,
@@ -271,7 +291,6 @@
     .fake-line{
       position:absolute;
       inset:0;
-      background: none;
     }
     .fake-line::before{
       content:"";
@@ -308,11 +327,11 @@
       width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px;
     }
 
-    /* ===== Right: cart (your existing build) ===== */
+    /* ===== Right: cart ===== */
     .side{
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 16px 18px 12px; /* slightly shorter */
+      padding: 16px 18px 12px;
       box-shadow: var(--shadow);
       position:sticky;
       top:16px;
@@ -666,8 +685,11 @@
       box-shadow: 0 10px 20px rgba(0,0,0,.18), inset 0 0 0 2px rgba(255,255,255,.08);
     }
 
+    /* Responsive */
     @media (max-width: 1080px){
-      .left-grid{ grid-template-columns: 1fr; }
+      :root{ --topRowH: auto; }
+      .top-row{ grid-template-columns: 1fr; grid-auto-rows: auto; }
+      .top-row .card-ui{ height:auto; }
       .lower{ grid-template-columns: 1fr; }
       .metric-wide{ width: 100%; min-width: auto; }
     }
@@ -681,48 +703,57 @@
 <body>
   <div class="stage">
 
-    <!-- LEFT: recreate screenshot-like layout -->
+    <!-- LEFT -->
     <main class="mock" aria-label="商品ページモック">
-      <div class="left-grid">
+      <!-- TOP ROW (height matched to 主要項目) -->
+      <div class="top-row">
 
         <!-- 商品画像 -->
-        <section class="card-ui">
+        <section class="card-ui image-card">
           <h4>商品画像</h4>
           <div class="product-image">
             <div class="img-frame" aria-label="商品画像プレースホルダー">
-              <!-- 実画像は仮。ここを実データの画像URLに置き換えでOK -->
               <img alt="商品画像" src="https://dummyimage.com/800x520/e5e7eb/9ca3af.png&text=Product+Image" />
             </div>
           </div>
         </section>
 
-        <!-- 商品情報 -->
-        <section class="card-ui">
+        <!-- 商品情報 (scrollable) -->
+        <section class="card-ui scrollable">
           <h4>商品情報</h4>
-          <div class="info-list">
-            <div class="k">商品名</div><div class="v">スーパーアクションヒーロー 5体セット</div>
-            <div class="k">ブランド</div><div class="v">HeroWorks</div>
-            <div class="k">評価</div><div class="v"><span class="stars">★★★★☆</span> <span class="subtle">(523)</span></div>
-            <div class="k">各種ASIN</div><div class="v">日本：B0J0000001 / US：B0A0000001</div>
-            <div class="k">JAN</div><div class="v">4900000000001</div>
-            <div class="k">SKU</div><div class="v">HW-HERO-SET-5</div>
-            <div class="k">サイズ</div><div class="v">32×26×8</div>
-            <div class="k">重量（実積重量）</div><div class="v">1.10kg（1.20kg）</div>
-            <div class="k">カテゴリ</div><div class="v">Toys &amp; Games / Action Figures</div>
-            <div class="k">注意事項</div>
-            <div class="v">
-              <div class="badge-row">
-                <span class="badge red">輸出不可</span>
-                <span class="badge blue">知財</span>
-                <span class="badge orange">大型</span>
+          <div class="scroll-area">
+            <div class="info-list">
+              <div class="k">商品名</div><div class="v">スーパーアクションヒーロー 5体セット</div>
+              <div class="k">ブランド</div><div class="v">HeroWorks</div>
+              <div class="k">評価</div><div class="v"><span class="stars">★★★★☆</span> <span class="subtle">(523)</span></div>
+              <div class="k">各種ASIN</div><div class="v">日本：B0J0000001 / US：B0A0000001</div>
+              <div class="k">JAN</div><div class="v">4900000000001</div>
+              <div class="k">SKU</div><div class="v">HW-HERO-SET-5</div>
+              <div class="k">サイズ</div><div class="v">32×26×8</div>
+              <div class="k">重量（実積重量）</div><div class="v">1.10kg（1.20kg）</div>
+              <div class="k">カテゴリ</div><div class="v">Toys &amp; Games / Action Figures</div>
+              <div class="k">注意事項</div>
+              <div class="v">
+                <div class="badge-row">
+                  <span class="badge red">輸出不可</span>
+                  <span class="badge blue">知財</span>
+                  <span class="badge orange">大型</span>
+                </div>
               </div>
+              <div class="k">材質</div><div class="v">プラスチック / 紙</div>
+
+              <!-- 追加で長くしてもスクロールで見れる -->
+              <div class="k">備考</div><div class="v">ここに補足テキストが入る想定です。長くなってもカード内スクロールで見られます。</div>
+              <div class="k">警告</div><div class="v">輸出可否・知財・危険物などの注意情報を並べることを想定。</div>
+              <div class="k">メモ</div><div class="v">任意の追加項目（ダミー）</div>
+              <div class="k">メモ2</div><div class="v">任意の追加項目（ダミー）</div>
+              <div class="k">メモ3</div><div class="v">任意の追加項目（ダミー）</div>
             </div>
-            <div class="k">材質</div><div class="v">プラスチック / 紙</div>
           </div>
         </section>
 
         <!-- 主要項目 -->
-        <section class="card-ui">
+        <section class="card-ui metrics-card">
           <h4>主要項目</h4>
 
           <div class="metric-grid">
@@ -740,7 +771,7 @@
             </div>
           </div>
 
-          <div class="metric metric-wide" style="margin-top:10px;">
+          <div class="metric metric-wide">
             <div class="label">予測30日販売数</div>
             <div class="value">110</div>
           </div>
@@ -758,14 +789,13 @@
         </section>
       </div>
 
+      <!-- LOWER ROW -->
       <div class="lower">
-        <!-- keepaグラフ -->
         <section class="card-ui">
           <h4>keepaグラフ</h4>
           <div class="placeholder">（グラフ画像 / iframe想定）</div>
         </section>
 
-        <!-- 需要供給グラフ -->
         <section class="card-ui">
           <h4>需要供給グラフ（180日）</h4>
 
@@ -792,7 +822,7 @@
       </div>
     </main>
 
-    <!-- RIGHT: your cart (keep as-is) -->
+    <!-- RIGHT (cart) -->
     <aside class="side" aria-label="カート">
       <div class="top-pill">
         <div class="min">最安値： <span id="minPrice">¥—</span></div>
@@ -830,7 +860,7 @@
     </aside>
   </div>
 
-  <!-- Modal: shop list (その他は除外) -->
+  <!-- Modal: shop list -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格と在庫">
     <div class="modal">
       <button class="close" id="closeBtn" type="button">×</button>
