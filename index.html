@@ -29,7 +29,7 @@
       --softshadow: 0 8px 24px rgba(0,0,0,.08);
       --muted:#6b7280;
 
-      /* ===== top row height (match "主要項目") ===== */
+      /* top row height (match "主要項目") */
       --topRowH: 420px;
     }
 
@@ -44,11 +44,10 @@
       padding:24px;
     }
 
-    /* ===== 画面幅いっぱいに寄せる（広めに使う） ===== */
     .stage{
       width: min(1560px, 100%);
       display:grid;
-      grid-template-columns: minmax(820px, 1fr) 360px; /* 左をしっかり広く、右は固定 */
+      grid-template-columns: minmax(820px, 1fr) 360px;
       gap:18px;
       align-items:start;
     }
@@ -82,11 +81,10 @@
       font-weight:900;
     }
 
-    /* ====== TOP ROW: 主要項目を太くする ======
-       画像 / 商品情報 / 主要項目 = 主要項目が一番広くなる比率 */
+    /* ===== top row layout ===== */
     .top-row{
       display:grid;
-      grid-template-columns: 1.05fr 1.05fr 1.55fr; /* ← 主要項目を広めに */
+      grid-template-columns: 1.05fr 1.05fr 1.55fr;
       gap:14px;
       align-items:stretch;
       grid-auto-rows: var(--topRowH);
@@ -164,7 +162,6 @@
     .badge.blue{ color:#1d4ed8; background:#dbeafe; border-color: rgba(29,78,216,.18); }
     .badge.orange{ color:#9a3412; background:#ffedd5; border-color: rgba(154,52,18,.18); }
 
-    /* scroll area inside product info */
     .card-ui.scrollable .scroll-area{
       overflow:auto;
       padding-right: 6px;
@@ -172,10 +169,10 @@
       min-height:0;
     }
 
-    /* Main metrics card */
+    /* ===== 主要項目 ===== */
     .metric-grid{
       display:grid;
-      grid-template-columns: 1fr 1fr 1fr; /* 3つ横並び */
+      grid-template-columns: 1fr 1fr 1fr;
       gap:10px;
       margin-top: 8px;
     }
@@ -196,11 +193,6 @@
       margin-top: 6px;
       font-size:18px;
       font-weight:1000;
-    }
-    .metric-wide{
-      margin-top:10px;
-      width: 40%;
-      min-width: 220px;
     }
 
     .bottom-pills{
@@ -231,6 +223,44 @@
       white-space:nowrap;
     }
     .metrics-card .bottom-pills{ margin-top:auto; }
+
+    /* 主要項目：追加の入力列 */
+    .inputs-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+    .m-input{
+      border: 1px solid rgba(0,0,0,.08);
+      border-radius: 14px;
+      background:#fff;
+      padding: 10px 12px;
+      min-height: 72px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      gap:8px;
+    }
+    .m-input .label{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:1000;
+      line-height:1.2;
+    }
+    .m-input input{
+      width:100%;
+      border: 1px solid rgba(0,0,0,.10);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-weight:1000;
+      outline:none;
+      background:#fff;
+      text-align:left;
+    }
+    .m-input input[readonly]{
+      background:#f8fafc;
+    }
 
     /* Lower row */
     .lower{
@@ -373,6 +403,18 @@
       cursor:pointer;
       width: 100%;
     }
+
+    /* ★ 上部へ移動した入力欄（最安値の下） */
+    .top-inputs{
+      margin-top: 10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .top-inputs .sfield{
+      margin:0;
+    }
+
     .section-title{
       margin:12px 0 8px;
       font-weight:1000;
@@ -703,7 +745,7 @@
       .top-row{ grid-template-columns: 1fr; grid-auto-rows: auto; }
       .top-row .card-ui{ height:auto; }
       .lower{ grid-template-columns: 1fr; }
-      .metric-wide{ width: 100%; min-width: auto; }
+      .metric-grid, .inputs-grid{ grid-template-columns: 1fr; }
     }
     @media (max-width: 900px){
       body{padding:14px}
@@ -715,7 +757,6 @@
 
     <!-- LEFT -->
     <main class="mock" aria-label="商品ページモック">
-      <!-- TOP ROW -->
       <div class="top-row">
 
         <!-- 商品画像 -->
@@ -728,7 +769,7 @@
           </div>
         </section>
 
-        <!-- 商品情報（注意事項を一番上へ） -->
+        <!-- 商品情報（注意事項を一番上） -->
         <section class="card-ui scrollable">
           <h4>商品情報</h4>
           <div class="scroll-area">
@@ -752,21 +793,16 @@
               <div class="k">重量（実積重量）</div><div class="v">1.10kg（1.20kg）</div>
               <div class="k">カテゴリ</div><div class="v">Toys &amp; Games / Action Figures</div>
               <div class="k">材質</div><div class="v">プラスチック / 紙</div>
-
-              <!-- 追加で長くしてもスクロールで見れる -->
-              <div class="k">備考</div><div class="v">ここに補足テキストが入る想定です。長くなってもカード内スクロールで見られます。</div>
-              <div class="k">警告</div><div class="v">輸出可否・知財・危険物などの注意情報を並べることを想定。</div>
-              <div class="k">メモ</div><div class="v">任意の追加項目（ダミー）</div>
-              <div class="k">メモ2</div><div class="v">任意の追加項目（ダミー）</div>
-              <div class="k">メモ3</div><div class="v">任意の追加項目（ダミー）</div>
+              <div class="k">備考</div><div class="v">長くなってもカード内スクロールで見られます。</div>
             </div>
           </div>
         </section>
 
-        <!-- 主要項目（横幅を広く確保して3つ横並びが余裕になる） -->
+        <!-- 主要項目（指定の行構成へ） -->
         <section class="card-ui metrics-card">
           <h4>主要項目</h4>
 
+          <!-- 1段目：実績（そのまま） -->
           <div class="metric-grid">
             <div class="metric">
               <div class="label">180日販売数（実績）</div>
@@ -782,11 +818,39 @@
             </div>
           </div>
 
-          <div class="metric metric-wide">
-            <div class="label">予測30日販売数</div>
-            <div class="value">110</div>
+          <!-- 2段目：予測 180/90/30（左から） -->
+          <div class="inputs-grid" style="margin-top:10px;">
+            <div class="m-input">
+              <div class="label">予測180日販売数</div>
+              <input id="pred180" inputmode="numeric" placeholder="例：600">
+            </div>
+            <div class="m-input">
+              <div class="label">予測90日販売数</div>
+              <input id="pred90" inputmode="numeric" placeholder="例：320">
+            </div>
+            <div class="m-input">
+              <div class="label">予測30日販売数</div>
+              <input id="pred30" inputmode="numeric" placeholder="例：110">
+            </div>
           </div>
 
+          <!-- 3段目：複数在庫45/60、予測販売数（自由記入） -->
+          <div class="inputs-grid" style="margin-top:10px;">
+            <div class="m-input">
+              <div class="label">複数在庫45日</div>
+              <input id="multi45" inputmode="numeric" placeholder="例：18">
+            </div>
+            <div class="m-input">
+              <div class="label">複数在庫60日</div>
+              <input id="multi60" inputmode="numeric" placeholder="例：24">
+            </div>
+            <div class="m-input">
+              <div class="label">予測販売数（自由記入）</div>
+              <input id="freeForecast" placeholder="例：施策後は月150想定">
+            </div>
+          </div>
+
+          <!-- 下段：販売価格/粗利益（そのまま下に） -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -839,30 +903,34 @@
         <div class="min">最安値： <span id="minPrice">¥—</span></div>
         <small>各ショップを見る</small>
         <button id="openModalBtn" type="button">ショップ別の価格・在庫を表示</button>
+
+        <!-- ★ 販売価格/仕入れ額をここへ移動 -->
+        <div class="top-inputs" aria-label="上部入力">
+          <div class="sfield">
+            <div class="label">販売価格（$）</div>
+            <div class="control">
+              <input id="sellPriceUsd" inputmode="decimal" placeholder="例：39.99" />
+            </div>
+          </div>
+
+          <div class="sfield">
+            <div class="label">仕入れ額（¥）</div>
+            <div class="control">
+              <input id="avgCostJpy" inputmode="numeric" />
+              <button class="reset" id="resetAvgBtn" type="button" title="自動計算の値に戻す">↺</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hinttxt" style="margin:8px 8px 0;">
+        ※カート内（価格×数量）の合計 ÷ 合計数量＝平均仕入れ額（自動）。手動変更した場合は↺で戻せます。
       </div>
 
       <div class="section-title">《カート》</div>
       <div id="wishList"></div>
 
       <div class="dash"></div>
-
-      <div class="summary" aria-label="価格入力">
-        <div class="sfield">
-          <div class="label">販売価格（$）</div>
-          <div class="control">
-            <input id="sellPriceUsd" inputmode="decimal" placeholder="例：39.99" />
-          </div>
-        </div>
-
-        <div class="sfield">
-          <div class="label">仕入れ額（¥）</div>
-          <div class="control">
-            <input id="avgCostJpy" inputmode="numeric" />
-            <button class="reset" id="resetAvgBtn" type="button" title="自動計算の値に戻す">↺</button>
-          </div>
-        </div>
-        <div class="hinttxt">※カート内（価格×数量）の合計 ÷ 合計数量＝平均仕入れ額（自動）。手動変更した場合は↺で戻せます。</div>
-      </div>
 
       <div class="actions">
         <button class="btn" type="button">後で（仕入れリスト仮登録）</button>
