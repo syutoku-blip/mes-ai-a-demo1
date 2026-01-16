@@ -29,9 +29,9 @@
       --muted:#6b7280;
 
       /* heights */
-      --topRowH: 420px;         /* 主要項目を含むトップ行の高さ */
-      --demandCardH: 360px;     /* 需要供給グラフ（180日）のカード高さ（固定） */
-      --lowerGap: 14px;         /* top-row と lower の間 */
+      --topRowH: 420px;
+      --demandCardH: 360px;
+      --lowerGap: 14px;
     }
 
     *{box-sizing:border-box}
@@ -170,12 +170,12 @@
     }
     .m-input input[readonly]{ background:#f8fafc; cursor:not-allowed; pointer-events:none; }
 
-    /* 予測◯日：入力と自動反映を「同じ枠内」で */
+    /* 予測〇日：入力と自動反映（同じ枠内） */
     .predbox{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      gap:8px;
       width:100%;
     }
     .predbox .days{
@@ -184,10 +184,12 @@
       gap:6px;
       flex:0 0 auto;
     }
+    /* ★入力欄を小さく */
     .predbox .days input{
-      width:72px;
+      width:56px;
       text-align:right;
-      padding:10px 10px;
+      padding:8px 9px;
+      border-radius: 12px;
     }
     .predbox .days .u{
       font-size:12px;
@@ -195,23 +197,23 @@
       color:var(--muted);
       white-space:nowrap;
     }
+    /* ★自動反映数字を必ず表示（省略しない） */
     .predbox .val{
-      flex:1 1 auto;
+      flex:0 0 auto;
+      min-width: 64px;
       text-align:right;
-      font-size:18px;
+      font-size:16px;
       font-weight:1000;
       white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
     }
 
-    /* ===== 主要項目：行ごと背景（青が濃くなる） ===== */
+    /* ===== 行ごと背景（青が濃くなる） ===== */
     .metrics-row.row1 .metric,
-    .metrics-row.row1 .m-input{ background: rgba(219,234,254,.55); } /* 薄青 */
+    .metrics-row.row1 .m-input{ background: rgba(219,234,254,.55); }
     .metrics-row.row2 .metric,
-    .metrics-row.row2 .m-input{ background: rgba(191,219,254,.62); } /* 中 */
+    .metrics-row.row2 .m-input{ background: rgba(191,219,254,.62); }
     .metrics-row.row3 .metric,
-    .metrics-row.row3 .m-input{ background: rgba(147,197,253,.70); } /* 濃い */
+    .metrics-row.row3 .m-input{ background: rgba(147,197,253,.70); }
 
     .metrics-row .metric, .metrics-row .m-input{
       border-color: rgba(0,0,0,.07);
@@ -262,7 +264,6 @@
       padding:12px;
     }
 
-    /* 需要供給グラフカードは高さ固定（右カートと合わせる基準） */
     .card-ui.demand-card{
       height: var(--demandCardH);
       display:flex;
@@ -290,7 +291,7 @@
     .chart-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
     .chart-head .title{ font-weight:1000; }
     .toggles{ display:flex; gap:10px; align-items:center; color:var(--muted); font-size:12px; font-weight:1000; }
-    .toggles label{ display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none; white-space:nowrap; }
+    .toggles label{ display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none; white-spaceível; white-space:nowrap; }
     .fake-graph{
       height:260px;
       border-radius:12px;
@@ -316,7 +317,7 @@
     .legend{ margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:12px; font-weight:1000; color:var(--muted); }
     .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
 
-    /* ===== Right（黄色い枠：サイズ固定） ===== */
+    /* ===== Right（固定サイズ） ===== */
     .side{
       background: var(--panel);
       border-radius: var(--radius);
@@ -325,19 +326,17 @@
       position:sticky;
       top:16px;
 
-      /* 主要項目 + 需要供給グラフ（180日）の縦高さに合わせる */
       height: calc(var(--topRowH) + var(--demandCardH) + var(--lowerGap));
       display:flex;
       flex-direction:column;
-      overflow:hidden; /* 枠の外へ出さない */
+      overflow:hidden;
     }
 
-    /* side内：スクロールさせるためのボディ */
     .side-body{
       display:flex;
       flex-direction:column;
       gap:10px;
-      min-height:0; /* これ重要 */
+      min-height:0;
       flex:1;
       overflow:hidden;
     }
@@ -378,7 +377,6 @@
     .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
     .top3-list{ display:flex; flex-direction:column; gap:10px; }
 
-    /* ===== row（上位3ショップ） ===== */
     .row{
       border-radius: 999px;
       padding: 10px 12px;
@@ -431,7 +429,7 @@
       max-width: 116px;
     }
 
-    /* ===== stepper（はみ出し防止強化） ===== */
+    /* qty stepper（はみ出し防止） */
     .stepper{
       display:flex;
       align-items:center;
@@ -439,11 +437,9 @@
       background: var(--chip);
       padding: 4px 6px;
       border-radius: 999px;
-
       width: 104px;
       min-width: 104px;
       max-width: 104px;
-
       justify-content:space-between;
       flex: 0 0 auto;
       overflow:hidden;
@@ -483,7 +479,6 @@
 
     .row.dim{ background: var(--empty); opacity:.78; box-shadow:none; }
 
-    /* shop gradients */
     .shop-amazon { background: linear-gradient(180deg,var(--amz1),var(--amz2)); }
     .shop-rakuten{ background: linear-gradient(180deg,var(--rkt1),var(--rkt2)); }
     .shop-yahoo  { background: linear-gradient(180deg,var(--yah1),var(--yah2)); }
@@ -491,7 +486,28 @@
 
     .hinttxt{ font-size:12px; font-weight:900; opacity:.75; line-height:1.35; }
 
-    /* カート：スクロール領域（一定数超えたらここがスクロール） */
+    /* ★カートに入れた項目がわかりやすいように、枠付きのコンテナにする */
+    .cart-box{
+      margin: 0 6px;
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.35);
+      box-shadow: inset 0 0 0 2px rgba(0,0,0,.10);
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .cart-box-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      font-weight:1000;
+      font-size:13px;
+      opacity:.92;
+    }
     .cart-scroll{
       flex:1;
       min-height:0;
@@ -503,7 +519,6 @@
       display:flex;
       flex-direction:column;
       gap:8px;
-      margin: 0 6px;
     }
     .cart-row{
       display:flex;
@@ -512,8 +527,8 @@
       gap:10px;
       padding: 8px 10px;
       border-radius: 18px;
-      background: rgba(255,255,255,.45);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      background: rgba(255,255,255,.55);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
       overflow:hidden;
     }
     .cart-row .txt{
@@ -522,7 +537,7 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 170px;
+      max-width: 190px;
     }
     .cart-row .right{
       flex:0 0 auto;
@@ -675,15 +690,11 @@
       box-shadow: 0 10px 20px rgba(255,47,47,.25), inset 0 0 0 2px rgba(255,255,255,.15);
     }
 
-    /* Responsive */
     @media (max-width: 1180px){
       .stage{ grid-template-columns: 1fr; }
-      .side{
-        position:relative; top:auto;
-        height:auto;           /* 小画面は固定しない */
-        overflow:visible;
-      }
+      .side{ position:relative; top:auto; height:auto; overflow:visible; }
       .side-body{ overflow:visible; }
+      .cart-box{ min-height:auto; }
       .cart-scroll{ overflow:visible; }
     }
     @media (max-width: 1080px){
@@ -767,7 +778,7 @@
             </div>
           </div>
 
-          <!-- ★入れ替え：2行目はFBA関連 -->
+          <!-- 2行目 -->
           <div class="metrics-row row2">
             <div class="metric-grid" style="margin-top:10px;">
               <div class="metric">
@@ -785,7 +796,7 @@
             </div>
           </div>
 
-          <!-- ★入れ替え：3行目は予測 -->
+          <!-- 3行目 -->
           <div class="metrics-row row3">
             <div class="inputs-grid" style="margin-top:10px;">
               <div class="m-input">
@@ -795,6 +806,7 @@
                     <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
                     <span class="u">日</span>
                   </div>
+                  <!-- ★ここに必ず自動反映値が入る -->
                   <div class="val" id="predValue">—</div>
                 </div>
               </div>
@@ -871,9 +883,15 @@
           <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
         </div>
 
-        <!-- ★固定サイズのまま：増えたらここがスクロール -->
-        <div class="cart-scroll" aria-label="カートスクロール領域">
-          <div class="cart-list" id="wishList"></div>
+        <!-- ★枠付き（カートに入れた項目がわかる） -->
+        <div class="cart-box" aria-label="カートに入れた項目">
+          <div class="cart-box-head">
+            <div>カートに入れた項目</div>
+            <div class="hinttxt" style="margin:0; opacity:.6; font-size:11px;">※増えたら下だけスクロール</div>
+          </div>
+          <div class="cart-scroll" aria-label="カートスクロール領域">
+            <div class="cart-list" id="wishList"></div>
+          </div>
         </div>
 
         <!-- ASIN集計 -->
@@ -905,7 +923,7 @@
     </aside>
   </div>
 
-  <!-- Modal: shop list（1件目から全部表示） -->
+  <!-- Modal -->
   <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格">
     <div class="modal">
       <button class="close" id="closeBtn" type="button">×</button>
@@ -918,9 +936,9 @@
 
 <script>
   // ====== 仮計算パラメータ（プロトタイプ用） ======
-  const FX_RATE_JPY_PER_USD = 150;     // 1USD=150円（仮）
-  const SELL_PRICE_USD = 39.99;        // 固定（仮）
-  const PAYOUT_RATE = 0.85;            // 入金率（仮）
+  const FX_RATE_JPY_PER_USD = 150;
+  const SELL_PRICE_USD = 39.99;
+  const PAYOUT_RATE = 0.85;
 
   const shopData = [
     { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
@@ -991,7 +1009,6 @@
     return items;
   }
 
-  /* 上位3ショップ */
   function renderTop3(){
     const list = document.getElementById("top3List");
     list.innerHTML = "";
@@ -1040,7 +1057,6 @@
     document.getElementById("openModalBtn").disabled = items.length === 0;
   }
 
-  /* カート：qty>0 を行表示（増えたらスクロール領域で対応） */
   function renderWishList(){
     const root = document.getElementById("wishList");
     root.innerHTML = "";
@@ -1077,7 +1093,6 @@
     }
   }
 
-  /* ASIN集計 */
   function computeStats(){
     let buyTotal = 0;
     let qtyTotal = 0;
@@ -1116,26 +1131,31 @@
     }
   }
 
-  /* 主要項目：予測〇日 */
   function clampInt(v, min, max){
     const n = Math.floor(Number(v));
     if (!Number.isFinite(n)) return min;
     return Math.min(max, Math.max(min, n));
   }
+
+  // ★予測値：必ず predValue に反映
   function computePred(days){
-    const act30 = Number(document.getElementById("act30").textContent) || 0;
+    const act30 = Number(document.getElementById("act30")?.textContent) || 0;
     const perDay = act30 / 30;
     return Math.round(perDay * days);
   }
   function renderPrediction(){
     const daysEl = document.getElementById("predDays");
     const outEl  = document.getElementById("predValue");
+    if (!daysEl || !outEl) return;
+
     const days = clampInt(daysEl.value, 1, 999);
     daysEl.value = String(days);
-    outEl.textContent = String(computePred(days));
+
+    const val = computePred(days);
+    outEl.textContent = String(val); // ←必ず表示
   }
 
-  /* Modal：1件目から全部 */
+  /* Modal */
   const overlay = document.getElementById("overlay");
   const openModalBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeBtn");
@@ -1203,18 +1223,20 @@
     if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
   });
 
-  document.getElementById("predDays").addEventListener("input", renderPrediction);
+  document.getElementById("predDays")?.addEventListener("input", renderPrediction);
 
   function renderAll(rerenderModalToo=true){
     shopData.forEach(sortOffersByPrice);
     renderTop3();
     renderWishList();
     renderSummary();
-    renderPrediction();
+    renderPrediction(); // ←初回も確実に反映
     if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
   }
 
+  // ★念のため：DOM描画後に1回強制反映
   renderAll();
+  requestAnimationFrame(renderPrediction);
 </script>
 </body>
 </html>
