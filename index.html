@@ -7,7 +7,6 @@
   <style>
     :root{
       --panel:#d9d39a;
-      --topbtn:#d47b7c;
       --ink:#1a1a1a;
       --shadow: 0 10px 30px rgba(0,0,0,.18);
       --radius: 28px;
@@ -255,14 +254,12 @@
       padding: 10px 12px;
       font-weight:1000;
       outline:none;
-      background:#f8fafc;          /* 固定値っぽく */
+      background:#f8fafc;
       text-align:left;
       cursor: not-allowed;
       color:#111;
     }
-    .m-input input[readonly]{
-      pointer-events:none;          /* 動かない */
-    }
+    .m-input input[readonly]{ pointer-events:none; }
 
     /* Lower row */
     .lower{
@@ -300,9 +297,7 @@
       gap:10px;
       margin-bottom: 10px;
     }
-    .chart-head .title{
-      font-weight:1000;
-    }
+    .chart-head .title{ font-weight:1000; }
     .toggles{
       display:flex;
       gap:10px;
@@ -362,20 +357,20 @@
     }
     .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
 
-    /* ===== Right: cart ===== */
+    /* ===== Right ===== */
     .side{
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 16px 18px 12px;
+      padding: 12px 14px 10px;          /* ← ぎゅっと */
       box-shadow: var(--shadow);
       position:sticky;
       top:16px;
     }
 
-    /* 上位ショップ表示エリア（最安値バーは削除） */
+    /* 上位ショップ表示（コンパクト） */
     .top3-wrap{
       margin-top: 0;
-      padding: 12px;
+      padding: 10px;                     /* ← ぎゅっと */
       border-radius: 18px;
       background: rgba(255,255,255,.35);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
@@ -385,7 +380,7 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;                /* ← ぎゅっと */
     }
     .top3-title{
       font-weight:1000;
@@ -399,10 +394,11 @@
       background: rgba(0,0,0,.10);
       color:#111;
       font-weight:1000;
-      padding: 10px 12px;
+      padding: 9px 10px;                 /* ← ぎゅっと */
       border-radius: 999px;
       cursor:pointer;
       white-space:nowrap;
+      font-size:12px;
     }
     .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
     .top3-list{
@@ -411,40 +407,27 @@
       gap:10px;
     }
 
-    /* 入力欄 */
-    .top-inputs{
-      margin-top: 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      padding: 10px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.35);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-    }
-
     .section-title{
-      margin:12px 0 8px;
+      margin:10px 0 6px;                 /* ← ぎゅっと */
       font-weight:1000;
       letter-spacing:.04em;
       text-align:center;
       font-size:18px;
     }
 
-    /* rows */
-    .rows{ display:flex; flex-direction:column; gap:10px; }
+    /* 上位3ショップ row（切れ対策：右側の余白確保 + overflow解除） */
     .row{
       border-radius: 999px;
-      padding: 12px 14px;
+      padding: 10px 18px 10px 12px;      /* 右を増やす */
       display:flex;
       align-items:center;
       justify-content:space-between;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
       font-weight:900;
-      gap:10px;
-      overflow:hidden;
+      gap:8px;
+      overflow: visible;                 /* ← これで “数量” が切れない */
     }
-    .row .price{ min-width: 90px; font-size:18px; }
+    .row .price{ min-width: 84px; font-size:18px; }
     .row .right{
       display:flex;
       align-items:center;
@@ -452,8 +435,6 @@
       margin-left:auto;
       flex: 0 0 auto;
     }
-
-    /* rank badge */
     .rank{
       width:28px;height:28px;
       border-radius:999px;
@@ -467,7 +448,7 @@
       display:flex;
       align-items:center;
       gap:10px;
-      min-width: 120px;
+      min-width: 118px;
       overflow:hidden;
       flex: 1 1 auto;
     }
@@ -476,18 +457,18 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 120px;
+      max-width: 110px;
     }
 
-    /* qty stepper（入らない問題対策：横幅を縮める + ラベルを小さく） */
+    /* qty stepper（さらにコンパクト + 切れ対策） */
     .stepper{
       display:flex;
       align-items:center;
-      gap:8px;
+      gap:6px;
       background: var(--chip);
       padding: 6px 8px;
       border-radius: 999px;
-      min-width: 132px;             /* ここが効く */
+      min-width: 124px;                  /* さらに縮める */
       justify-content:space-between;
       flex: 0 0 auto;
     }
@@ -496,16 +477,18 @@
       opacity:.92;
       padding-left:2px;
       white-space:nowrap;
-      font-size:12px;               /* 小さく */
+      font-size:12px;
       letter-spacing:.02em;
+      flex:0 0 auto;
     }
     .stepper .controls{
       display:flex;
       align-items:center;
       gap:6px;
+      flex:0 0 auto;
     }
     .stepper .qbtn{
-      width:28px;height:28px;       /* 少し小さく */
+      width:26px;height:26px;            /* さらに縮める */
       border-radius:999px;
       border:0;
       cursor:pointer;
@@ -515,23 +498,13 @@
       flex:0 0 auto;
     }
     .stepper .qval{
-      min-width: 24px;
+      min-width: 22px;
       text-align:center;
       font-weight:1000;
       font-size:13px;
       flex:0 0 auto;
     }
 
-    .del{
-      width:32px;height:32px;
-      border-radius:999px;
-      border:0;
-      background: var(--danger);
-      color:#fff;
-      font-weight:1000;
-      cursor:pointer;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.18);
-    }
     .row.dim{
       background: var(--empty);
       opacity:.78;
@@ -544,104 +517,116 @@
     .shop-yahoo  { background: linear-gradient(180deg,var(--yah1),var(--yah2)); }
     .shop-other  { background: linear-gradient(180deg,var(--oth1),var(--oth2)); }
 
-    .dash{
-      border-top: 2px dashed rgba(0,0,0,.35);
-      margin: 18px 6px 14px;
-    }
-
-    .sfield{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding: 10px 12px;
-      background: rgba(255,255,255,.55);
-      border-radius: 18px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.07);
-      font-weight:1000;
-    }
-    .sfield .label{ white-space:nowrap; }
-    .sfield .control{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      margin-left:auto;
-    }
-    .sfield input{
-      width: 140px;
-      border:0;
-      border-radius: 14px;
-      padding: 10px 12px;
-      font-weight:1000;
-      text-align:right;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
-      background:#fff;
-      outline:none;
-    }
-    .reset{
-      width:40px;height:40px;
-      border-radius:14px;
-      border:0;
-      cursor:pointer;
-      background: rgba(0,0,0,.10);
-      font-weight:1000;
-    }
     .hinttxt{
       font-size:12px;
       font-weight:900;
       opacity:.75;
-      margin-top:-6px;
-      margin-left: 8px;
       line-height:1.35;
     }
 
-    .actions{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      padding: 6px 6px 4px;
-    }
-    .btn{
-      border:0;
-      border-radius: 999px;
-      padding: 12px 14px;
-      font-weight:1000;
-      cursor:pointer;
-      background: rgba(255,255,255,.6);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-      width: 50%;
-    }
-    .btn.primary{ background: rgba(255,255,255,.85); }
-
-    /* カート（表示を小さめに） */
+    /* カート（行リスト：さらに縦を詰める） */
     .cart-list{
       display:flex;
       flex-direction:column;
-      gap:10px;
-      margin: 8px 6px 0;
+      gap:8px;
+      margin: 6px 6px 0;
     }
     .cart-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 10px 12px;
+      padding: 8px 10px;                 /* ← ぎゅっと */
       border-radius: 18px;
       background: rgba(255,255,255,.45);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
       overflow:hidden;
     }
     .cart-row .txt{
-      font-size:13px;               /* 文字を少し小さめ */
+      font-size:13px;
       font-weight:1000;
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 150px;
+      max-width: 160px;
     }
-    .cart-row .txt .shop{ font-weight:1000; }
-    .cart-row .txt .val{ opacity:.95; }
     .cart-row .right{ flex:0 0 auto; }
+
+    .del{
+      width:30px;height:30px;            /* ← ぎゅっと */
+      border-radius:999px;
+      border:0;
+      background: var(--danger);
+      color:#fff;
+      font-weight:1000;
+      cursor:pointer;
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,.18);
+    }
+
+    /* ASIN集計（枠） */
+    .summary-box{
+      margin: 10px 6px 0;                /* ← ぎゅっと */
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(255,255,255,.35);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+    }
+    .summary-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom: 8px;
+      gap:10px;
+    }
+    .summary-title{
+      font-weight:1000;
+      letter-spacing:.02em;
+      font-size:13px;
+      opacity:.92;
+    }
+    .summary-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    .sum-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding: 8px 10px;                 /* ← ぎゅっと */
+      border-radius: 14px;
+      background: rgba(255,255,255,.55);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      font-weight:1000;
+      font-size:13px;
+    }
+    .sum-row .k{ color: rgba(0,0,0,.70); font-weight:1000; }
+    .sum-row .v{ font-weight:1000; white-space:nowrap; }
+
+    .dash{
+      border-top: 2px dashed rgba(0,0,0,.35);
+      margin: 14px 6px 12px;             /* ← ぎゅっと */
+    }
+
+    .actions{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      padding: 4px 6px 2px;              /* ← ぎゅっと */
+    }
+    .btn{
+      border:0;
+      border-radius: 999px;
+      padding: 10px 12px;                /* ← ぎゅっと */
+      font-weight:1000;
+      cursor:pointer;
+      background: rgba(255,255,255,.6);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+      width: 50%;
+      font-size:13px;
+    }
+    .btn.primary{ background: rgba(255,255,255,.85); }
 
     /* Modal */
     .overlay{
@@ -882,7 +867,7 @@
             </div>
           </div>
 
-          <!-- 下段：販売価格/粗利益 -->
+          <!-- 下段：販売価格/粗利益（左側の固定表示は残すならここ。不要なら消してOK） -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -932,42 +917,39 @@
     <!-- RIGHT -->
     <aside class="side" aria-label="カート">
 
-      <!-- 上位3ショップ（在庫表示は削除） -->
+      <!-- 上位3ショップ -->
       <div class="top3-wrap" aria-label="上位3ショップ">
         <div class="top3-head">
           <div class="top3-title">上位3ショップ（価格の安い順）</div>
           <button class="morebtn" id="openModalBtn" type="button">全ショップを見る</button>
         </div>
         <div class="top3-list" id="top3List"></div>
-        <div class="hinttxt" style="margin:10px 2px 0;">※ここでも数量を＋/−で変更できます</div>
-      </div>
-
-      <!-- 入力欄 -->
-      <div class="top-inputs" aria-label="上部入力">
-        <div class="sfield">
-          <div class="label">販売価格（$）</div>
-          <div class="control">
-            <input id="sellPriceUsd" inputmode="decimal" placeholder="例：39.99" />
-          </div>
-        </div>
-
-        <div class="sfield">
-          <div class="label">仕入れ額（¥）</div>
-          <div class="control">
-            <input id="avgCostJpy" inputmode="numeric" />
-            <button class="reset" id="resetAvgBtn" type="button" title="自動計算の値に戻す">↺</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="hinttxt" style="margin:10px 8px 0;">
-        ※カート内（価格×数量）の合計 ÷ 合計数量＝平均仕入れ額（自動）。手動変更した場合は↺で戻せます。
+        <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
       </div>
 
       <div class="section-title">《カート》</div>
 
-      <!-- カート表示（ショップブロックをやめて、行リストで表示） -->
+      <!-- カート表示 -->
       <div class="cart-list" id="wishList"></div>
+
+      <!-- ASIN集計 -->
+      <div class="summary-box" aria-label="ASIN集計">
+        <div class="summary-head">
+          <div class="summary-title">ASIN集計</div>
+          <div class="hinttxt" style="margin:0; opacity:.65; font-weight:1000; font-size:11px;">
+            ※販売額/入金/粗利益は仮計算
+          </div>
+        </div>
+
+        <div class="summary-grid">
+          <div class="sum-row"><div class="k">合計仕入れ個数</div><div class="v" id="sumQty">—</div></div>
+          <div class="sum-row"><div class="k">仕入れ平均額</div><div class="v" id="sumAvg">—</div></div>
+          <div class="sum-row"><div class="k">仕入れ額合計</div><div class="v" id="sumBuyTotal">—</div></div>
+          <div class="sum-row"><div class="k">販売額合計</div><div class="v" id="sumSalesTotal">—</div></div>
+          <div class="sum-row"><div class="k">入金額合計</div><div class="v" id="sumPayoutTotal">—</div></div>
+          <div class="sum-row"><div class="k">粗利益額合計（粗利益率）</div><div class="v" id="sumProfit">—</div></div>
+        </div>
+      </div>
 
       <div class="dash"></div>
 
@@ -1015,6 +997,11 @@
   </div>
 
 <script>
+  // ====== 仮計算パラメータ（プロトタイプ用） ======
+  const FX_RATE_JPY_PER_USD = 150;     // 1USD=150円の仮
+  const SELL_PRICE_USD = 39.99;        // 固定の仮（右側入力を消したのでここで）
+  const PAYOUT_RATE = 0.85;            // 手数料等を差し引いた入金率（仮）
+
   const shopData = [
     { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
       { id: "amz-1", price: 3980, stock: 9,  qty: 0, manual:false },
@@ -1063,36 +1050,6 @@
     if (!found) return;
     setQty(id, (Number(found.offer.qty)||0) + delta);
   }
-
-  function computeAvgCostJpy(){
-    let totalCost = 0, totalQty = 0;
-    shopData.forEach(s => s.offers.forEach(o => {
-      const q = Number(o.qty)||0;
-      const p = Number(o.price)||0;
-      if (q>0 && p>0){
-        totalCost += p*q;
-        totalQty  += q;
-      }
-    }));
-    if (totalQty<=0) return null;
-    return Math.round(totalCost/totalQty);
-  }
-
-  const avgInput = document.getElementById("avgCostJpy");
-  const resetAvgBtn = document.getElementById("resetAvgBtn");
-  let avgIsManual = false;
-
-  function renderAvgCost(){
-    const auto = computeAvgCostJpy();
-    if (!avgIsManual){
-      avgInput.value = auto ? String(auto) : "";
-      avgInput.placeholder = auto ? "" : "—";
-    }
-    resetAvgBtn.disabled = !avgIsManual;
-    resetAvgBtn.style.opacity = avgIsManual ? "1" : ".55";
-  }
-  avgInput.addEventListener("input", () => { avgIsManual = true; renderAvgCost(); });
-  resetAvgBtn.addEventListener("click", () => { avgIsManual = false; renderAvgCost(); });
 
   function renderStepper(qty, onMinus, onPlus){
     const wrap = document.createElement("div");
@@ -1177,12 +1134,11 @@
       });
     }
 
-    // ボタンは常に「全ショップを見る」
     const moreBtn = document.getElementById("openModalBtn");
     moreBtn.disabled = items.length === 0;
   }
 
-  /* 《カート》：ショップブロックをやめて、選択（qty>0）の行だけ小さめに出す */
+  /* 《カート》：qty>0 を行表示（小さめ） */
   function renderWishList(){
     const root = document.getElementById("wishList");
     root.innerHTML = "";
@@ -1197,7 +1153,7 @@
       empty.className = "cart-row";
       empty.style.opacity = ".75";
       empty.innerHTML = `
-        <div class="txt"><span class="shop">—</span> <span class="val">¥—</span></div>
+        <div class="txt">— ¥—</div>
         <div class="right"></div>
       `;
       const st = renderStepper("", ()=>{}, ()=>{});
@@ -1207,14 +1163,12 @@
       empty.querySelector(".right").appendChild(st);
       root.appendChild(empty);
     } else {
-      // 表示順：価格の安い順
       picked.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
-
       picked.forEach(({shop, offer}) => {
         const row = document.createElement("div");
         row.className = "cart-row";
         row.innerHTML = `
-          <div class="txt"><span class="shop">${escapeHTML(shop.shop)}</span> <span class="val">${yen(offer.price)}</span></div>
+          <div class="txt">${escapeHTML(shop.shop)} ${yen(offer.price)}</div>
           <div class="right"></div>
         `;
         const st = renderStepper(offer.qty,
@@ -1223,7 +1177,6 @@
         );
         row.querySelector(".right").appendChild(st);
 
-        // 手入力だけ削除ボタン（必要なら）
         if (offer.manual){
           const del = document.createElement("button");
           del.className = "del";
@@ -1233,20 +1186,59 @@
           del.addEventListener("click", () => { removeOfferById(offer.id); });
           row.querySelector(".right").appendChild(del);
         }
-
         root.appendChild(row);
       });
     }
-
-    renderAvgCost();
   }
 
-  /* モーダル：1件目から全部のセルを表示（在庫表示は削除） */
+  /* ASIN集計 */
+  function computeStats(){
+    let buyTotal = 0;
+    let qtyTotal = 0;
+    shopData.forEach(s => s.offers.forEach(o => {
+      const q = Number(o.qty)||0;
+      const p = Number(o.price)||0;
+      if (q>0 && p>0){
+        buyTotal += p*q;
+        qtyTotal += q;
+      }
+    }));
+
+    const avg = qtyTotal>0 ? Math.round(buyTotal/qtyTotal) : null;
+
+    const sellJpyPerUnit = Math.round(SELL_PRICE_USD * FX_RATE_JPY_PER_USD);
+    const salesTotal = qtyTotal>0 ? sellJpyPerUnit * qtyTotal : null;
+    const payoutTotal = salesTotal ? Math.round(salesTotal * PAYOUT_RATE) : null;
+
+    const profit = (payoutTotal!=null) ? (payoutTotal - buyTotal) : null;
+    const margin = (payoutTotal && payoutTotal>0 && profit!=null) ? (profit / payoutTotal) : null;
+
+    return { qtyTotal, avg, buyTotal: qtyTotal>0 ? buyTotal : null, salesTotal, payoutTotal, profit, margin };
+  }
+
+  function renderSummary(){
+    const s = computeStats();
+
+    document.getElementById("sumQty").textContent = s.qtyTotal ? s.qtyTotal.toLocaleString("ja-JP") : "—";
+    document.getElementById("sumAvg").textContent = s.avg!=null ? yen(s.avg) : "—";
+    document.getElementById("sumBuyTotal").textContent = s.buyTotal!=null ? yen(s.buyTotal) : "—";
+    document.getElementById("sumSalesTotal").textContent = s.salesTotal!=null ? yen(s.salesTotal) : "—";
+    document.getElementById("sumPayoutTotal").textContent = s.payoutTotal!=null ? yen(s.payoutTotal) : "—";
+
+    if (s.profit==null){
+      document.getElementById("sumProfit").textContent = "—";
+    } else {
+      const pct = (s.margin!=null) ? ` (${(s.margin*100).toFixed(1)}%)` : "";
+      document.getElementById("sumProfit").textContent = `${yen(s.profit)}${pct}`;
+    }
+  }
+
+  /* モーダル：1件目から全部のセル（在庫表示なし） */
   function renderModal(){
     const list = document.getElementById("modalList");
     list.innerHTML = "";
 
-    const items = flattenShopOffersSorted(); // 全部
+    const items = flattenShopOffersSorted();
 
     if (items.length === 0){
       const card = document.createElement("div");
@@ -1254,7 +1246,7 @@
       card.innerHTML = `
         <div class="card-head">
           <div>表示できるショップがありません</div>
-          <div style="font-size:12px; font-weight:1000; opacity:.86;">—</div>
+          <div style="font-size:12px; font-weight:1000; opacity:.86;">&nbsp;</div>
         </div>
         <div class="meta">
           <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
@@ -1294,6 +1286,7 @@
     renderAll(false);
   }
 
+  // ===== 手入力追加（今は起動ボタンがないので、必要なら shop-head を復活してください） =====
   const manualOverlay = document.getElementById("manualOverlay");
   const manualCloseBtn = document.getElementById("manualCloseBtn");
   const manualAddBtn = document.getElementById("manualAddBtn");
@@ -1335,6 +1328,7 @@
     closeManualAdd();
   });
 
+  // ===== Modal open/close =====
   const overlay = document.getElementById("overlay");
   const openModalBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeBtn");
@@ -1365,6 +1359,7 @@
     shopData.forEach(sortOffersByPrice);
     renderTop3();
     renderWishList();
+    renderSummary();
     if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
   }
 
