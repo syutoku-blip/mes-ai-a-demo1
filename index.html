@@ -146,13 +146,15 @@
       border-radius: 14px;
       background:#fff;
       padding: 10px 12px;
-      min-height: 72px;
+      min-height: 92px;
       display:flex;
       flex-direction:column;
       justify-content:center;
       gap:8px;
+      overflow:hidden;
     }
     .m-input .label{ font-size:12px; color:var(--muted); font-weight:1000; line-height:1.2; }
+
     .m-input input{
       width:100%;
       border:1px solid rgba(0,0,0,.10);
@@ -166,14 +168,39 @@
     }
     .m-input input[readonly]{ background:#f8fafc; cursor:not-allowed; pointer-events:none; }
 
-    .inline{
+    /* 予測◯日：入力と自動反映を「同じ枠内」で */
+    .predbox{
       display:flex;
-      gap:8px;
       align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      width:100%;
     }
-    .inline .small{
-      width:84px;
+    .predbox .days{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      flex:0 0 auto;
+    }
+    .predbox .days input{
+      width:72px;
       text-align:right;
+      padding:10px 10px;
+    }
+    .predbox .days .u{
+      font-size:12px;
+      font-weight:1000;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .predbox .val{
+      flex:1 1 auto;
+      text-align:right;
+      font-size:18px;
+      font-weight:1000;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
     }
 
     .bottom-pills{
@@ -301,7 +328,7 @@
     .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
     .top3-list{ display:flex; flex-direction:column; gap:10px; }
 
-    /* ===== 上位3ショップ row：はみ出し防止（row内に収める） ===== */
+    /* ===== row（上位3ショップ） ===== */
     .row{
       border-radius: 999px;
       padding: 10px 12px;
@@ -311,8 +338,7 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
       font-weight:900;
       gap:8px;
-
-      overflow:hidden; /* ← ここを hidden にして「外にはみ出さない」 */
+      overflow:hidden; /* ←はみ出し防止 */
     }
     .row .left{
       display:flex;
@@ -341,8 +367,8 @@
       font-size:14px;
     }
     .row .price{
-      min-width: 76px;
-      font-size:16px; /* ← 少し小さく */
+      min-width: 74px;
+      font-size:15px; /* ←さらに小さく */
       white-space:nowrap;
       flex:0 0 auto;
     }
@@ -352,29 +378,31 @@
       gap:6px;
       margin-left:auto;
       flex: 0 0 auto;
+      max-width: 116px; /* ←右側を制限してはみ出しを防ぐ */
     }
 
-    /* stepper：さらに小さくして row 内に収める */
+    /* ===== stepper（さらに小型化して完全に枠内） ===== */
     .stepper{
       display:flex;
       align-items:center;
-      gap:6px;
+      gap:5px;
       background: var(--chip);
-      padding: 5px 6px;
+      padding: 4px 6px;
       border-radius: 999px;
 
-      width: 112px;     /* ← 固定で小さく */
-      min-width: 112px;
-      max-width: 112px;
+      width: 104px;
+      min-width: 104px;
+      max-width: 104px;
 
       justify-content:space-between;
       flex: 0 0 auto;
+      overflow:hidden;
     }
     .stepper .label{
       font-weight:1000;
       opacity:.92;
       white-space:nowrap;
-      font-size:11px;   /* ← 小さく */
+      font-size:10.5px;
       letter-spacing:.01em;
       flex:0 0 auto;
     }
@@ -385,7 +413,7 @@
       flex:0 0 auto;
     }
     .stepper .qbtn{
-      width:22px;height:22px; /* ← 小さく */
+      width:20px;height:20px;
       border-radius:999px;
       border:0;
       cursor:pointer;
@@ -393,13 +421,13 @@
       font-weight:1000;
       line-height:1;
       flex:0 0 auto;
-      font-size:13px;
+      font-size:12px;
     }
     .stepper .qval{
-      min-width: 18px;
+      min-width: 16px;
       text-align:center;
       font-weight:1000;
-      font-size:12px;
+      font-size:11.5px;
       flex:0 0 auto;
     }
 
@@ -412,9 +440,6 @@
     .shop-other  { background: linear-gradient(180deg,var(--oth1),var(--oth2)); }
 
     .hinttxt{ font-size:12px; font-weight:900; opacity:.75; line-height:1.35; }
-
-    /* 《カート》見出しは消すので section-title は未使用 */
-    .section-title{ display:none; }
 
     /* カート（行リスト） */
     .cart-list{
@@ -432,7 +457,7 @@
       border-radius: 18px;
       background: rgba(255,255,255,.45);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      overflow:hidden;
+      overflow:hidden; /* ←ここもはみ出し防止 */
     }
     .cart-row .txt{
       font-size:13px;
@@ -440,19 +465,12 @@
       white-space:nowrap;
       overflow:hidden;
       text-overflow:ellipsis;
-      max-width: 160px;
+      max-width: 170px;
     }
-    .cart-row .right{ flex:0 0 auto; }
-
-    .del{
-      width:30px;height:30px;
-      border-radius:999px;
-      border:0;
-      background: var(--danger);
-      color:#fff;
-      font-weight:1000;
-      cursor:pointer;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.18);
+    .cart-row .right{
+      flex:0 0 auto;
+      max-width: 110px;
+      overflow:hidden;
     }
 
     /* ASIN集計 */
@@ -610,7 +628,8 @@
       .top-row .card-ui{ height:auto; }
       .lower{ grid-template-columns: 1fr; }
       .metric-grid, .inputs-grid{ grid-template-columns: 1fr; }
-      .stepper{ width: 120px; min-width: 120px; max-width:120px; }
+      .stepper{ width: 112px; min-width: 112px; max-width:112px; }
+      .row .right{ max-width: 124px; }
     }
     @media (max-width: 900px){
       body{padding:14px}
@@ -667,7 +686,7 @@
         <section class="card-ui metrics-card">
           <h4>主要項目</h4>
 
-          <!-- 1段目：実績 -->
+          <!-- 1段目：実績（180/90/30はそのまま） -->
           <div class="metric-grid">
             <div class="metric">
               <div class="label">180日販売数（実績）</div>
@@ -683,22 +702,27 @@
             </div>
           </div>
 
-          <!-- 2段目：予測〇日販売数（自由入力 → 自動算出） -->
+          <!-- 2段目：予測は「90/30を残し」、180は消して「入力＋自動反映」を同じ枠内に -->
           <div class="inputs-grid" style="margin-top:10px;">
             <div class="m-input">
               <div class="label">予測〇日販売数</div>
-              <div class="inline">
-                <input id="predDays" class="small" inputmode="numeric" value="180" aria-label="日数" />
-                <span class="subtle">日</span>
+              <div class="predbox" aria-label="予測日数入力と予測値">
+                <div class="days">
+                  <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
+                  <span class="u">日</span>
+                </div>
+                <div class="val" id="predValue">—</div>
               </div>
             </div>
+
             <div class="m-input">
-              <div class="label">予測販売数（自動）</div>
-              <input id="predValue" value="—" readonly aria-readonly="true">
+              <div class="label">予測90日販売数</div>
+              <input id="pred90" value="330" readonly aria-readonly="true">
             </div>
+
             <div class="m-input">
-              <div class="label">備考</div>
-              <input id="predNote" value="30日実績の平均から算出" readonly aria-readonly="true">
+              <div class="label">予測30日販売数</div>
+              <input id="pred30" value="120" readonly aria-readonly="true">
             </div>
           </div>
 
@@ -718,7 +742,7 @@
             </div>
           </div>
 
-          <!-- 下段（必要なら残す） -->
+          <!-- 下段（既存のまま） -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -778,7 +802,7 @@
         <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
       </div>
 
-      <!-- 《カート》見出しは削除（表示しない） -->
+      <!-- カート（行リスト） -->
       <div class="cart-list" id="wishList"></div>
 
       <!-- ASIN集計 -->
@@ -1020,7 +1044,7 @@
     }
   }
 
-  /* 主要項目：予測〇日販売数（30日実績の平均から算出） */
+  /* 主要項目：予測〇日（入力→同一枠の右側に自動反映） */
   function clampInt(v, min, max){
     const n = Math.floor(Number(v));
     if (!Number.isFinite(n)) return min;
@@ -1036,7 +1060,7 @@
     const outEl  = document.getElementById("predValue");
     const days = clampInt(daysEl.value, 1, 999);
     daysEl.value = String(days);
-    outEl.value = String(computePred(days));
+    outEl.textContent = String(computePred(days));
   }
 
   /* Modal：1件目から全部（数量操作あり） */
@@ -1105,9 +1129,7 @@
 
   window.addEventListener("keydown", (e) => { if (e.key === "Escape" && overlay.classList.contains("open")) closeModal(); });
 
-  document.getElementById("predDays").addEventListener("input", () => {
-    renderPrediction();
-  });
+  document.getElementById("predDays").addEventListener("input", renderPrediction);
 
   function renderAll(rerenderModalToo=true){
     shopData.forEach(sortOffersByPrice);
