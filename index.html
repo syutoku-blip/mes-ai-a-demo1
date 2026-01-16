@@ -28,7 +28,6 @@
       --softshadow: 0 8px 24px rgba(0,0,0,.08);
       --muted:#6b7280;
 
-      /* top row height (match "主要項目") */
       --topRowH: 420px;
     }
 
@@ -51,14 +50,8 @@
       align-items:start;
     }
 
-    /* ===== Left: page mock ===== */
-    .mock{
-      border-radius: 18px;
-      background: transparent;
-      position:relative;
-      overflow:visible;
-      min-height: 680px;
-    }
+    /* ===== Left ===== */
+    .mock{ border-radius:18px; background:transparent; position:relative; overflow:visible; min-height:680px; }
 
     .card-ui{
       background: var(--cardbg);
@@ -68,19 +61,9 @@
       padding: 14px;
       overflow:hidden;
     }
-    .card-ui h4{
-      margin:0 0 10px;
-      font-size:16px;
-      font-weight:1000;
-      letter-spacing:.02em;
-    }
-    .subtle{
-      color:var(--muted);
-      font-size:12px;
-      font-weight:900;
-    }
+    .card-ui h4{ margin:0 0 10px; font-size:16px; font-weight:1000; letter-spacing:.02em; }
+    .subtle{ color:var(--muted); font-size:12px; font-weight:900; }
 
-    /* ===== top row layout ===== */
     .top-row{
       display:grid;
       grid-template-columns: 1.05fr 1.05fr 1.55fr;
@@ -94,35 +77,22 @@
       flex-direction:column;
     }
 
-    /* Product image card */
-    .product-image{
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      flex:1;
-      min-height:0;
-    }
+    .product-image{ display:flex; flex-direction:column; gap:12px; flex:1; min-height:0; }
     .img-frame{
-      width: 100%;
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: #f6f7f9;
+      width:100%;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#f6f7f9;
       display:flex;
       align-items:center;
       justify-content:center;
       overflow:hidden;
-      padding: 12px;
+      padding:12px;
       flex:1;
       min-height:0;
     }
-    .img-frame img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      display:block;
-    }
+    .img-frame img{ width:100%; height:100%; object-fit:contain; display:block; }
 
-    /* Product info card */
     .info-list{
       display:grid;
       grid-template-columns: 120px 1fr;
@@ -131,42 +101,21 @@
       font-weight:900;
       line-height:1.35;
     }
-    .info-list .k{
-      color:var(--muted);
-      font-weight:1000;
-      letter-spacing:.02em;
-    }
-    .info-list .v{
-      font-weight:1000;
-      min-width:0;
-      word-break:break-word;
-    }
+    .info-list .k{ color:var(--muted); font-weight:1000; letter-spacing:.02em; }
+    .info-list .v{ font-weight:1000; min-width:0; word-break:break-word; }
     .stars{ letter-spacing:.06em; color:#111; }
-    .badge-row{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top: 6px;
-    }
+    .badge-row{ display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; }
     .badge{
-      font-size:12px;
-      font-weight:1000;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.08);
-      background:#f8fafc;
-      white-space:nowrap;
+      font-size:12px; font-weight:1000;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#f8fafc; white-space:nowrap;
     }
     .badge.red{ color:#b91c1c; background:#fee2e2; border-color: rgba(185,28,28,.18); }
     .badge.blue{ color:#1d4ed8; background:#dbeafe; border-color: rgba(29,78,216,.18); }
     .badge.orange{ color:#9a3412; background:#ffedd5; border-color: rgba(154,52,18,.18); }
 
-    .card-ui.scrollable .scroll-area{
-      overflow:auto;
-      padding-right: 6px;
-      flex:1;
-      min-height:0;
-    }
+    .card-ui.scrollable .scroll-area{ overflow:auto; padding-right:6px; flex:1; min-height:0; }
 
     /* ===== 主要項目 ===== */
     .metric-grid{
@@ -183,47 +132,9 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
       min-height: 92px;
     }
-    .metric .label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:1000;
-    }
-    .metric .value{
-      margin-top: 6px;
-      font-size:18px;
-      font-weight:1000;
-    }
+    .metric .label{ font-size:12px; color:var(--muted); font-weight:1000; }
+    .metric .value{ margin-top:6px; font-size:18px; font-weight:1000; }
 
-    .bottom-pills{
-      margin-top: 12px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .pillbox{
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: #f5f7ff;
-      padding: 12px 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-weight:1000;
-      gap:10px;
-    }
-    .pillbox .l{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:1000;
-    }
-    .pillbox .r{
-      font-size:16px;
-      font-weight:1000;
-      white-space:nowrap;
-    }
-    .metrics-card .bottom-pills{ margin-top:auto; }
-
-    /* 主要項目：固定値（入力不可） */
     .inputs-grid{
       display:grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -241,27 +152,52 @@
       justify-content:center;
       gap:8px;
     }
-    .m-input .label{
-      font-size:12px;
-      color:var(--muted);
-      font-weight:1000;
-      line-height:1.2;
-    }
+    .m-input .label{ font-size:12px; color:var(--muted); font-weight:1000; line-height:1.2; }
     .m-input input{
       width:100%;
-      border: 1px solid rgba(0,0,0,.10);
-      border-radius: 12px;
-      padding: 10px 12px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:12px;
+      padding:10px 12px;
       font-weight:1000;
       outline:none;
-      background:#f8fafc;
+      background:#fff;
       text-align:left;
-      cursor: not-allowed;
       color:#111;
     }
-    .m-input input[readonly]{ pointer-events:none; }
+    .m-input input[readonly]{ background:#f8fafc; cursor:not-allowed; pointer-events:none; }
 
-    /* Lower row */
+    .inline{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .inline .small{
+      width:84px;
+      text-align:right;
+    }
+
+    .bottom-pills{
+      margin-top: 12px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+    }
+    .pillbox{
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#f5f7ff;
+      padding:12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:1000;
+      gap:10px;
+    }
+    .pillbox .l{ font-size:12px; color:var(--muted); font-weight:1000; }
+    .pillbox .r{ font-size:16px; font-weight:1000; white-space:nowrap; }
+    .metrics-card .bottom-pills{ margin-top:auto; }
+
+    /* ===== Lower row ===== */
     .lower{
       margin-top: 14px;
       display:grid;
@@ -270,10 +206,10 @@
       align-items:start;
     }
     .placeholder{
-      border-radius: 14px;
-      border: 1px dashed rgba(0,0,0,.18);
-      background: #f6f7f9;
-      min-height: 260px;
+      border-radius:14px;
+      border:1px dashed rgba(0,0,0,.18);
+      background:#f6f7f9;
+      min-height:260px;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -283,94 +219,56 @@
       text-align:center;
       padding:12px;
     }
+
     .chart-wrap{
-      border-radius: 14px;
-      border: 1px solid rgba(0,0,0,.08);
-      background: #fff;
-      padding: 12px;
+      border-radius:14px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      padding:12px;
       overflow:hidden;
     }
-    .chart-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom: 10px;
-    }
+    .chart-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
     .chart-head .title{ font-weight:1000; }
-    .toggles{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      color:var(--muted);
-      font-size:12px;
-      font-weight:1000;
-    }
-    .toggles label{
-      display:flex; gap:6px; align-items:center;
-      cursor:pointer;
-      user-select:none;
-      white-space:nowrap;
-    }
+    .toggles{ display:flex; gap:10px; align-items:center; color:var(--muted); font-size:12px; font-weight:1000; }
+    .toggles label{ display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none; white-space:nowrap; }
     .fake-graph{
-      height: 260px;
-      border-radius: 12px;
+      height:260px;
+      border-radius:12px;
       background:
         linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px) 0 0/32px 32px,
         linear-gradient(to bottom, rgba(0,0,0,.05) 1px, transparent 1px) 0 0/32px 32px,
         linear-gradient(180deg, #f8fafc, #ffffff);
-      border: 1px solid rgba(0,0,0,.06);
+      border:1px solid rgba(0,0,0,.06);
       position:relative;
       overflow:hidden;
     }
     .fake-line{ position:absolute; inset:0; }
     .fake-line::before{
-      content:"";
-      position:absolute;
-      left:-10%;
-      top:52%;
-      width:120%;
-      height:2px;
-      background: rgba(59,130,246,.9);
-      transform: rotate(-12deg);
-      filter: blur(.1px);
+      content:""; position:absolute; left:-10%; top:52%;
+      width:120%; height:2px; background: rgba(59,130,246,.9);
+      transform: rotate(-12deg); filter: blur(.1px);
     }
     .fake-line::after{
-      content:"";
-      position:absolute;
-      left:-10%;
-      top:68%;
-      width:120%;
-      height:2px;
-      background: rgba(245,158,11,.9);
-      transform: rotate(-6deg);
-      filter: blur(.1px);
+      content:""; position:absolute; left:-10%; top:68%;
+      width:120%; height:2px; background: rgba(245,158,11,.9);
+      transform: rotate(-6deg); filter: blur(.1px);
     }
-    .legend{
-      margin-top: 10px;
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      font-size:12px;
-      font-weight:1000;
-      color:var(--muted);
-    }
+    .legend{ margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:12px; font-weight:1000; color:var(--muted); }
     .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
 
     /* ===== Right ===== */
     .side{
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 12px 14px 10px;          /* ← ぎゅっと */
+      padding: 12px 14px 10px;
       box-shadow: var(--shadow);
       position:sticky;
       top:16px;
     }
 
-    /* 上位ショップ表示（コンパクト） */
     .top3-wrap{
       margin-top: 0;
-      padding: 10px;                     /* ← ぎゅっと */
+      padding: 10px;
       border-radius: 18px;
       background: rgba(255,255,255,.35);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
@@ -380,7 +278,7 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      margin-bottom: 8px;                /* ← ぎゅっと */
+      margin-bottom: 8px;
     }
     .top3-title{
       font-weight:1000;
@@ -394,63 +292,45 @@
       background: rgba(0,0,0,.10);
       color:#111;
       font-weight:1000;
-      padding: 9px 10px;                 /* ← ぎゅっと */
+      padding: 9px 10px;
       border-radius: 999px;
       cursor:pointer;
       white-space:nowrap;
       font-size:12px;
     }
     .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
-    .top3-list{
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
+    .top3-list{ display:flex; flex-direction:column; gap:10px; }
 
-    .section-title{
-      margin:10px 0 6px;                 /* ← ぎゅっと */
-      font-weight:1000;
-      letter-spacing:.04em;
-      text-align:center;
-      font-size:18px;
-    }
-
-    /* 上位3ショップ row（切れ対策：右側の余白確保 + overflow解除） */
+    /* ===== 上位3ショップ row：はみ出し防止（row内に収める） ===== */
     .row{
       border-radius: 999px;
-      padding: 10px 18px 10px 12px;      /* 右を増やす */
+      padding: 10px 12px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
       font-weight:900;
       gap:8px;
-      overflow: visible;                 /* ← これで “数量” が切れない */
+
+      overflow:hidden; /* ← ここを hidden にして「外にはみ出さない」 */
     }
-    .row .price{ min-width: 84px; font-size:18px; }
-    .row .right{
+    .row .left{
       display:flex;
       align-items:center;
-      gap:8px;
-      margin-left:auto;
-      flex: 0 0 auto;
+      gap:10px;
+      min-width: 110px;
+      overflow:hidden;
+      flex: 1 1 auto;
     }
     .rank{
-      width:28px;height:28px;
+      width:26px;height:26px;
       border-radius:999px;
       display:grid; place-items:center;
       background: rgba(0,0,0,.14);
       font-weight:1000;
       color:#111;
       flex:0 0 auto;
-    }
-    .row .left{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      min-width: 118px;
-      overflow:hidden;
-      flex: 1 1 auto;
+      font-size:13px;
     }
     .shopname{
       font-weight:1000;
@@ -458,37 +338,54 @@
       overflow:hidden;
       text-overflow:ellipsis;
       max-width: 110px;
+      font-size:14px;
+    }
+    .row .price{
+      min-width: 76px;
+      font-size:16px; /* ← 少し小さく */
+      white-space:nowrap;
+      flex:0 0 auto;
+    }
+    .row .right{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin-left:auto;
+      flex: 0 0 auto;
     }
 
-    /* qty stepper（さらにコンパクト + 切れ対策） */
+    /* stepper：さらに小さくして row 内に収める */
     .stepper{
       display:flex;
       align-items:center;
       gap:6px;
       background: var(--chip);
-      padding: 6px 8px;
+      padding: 5px 6px;
       border-radius: 999px;
-      min-width: 124px;                  /* さらに縮める */
+
+      width: 112px;     /* ← 固定で小さく */
+      min-width: 112px;
+      max-width: 112px;
+
       justify-content:space-between;
       flex: 0 0 auto;
     }
     .stepper .label{
       font-weight:1000;
       opacity:.92;
-      padding-left:2px;
       white-space:nowrap;
-      font-size:12px;
-      letter-spacing:.02em;
+      font-size:11px;   /* ← 小さく */
+      letter-spacing:.01em;
       flex:0 0 auto;
     }
     .stepper .controls{
       display:flex;
       align-items:center;
-      gap:6px;
+      gap:5px;
       flex:0 0 auto;
     }
     .stepper .qbtn{
-      width:26px;height:26px;            /* さらに縮める */
+      width:22px;height:22px; /* ← 小さく */
       border-radius:999px;
       border:0;
       cursor:pointer;
@@ -496,20 +393,17 @@
       font-weight:1000;
       line-height:1;
       flex:0 0 auto;
+      font-size:13px;
     }
     .stepper .qval{
-      min-width: 22px;
+      min-width: 18px;
       text-align:center;
       font-weight:1000;
-      font-size:13px;
+      font-size:12px;
       flex:0 0 auto;
     }
 
-    .row.dim{
-      background: var(--empty);
-      opacity:.78;
-      box-shadow:none;
-    }
+    .row.dim{ background: var(--empty); opacity:.78; box-shadow:none; }
 
     /* shop gradients */
     .shop-amazon { background: linear-gradient(180deg,var(--amz1),var(--amz2)); }
@@ -517,26 +411,24 @@
     .shop-yahoo  { background: linear-gradient(180deg,var(--yah1),var(--yah2)); }
     .shop-other  { background: linear-gradient(180deg,var(--oth1),var(--oth2)); }
 
-    .hinttxt{
-      font-size:12px;
-      font-weight:900;
-      opacity:.75;
-      line-height:1.35;
-    }
+    .hinttxt{ font-size:12px; font-weight:900; opacity:.75; line-height:1.35; }
 
-    /* カート（行リスト：さらに縦を詰める） */
+    /* 《カート》見出しは消すので section-title は未使用 */
+    .section-title{ display:none; }
+
+    /* カート（行リスト） */
     .cart-list{
       display:flex;
       flex-direction:column;
       gap:8px;
-      margin: 6px 6px 0;
+      margin: 10px 6px 0;
     }
     .cart-row{
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 8px 10px;                 /* ← ぎゅっと */
+      padding: 8px 10px;
       border-radius: 18px;
       background: rgba(255,255,255,.45);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
@@ -553,7 +445,7 @@
     .cart-row .right{ flex:0 0 auto; }
 
     .del{
-      width:30px;height:30px;            /* ← ぎゅっと */
+      width:30px;height:30px;
       border-radius:999px;
       border:0;
       background: var(--danger);
@@ -563,9 +455,9 @@
       box-shadow: inset 0 0 0 2px rgba(255,255,255,.18);
     }
 
-    /* ASIN集計（枠） */
+    /* ASIN集計 */
     .summary-box{
-      margin: 10px 6px 0;                /* ← ぎゅっと */
+      margin: 10px 6px 0;
       padding: 10px;
       border-radius: 18px;
       background: rgba(255,255,255,.35);
@@ -594,7 +486,7 @@
       align-items:center;
       justify-content:space-between;
       gap:10px;
-      padding: 8px 10px;                 /* ← ぎゅっと */
+      padding: 8px 10px;
       border-radius: 14px;
       background: rgba(255,255,255,.55);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
@@ -604,21 +496,13 @@
     .sum-row .k{ color: rgba(0,0,0,.70); font-weight:1000; }
     .sum-row .v{ font-weight:1000; white-space:nowrap; }
 
-    .dash{
-      border-top: 2px dashed rgba(0,0,0,.35);
-      margin: 14px 6px 12px;             /* ← ぎゅっと */
-    }
+    .dash{ border-top: 2px dashed rgba(0,0,0,.35); margin: 14px 6px 12px; }
 
-    .actions{
-      display:flex;
-      gap:10px;
-      justify-content:center;
-      padding: 4px 6px 2px;              /* ← ぎゅっと */
-    }
+    .actions{ display:flex; gap:10px; justify-content:center; padding: 4px 6px 2px; }
     .btn{
       border:0;
       border-radius: 999px;
-      padding: 10px 12px;                /* ← ぎゅっと */
+      padding: 10px 12px;
       font-weight:1000;
       cursor:pointer;
       background: rgba(255,255,255,.6);
@@ -701,11 +585,7 @@
       font-weight:1000;
       gap:10px;
     }
-    .okwrap{
-      display:flex;
-      justify-content:center;
-      margin: 16px 0 8px;
-    }
+    .okwrap{ display:flex; justify-content:center; margin: 16px 0 8px; }
     .ok{
       border:0;
       width:min(420px, 100%);
@@ -719,55 +599,6 @@
       box-shadow: 0 10px 20px rgba(255,47,47,.25), inset 0 0 0 2px rgba(255,255,255,.15);
     }
 
-    /* Small input modal (manual add) */
-    .mini{ width:min(520px, 100%); }
-    .mini .grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      margin: 10px 4px 4px;
-    }
-    .mini .title{
-      margin: 2px 6px 10px;
-      font-weight:1000;
-      letter-spacing:.02em;
-    }
-    .field{
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 10px 12px;
-      background: rgba(255,255,255,.35);
-      border-radius: 14px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      font-weight:1000;
-      gap:10px;
-    }
-    .field input{
-      width: 120px;
-      border:0;
-      border-radius: 10px;
-      padding: 8px 10px;
-      font-weight:1000;
-      text-align:right;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10);
-      background:#fff;
-      outline:none;
-    }
-    .mini .actions2{
-      display:flex; gap:10px; justify-content:center;
-      margin-top: 14px;
-    }
-    .mini .addbtn{
-      border:0;
-      width:min(360px, 100%);
-      border-radius: 999px;
-      padding: 13px 16px;
-      background: var(--dark);
-      color:#fff;
-      font-weight:1000;
-      cursor:pointer;
-      box-shadow: 0 10px 20px rgba(0,0,0,.18), inset 0 0 0 2px rgba(255,255,255,.08);
-    }
-
     /* Responsive */
     @media (max-width: 1180px){
       .stage{ grid-template-columns: 1fr; }
@@ -779,6 +610,7 @@
       .top-row .card-ui{ height:auto; }
       .lower{ grid-template-columns: 1fr; }
       .metric-grid, .inputs-grid{ grid-template-columns: 1fr; }
+      .stepper{ width: 120px; min-width: 120px; max-width:120px; }
     }
     @media (max-width: 900px){
       body{padding:14px}
@@ -839,35 +671,54 @@
           <div class="metric-grid">
             <div class="metric">
               <div class="label">180日販売数（実績）</div>
-              <div class="value">510</div>
+              <div class="value" id="act180">510</div>
             </div>
             <div class="metric">
               <div class="label">90日販売数（実績）</div>
-              <div class="value">260</div>
+              <div class="value" id="act90">260</div>
             </div>
             <div class="metric">
               <div class="label">30日販売数（実績）</div>
-              <div class="value">95</div>
+              <div class="value" id="act30">95</div>
             </div>
           </div>
 
-          <!-- 2段目：予測 180/90/30（固定値） -->
+          <!-- 2段目：予測〇日販売数（自由入力 → 自動算出） -->
           <div class="inputs-grid" style="margin-top:10px;">
             <div class="m-input">
-              <div class="label">予測180日販売数</div>
-              <input id="pred180" value="620" readonly aria-readonly="true">
+              <div class="label">予測〇日販売数</div>
+              <div class="inline">
+                <input id="predDays" class="small" inputmode="numeric" value="180" aria-label="日数" />
+                <span class="subtle">日</span>
+              </div>
             </div>
             <div class="m-input">
-              <div class="label">予測90日販売数</div>
-              <input id="pred90" value="330" readonly aria-readonly="true">
+              <div class="label">予測販売数（自動）</div>
+              <input id="predValue" value="—" readonly aria-readonly="true">
             </div>
             <div class="m-input">
-              <div class="label">予測30日販売数</div>
-              <input id="pred30" value="120" readonly aria-readonly="true">
+              <div class="label">備考</div>
+              <input id="predNote" value="30日実績の平均から算出" readonly aria-readonly="true">
             </div>
           </div>
 
-          <!-- 下段：販売価格/粗利益（左側の固定表示は残すならここ。不要なら消してOK） -->
+          <!-- 追加：FBA関連 -->
+          <div class="metric-grid" style="margin-top:10px;">
+            <div class="metric">
+              <div class="label">FBA最安値（$）</div>
+              <div class="value" id="fbaLow">$39.99</div>
+            </div>
+            <div class="metric">
+              <div class="label">過去30日FBA最安値（$）</div>
+              <div class="value" id="fbaLow30">$37.50</div>
+            </div>
+            <div class="metric">
+              <div class="label">出品セラー数（FBA）</div>
+              <div class="value" id="fbaSellers">12</div>
+            </div>
+          </div>
+
+          <!-- 下段（必要なら残す） -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -927,9 +778,7 @@
         <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
       </div>
 
-      <div class="section-title">《カート》</div>
-
-      <!-- カート表示 -->
+      <!-- 《カート》見出しは削除（表示しない） -->
       <div class="cart-list" id="wishList"></div>
 
       <!-- ASIN集計 -->
@@ -961,7 +810,7 @@
   </div>
 
   <!-- Modal: shop list（1件目から全部表示） -->
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格と在庫">
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格">
     <div class="modal">
       <button class="close" id="closeBtn" type="button">×</button>
       <h3>ショップ別の価格（価格の安い順）</h3>
@@ -971,36 +820,11 @@
     </div>
   </div>
 
-  <!-- Modal: manual add (＋) -->
-  <div class="overlay" id="manualOverlay" role="dialog" aria-modal="true" aria-label="手入力で追加">
-    <div class="modal mini" id="manualModal">
-      <button class="close" id="manualCloseBtn" type="button">×</button>
-      <div class="title" id="manualTitle">手入力で追加</div>
-
-      <div class="grid">
-        <div class="field">
-          <span>金額</span>
-          <input id="manualPrice" inputmode="numeric" pattern="[0-9]*" placeholder="例：3980">
-        </div>
-        <div class="field">
-          <span>数量</span>
-          <input id="manualQty" inputmode="numeric" pattern="[0-9]*" placeholder="例：2">
-        </div>
-      </div>
-
-      <div class="mini actions2">
-        <button class="addbtn" id="manualAddBtn" type="button">追加</button>
-      </div>
-
-      <div class="hinttxt" style="margin:10px 8px 0;">※追加した行は削除（×）できます</div>
-    </div>
-  </div>
-
 <script>
   // ====== 仮計算パラメータ（プロトタイプ用） ======
-  const FX_RATE_JPY_PER_USD = 150;     // 1USD=150円の仮
-  const SELL_PRICE_USD = 39.99;        // 固定の仮（右側入力を消したのでここで）
-  const PAYOUT_RATE = 0.85;            // 手数料等を差し引いた入金率（仮）
+  const FX_RATE_JPY_PER_USD = 150;     // 1USD=150円（仮）
+  const SELL_PRICE_USD = 39.99;        // 固定（仮）
+  const PAYOUT_RATE = 0.85;            // 入金率（仮）
 
   const shopData = [
     { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
@@ -1017,11 +841,6 @@
   ];
 
   const yen = (n) => (Number.isFinite(n) ? "¥" + n.toLocaleString("ja-JP") : "¥—");
-  const clampInt = (v, min, max) => {
-    const n = Math.floor(Number(v));
-    if (!Number.isFinite(n)) return min;
-    return Math.min(max, Math.max(min, n));
-  };
   function escapeHTML(str){
     return String(str)
       .replaceAll("&","&amp;")
@@ -1067,18 +886,6 @@
     return wrap;
   }
 
-  function removeOfferById(offerId){
-    for (const s of shopData){
-      const idx = s.offers.findIndex(o => o.id === offerId);
-      if (idx >= 0){
-        s.offers.splice(idx, 1);
-        sortOffersByPrice(s);
-        break;
-      }
-    }
-    renderAll();
-  }
-
   function flattenShopOffersSorted(){
     const items = [];
     shopData.filter(s => s.includeInShopList).forEach(s => {
@@ -1088,7 +895,7 @@
     return items;
   }
 
-  /* 上位3ショップ（在庫表示なし） */
+  /* 上位3ショップ */
   function renderTop3(){
     const list = document.getElementById("top3List");
     list.innerHTML = "";
@@ -1134,11 +941,10 @@
       });
     }
 
-    const moreBtn = document.getElementById("openModalBtn");
-    moreBtn.disabled = items.length === 0;
+    document.getElementById("openModalBtn").disabled = items.length === 0;
   }
 
-  /* 《カート》：qty>0 を行表示（小さめ） */
+  /* カート：qty>0 を行表示 */
   function renderWishList(){
     const root = document.getElementById("wishList");
     root.innerHTML = "";
@@ -1152,10 +958,7 @@
       const empty = document.createElement("div");
       empty.className = "cart-row";
       empty.style.opacity = ".75";
-      empty.innerHTML = `
-        <div class="txt">— ¥—</div>
-        <div class="right"></div>
-      `;
+      empty.innerHTML = `<div class="txt">— ¥—</div><div class="right"></div>`;
       const st = renderStepper("", ()=>{}, ()=>{});
       st.style.opacity = ".55";
       st.querySelector("[data-minus]").disabled = true;
@@ -1167,25 +970,12 @@
       picked.forEach(({shop, offer}) => {
         const row = document.createElement("div");
         row.className = "cart-row";
-        row.innerHTML = `
-          <div class="txt">${escapeHTML(shop.shop)} ${yen(offer.price)}</div>
-          <div class="right"></div>
-        `;
+        row.innerHTML = `<div class="txt">${escapeHTML(shop.shop)} ${yen(offer.price)}</div><div class="right"></div>`;
         const st = renderStepper(offer.qty,
           ()=>{ incQty(offer.id, -1); renderAll(false); },
           ()=>{ incQty(offer.id, +1); renderAll(false); }
         );
         row.querySelector(".right").appendChild(st);
-
-        if (offer.manual){
-          const del = document.createElement("button");
-          del.className = "del";
-          del.type = "button";
-          del.title = "削除";
-          del.textContent = "×";
-          del.addEventListener("click", () => { removeOfferById(offer.id); });
-          row.querySelector(".right").appendChild(del);
-        }
         root.appendChild(row);
       });
     }
@@ -1215,16 +1005,13 @@
 
     return { qtyTotal, avg, buyTotal: qtyTotal>0 ? buyTotal : null, salesTotal, payoutTotal, profit, margin };
   }
-
   function renderSummary(){
     const s = computeStats();
-
     document.getElementById("sumQty").textContent = s.qtyTotal ? s.qtyTotal.toLocaleString("ja-JP") : "—";
     document.getElementById("sumAvg").textContent = s.avg!=null ? yen(s.avg) : "—";
     document.getElementById("sumBuyTotal").textContent = s.buyTotal!=null ? yen(s.buyTotal) : "—";
     document.getElementById("sumSalesTotal").textContent = s.salesTotal!=null ? yen(s.salesTotal) : "—";
     document.getElementById("sumPayoutTotal").textContent = s.payoutTotal!=null ? yen(s.payoutTotal) : "—";
-
     if (s.profit==null){
       document.getElementById("sumProfit").textContent = "—";
     } else {
@@ -1233,26 +1020,45 @@
     }
   }
 
-  /* モーダル：1件目から全部のセル（在庫表示なし） */
+  /* 主要項目：予測〇日販売数（30日実績の平均から算出） */
+  function clampInt(v, min, max){
+    const n = Math.floor(Number(v));
+    if (!Number.isFinite(n)) return min;
+    return Math.min(max, Math.max(min, n));
+  }
+  function computePred(days){
+    const act30 = Number(document.getElementById("act30").textContent) || 0;
+    const perDay = act30 / 30;
+    return Math.round(perDay * days);
+  }
+  function renderPrediction(){
+    const daysEl = document.getElementById("predDays");
+    const outEl  = document.getElementById("predValue");
+    const days = clampInt(daysEl.value, 1, 999);
+    daysEl.value = String(days);
+    outEl.value = String(computePred(days));
+  }
+
+  /* Modal：1件目から全部（数量操作あり） */
+  const overlay = document.getElementById("overlay");
+  const openModalBtn = document.getElementById("openModalBtn");
+  const closeBtn = document.getElementById("closeBtn");
+  const okBtn = document.getElementById("okBtn");
+
   function renderModal(){
     const list = document.getElementById("modalList");
     list.innerHTML = "";
-
     const items = flattenShopOffersSorted();
 
     if (items.length === 0){
       const card = document.createElement("div");
       card.className = "card shop-other";
       card.innerHTML = `
-        <div class="card-head">
-          <div>表示できるショップがありません</div>
-          <div style="font-size:12px; font-weight:1000; opacity:.86;">&nbsp;</div>
-        </div>
+        <div class="card-head"><div>表示できるショップがありません</div><div>&nbsp;</div></div>
         <div class="meta">
           <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
           <div class="pill"><span>数量</span><span style="font-weight:1000;">—</span></div>
-        </div>
-      `;
+        </div>`;
       list.appendChild(card);
       return;
     }
@@ -1268,91 +1074,39 @@
         <div class="meta">
           <div class="pill"><span>価格</span><span style="font-weight:1000;">${yen(offer.price)}</span></div>
           <div class="pill" data-stepper-host></div>
-        </div>
-      `;
+        </div>`;
       const host = card.querySelector("[data-stepper-host]");
       const st = renderStepper(offer.qty,
         ()=>{ incQty(offer.id, -1); refreshModalOnly(); },
         ()=>{ incQty(offer.id, +1); refreshModalOnly(); }
       );
       st.style.minWidth = "100%";
+      st.style.maxWidth = "100%";
       host.appendChild(st);
       list.appendChild(card);
     });
   }
 
+  function openModal(){
+    if (flattenShopOffersSorted().length === 0) return;
+    renderModal();
+    overlay.classList.add("open");
+  }
+  function closeModal(){ overlay.classList.remove("open"); }
   function refreshModalOnly(){
     if (overlay.classList.contains("open")) renderModal();
     renderAll(false);
   }
 
-  // ===== 手入力追加（今は起動ボタンがないので、必要なら shop-head を復活してください） =====
-  const manualOverlay = document.getElementById("manualOverlay");
-  const manualCloseBtn = document.getElementById("manualCloseBtn");
-  const manualAddBtn = document.getElementById("manualAddBtn");
-  const manualTitle = document.getElementById("manualTitle");
-  const manualPrice = document.getElementById("manualPrice");
-  const manualQty   = document.getElementById("manualQty");
-  let activeSlug = null;
-
-  function openManualAdd(slug){
-    activeSlug = slug;
-    const s = shopData.find(x => x.slug === slug);
-    manualTitle.textContent = `手入力で追加：${s ? s.shop : ""}`;
-    manualPrice.value = "";
-    manualQty.value = "";
-    manualOverlay.classList.add("open");
-    setTimeout(() => manualPrice.focus(), 50);
-  }
-  function closeManualAdd(){ manualOverlay.classList.remove("open"); }
-
-  manualCloseBtn.addEventListener("click", closeManualAdd);
-  manualOverlay.addEventListener("click", (e) => { if (e.target === manualOverlay) closeManualAdd(); });
-
-  manualAddBtn.addEventListener("click", () => {
-    const price = clampInt(manualPrice.value, 0, 99999999);
-    const qty   = clampInt(manualQty.value,   0, 999);
-    if (!activeSlug) return;
-    if (price <= 0) { manualPrice.focus(); return; }
-
-    const s = shopData.find(x => x.slug === activeSlug);
-    if (!s) return;
-
-    s.offers.push({
-      id: `${activeSlug}-m-${Date.now().toString(36)}${Math.random().toString(36).slice(2,6)}`,
-      price, stock: 999, qty, manual:true
-    });
-
-    sortOffersByPrice(s);
-    renderAll();
-    closeManualAdd();
-  });
-
-  // ===== Modal open/close =====
-  const overlay = document.getElementById("overlay");
-  const openModalBtn = document.getElementById("openModalBtn");
-  const closeBtn = document.getElementById("closeBtn");
-  const okBtn = document.getElementById("okBtn");
-
-  function openModal(){
-    const hasAny = flattenShopOffersSorted().length > 0;
-    if (!hasAny) return;
-    renderModal();
-    overlay.classList.add("open");
-  }
-  function closeModal(){ overlay.classList.remove("open"); }
-
   openModalBtn.addEventListener("click", openModal);
   closeBtn.addEventListener("click", closeModal);
   okBtn.addEventListener("click", () => { renderAll(); closeModal(); });
-
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
 
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      if (overlay.classList.contains("open")) closeModal();
-      if (manualOverlay.classList.contains("open")) closeManualAdd();
-    }
+  window.addEventListener("keydown", (e) => { if (e.key === "Escape" && overlay.classList.contains("open")) closeModal(); });
+
+  document.getElementById("predDays").addEventListener("input", () => {
+    renderPrediction();
   });
 
   function renderAll(rerenderModalToo=true){
@@ -1360,6 +1114,7 @@
     renderTop3();
     renderWishList();
     renderSummary();
+    renderPrediction();
     if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
   }
 
