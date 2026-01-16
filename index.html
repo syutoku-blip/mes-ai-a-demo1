@@ -28,7 +28,10 @@
       --softshadow: 0 8px 24px rgba(0,0,0,.08);
       --muted:#6b7280;
 
-      --topRowH: 420px;
+      /* heights */
+      --topRowH: 420px;         /* 主要項目を含むトップ行の高さ */
+      --demandCardH: 360px;     /* 需要供給グラフ（180日）のカード高さ（固定） */
+      --lowerGap: 14px;         /* top-row と lower の間 */
     }
 
     *{box-sizing:border-box}
@@ -154,7 +157,6 @@
       overflow:hidden;
     }
     .m-input .label{ font-size:12px; color:var(--muted); font-weight:1000; line-height:1.2; }
-
     .m-input input{
       width:100%;
       border:1px solid rgba(0,0,0,.10);
@@ -203,6 +205,19 @@
       text-overflow:ellipsis;
     }
 
+    /* ===== 主要項目：行ごと背景（青が濃くなる） ===== */
+    .metrics-row.row1 .metric,
+    .metrics-row.row1 .m-input{ background: rgba(219,234,254,.55); } /* 薄青 */
+    .metrics-row.row2 .metric,
+    .metrics-row.row2 .m-input{ background: rgba(191,219,254,.62); } /* 中 */
+    .metrics-row.row3 .metric,
+    .metrics-row.row3 .m-input{ background: rgba(147,197,253,.70); } /* 濃い */
+
+    .metrics-row .metric, .metrics-row .m-input{
+      border-color: rgba(0,0,0,.07);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.20);
+    }
+
     .bottom-pills{
       margin-top: 12px;
       display:grid;
@@ -226,7 +241,7 @@
 
     /* ===== Lower row ===== */
     .lower{
-      margin-top: 14px;
+      margin-top: var(--lowerGap);
       display:grid;
       grid-template-columns: 1fr 2fr;
       gap:14px;
@@ -245,6 +260,24 @@
       user-select:none;
       text-align:center;
       padding:12px;
+    }
+
+    /* 需要供給グラフカードは高さ固定（右カートと合わせる基準） */
+    .card-ui.demand-card{
+      height: var(--demandCardH);
+      display:flex;
+      flex-direction:column;
+    }
+    .card-ui.demand-card .chart-wrap{
+      flex:1;
+      min-height:0;
+      display:flex;
+      flex-direction:column;
+    }
+    .card-ui.demand-card .fake-graph{
+      flex:1;
+      min-height:0;
+      height:auto;
     }
 
     .chart-wrap{
@@ -283,7 +316,7 @@
     .legend{ margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:12px; font-weight:1000; color:var(--muted); }
     .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
 
-    /* ===== Right ===== */
+    /* ===== Right（黄色い枠：サイズ固定） ===== */
     .side{
       background: var(--panel);
       border-radius: var(--radius);
@@ -291,6 +324,22 @@
       box-shadow: var(--shadow);
       position:sticky;
       top:16px;
+
+      /* 主要項目 + 需要供給グラフ（180日）の縦高さに合わせる */
+      height: calc(var(--topRowH) + var(--demandCardH) + var(--lowerGap));
+      display:flex;
+      flex-direction:column;
+      overflow:hidden; /* 枠の外へ出さない */
+    }
+
+    /* side内：スクロールさせるためのボディ */
+    .side-body{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:0; /* これ重要 */
+      flex:1;
+      overflow:hidden;
     }
 
     .top3-wrap{
@@ -299,6 +348,7 @@
       border-radius: 18px;
       background: rgba(255,255,255,.35);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      flex:0 0 auto;
     }
     .top3-head{
       display:flex;
@@ -338,7 +388,7 @@
       box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
       font-weight:900;
       gap:8px;
-      overflow:hidden; /* ←はみ出し防止 */
+      overflow:hidden;
     }
     .row .left{
       display:flex;
@@ -368,7 +418,7 @@
     }
     .row .price{
       min-width: 74px;
-      font-size:15px; /* ←さらに小さく */
+      font-size:15px;
       white-space:nowrap;
       flex:0 0 auto;
     }
@@ -378,10 +428,10 @@
       gap:6px;
       margin-left:auto;
       flex: 0 0 auto;
-      max-width: 116px; /* ←右側を制限してはみ出しを防ぐ */
+      max-width: 116px;
     }
 
-    /* ===== stepper（さらに小型化して完全に枠内） ===== */
+    /* ===== stepper（はみ出し防止強化） ===== */
     .stepper{
       display:flex;
       align-items:center;
@@ -441,12 +491,19 @@
 
     .hinttxt{ font-size:12px; font-weight:900; opacity:.75; line-height:1.35; }
 
-    /* カート（行リスト） */
+    /* カート：スクロール領域（一定数超えたらここがスクロール） */
+    .cart-scroll{
+      flex:1;
+      min-height:0;
+      overflow:auto;
+      padding-right: 4px;
+    }
+
     .cart-list{
       display:flex;
       flex-direction:column;
       gap:8px;
-      margin: 10px 6px 0;
+      margin: 0 6px;
     }
     .cart-row{
       display:flex;
@@ -457,7 +514,7 @@
       border-radius: 18px;
       background: rgba(255,255,255,.45);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      overflow:hidden; /* ←ここもはみ出し防止 */
+      overflow:hidden;
     }
     .cart-row .txt{
       font-size:13px;
@@ -475,11 +532,12 @@
 
     /* ASIN集計 */
     .summary-box{
-      margin: 10px 6px 0;
+      margin: 0 6px;
       padding: 10px;
       border-radius: 18px;
       background: rgba(255,255,255,.35);
       box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      flex:0 0 auto;
     }
     .summary-head{
       display:flex;
@@ -514,9 +572,9 @@
     .sum-row .k{ color: rgba(0,0,0,.70); font-weight:1000; }
     .sum-row .v{ font-weight:1000; white-space:nowrap; }
 
-    .dash{ border-top: 2px dashed rgba(0,0,0,.35); margin: 14px 6px 12px; }
+    .dash{ border-top: 2px dashed rgba(0,0,0,.35); margin: 10px 6px 10px; flex:0 0 auto; }
 
-    .actions{ display:flex; gap:10px; justify-content:center; padding: 4px 6px 2px; }
+    .actions{ display:flex; gap:10px; justify-content:center; padding: 4px 6px 2px; flex:0 0 auto; }
     .btn{
       border:0;
       border-radius: 999px;
@@ -620,16 +678,21 @@
     /* Responsive */
     @media (max-width: 1180px){
       .stage{ grid-template-columns: 1fr; }
-      .side{ position:relative; top:auto; }
+      .side{
+        position:relative; top:auto;
+        height:auto;           /* 小画面は固定しない */
+        overflow:visible;
+      }
+      .side-body{ overflow:visible; }
+      .cart-scroll{ overflow:visible; }
     }
     @media (max-width: 1080px){
-      :root{ --topRowH: auto; }
+      :root{ --topRowH: auto; --demandCardH: auto; }
       .top-row{ grid-template-columns: 1fr; grid-auto-rows: auto; }
       .top-row .card-ui{ height:auto; }
       .lower{ grid-template-columns: 1fr; }
       .metric-grid, .inputs-grid{ grid-template-columns: 1fr; }
-      .stepper{ width: 112px; min-width: 112px; max-width:112px; }
-      .row .right{ max-width: 124px; }
+      .card-ui.demand-card{ height:auto; }
     }
     @media (max-width: 900px){
       body{padding:14px}
@@ -686,63 +749,68 @@
         <section class="card-ui metrics-card">
           <h4>主要項目</h4>
 
-          <!-- 1段目：実績（180/90/30はそのまま） -->
-          <div class="metric-grid">
-            <div class="metric">
-              <div class="label">180日販売数（実績）</div>
-              <div class="value" id="act180">510</div>
-            </div>
-            <div class="metric">
-              <div class="label">90日販売数（実績）</div>
-              <div class="value" id="act90">260</div>
-            </div>
-            <div class="metric">
-              <div class="label">30日販売数（実績）</div>
-              <div class="value" id="act30">95</div>
-            </div>
-          </div>
-
-          <!-- 2段目：予測は「90/30を残し」、180は消して「入力＋自動反映」を同じ枠内に -->
-          <div class="inputs-grid" style="margin-top:10px;">
-            <div class="m-input">
-              <div class="label">予測〇日販売数</div>
-              <div class="predbox" aria-label="予測日数入力と予測値">
-                <div class="days">
-                  <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
-                  <span class="u">日</span>
-                </div>
-                <div class="val" id="predValue">—</div>
+          <!-- 1行目 -->
+          <div class="metrics-row row1">
+            <div class="metric-grid">
+              <div class="metric">
+                <div class="label">180日販売数（実績）</div>
+                <div class="value" id="act180">510</div>
+              </div>
+              <div class="metric">
+                <div class="label">90日販売数（実績）</div>
+                <div class="value" id="act90">260</div>
+              </div>
+              <div class="metric">
+                <div class="label">30日販売数（実績）</div>
+                <div class="value" id="act30">95</div>
               </div>
             </div>
+          </div>
 
-            <div class="m-input">
-              <div class="label">予測90日販売数</div>
-              <input id="pred90" value="330" readonly aria-readonly="true">
-            </div>
-
-            <div class="m-input">
-              <div class="label">予測30日販売数</div>
-              <input id="pred30" value="120" readonly aria-readonly="true">
+          <!-- ★入れ替え：2行目はFBA関連 -->
+          <div class="metrics-row row2">
+            <div class="metric-grid" style="margin-top:10px;">
+              <div class="metric">
+                <div class="label">FBA最安値（$）</div>
+                <div class="value" id="fbaLow">$39.99</div>
+              </div>
+              <div class="metric">
+                <div class="label">過去30日FBA最安値（$）</div>
+                <div class="value" id="fbaLow30">$37.50</div>
+              </div>
+              <div class="metric">
+                <div class="label">出品セラー数（FBA）</div>
+                <div class="value" id="fbaSellers">12</div>
+              </div>
             </div>
           </div>
 
-          <!-- 追加：FBA関連 -->
-          <div class="metric-grid" style="margin-top:10px;">
-            <div class="metric">
-              <div class="label">FBA最安値（$）</div>
-              <div class="value" id="fbaLow">$39.99</div>
-            </div>
-            <div class="metric">
-              <div class="label">過去30日FBA最安値（$）</div>
-              <div class="value" id="fbaLow30">$37.50</div>
-            </div>
-            <div class="metric">
-              <div class="label">出品セラー数（FBA）</div>
-              <div class="value" id="fbaSellers">12</div>
+          <!-- ★入れ替え：3行目は予測 -->
+          <div class="metrics-row row3">
+            <div class="inputs-grid" style="margin-top:10px;">
+              <div class="m-input">
+                <div class="label">予測〇日販売数</div>
+                <div class="predbox" aria-label="予測日数入力と予測値">
+                  <div class="days">
+                    <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
+                    <span class="u">日</span>
+                  </div>
+                  <div class="val" id="predValue">—</div>
+                </div>
+              </div>
+
+              <div class="m-input">
+                <div class="label">予測90日販売数</div>
+                <input id="pred90" value="330" readonly aria-readonly="true">
+              </div>
+
+              <div class="m-input">
+                <div class="label">予測30日販売数</div>
+                <input id="pred30" value="120" readonly aria-readonly="true">
+              </div>
             </div>
           </div>
 
-          <!-- 下段（既存のまま） -->
           <div class="bottom-pills">
             <div class="pillbox">
               <div class="l">販売価格（$）</div>
@@ -763,7 +831,7 @@
           <div class="placeholder">（グラフ画像 / iframe想定）</div>
         </section>
 
-        <section class="card-ui">
+        <section class="card-ui demand-card">
           <h4>需要供給グラフ（180日）</h4>
 
           <div class="chart-wrap">
@@ -791,44 +859,48 @@
 
     <!-- RIGHT -->
     <aside class="side" aria-label="カート">
+      <div class="side-body">
 
-      <!-- 上位3ショップ -->
-      <div class="top3-wrap" aria-label="上位3ショップ">
-        <div class="top3-head">
-          <div class="top3-title">上位3ショップ（価格の安い順）</div>
-          <button class="morebtn" id="openModalBtn" type="button">全ショップを見る</button>
+        <!-- 上位3ショップ -->
+        <div class="top3-wrap" aria-label="上位3ショップ">
+          <div class="top3-head">
+            <div class="top3-title">上位3ショップ（価格の安い順）</div>
+            <button class="morebtn" id="openModalBtn" type="button">全ショップを見る</button>
+          </div>
+          <div class="top3-list" id="top3List"></div>
+          <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
         </div>
-        <div class="top3-list" id="top3List"></div>
-        <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
-      </div>
 
-      <!-- カート（行リスト） -->
-      <div class="cart-list" id="wishList"></div>
+        <!-- ★固定サイズのまま：増えたらここがスクロール -->
+        <div class="cart-scroll" aria-label="カートスクロール領域">
+          <div class="cart-list" id="wishList"></div>
+        </div>
 
-      <!-- ASIN集計 -->
-      <div class="summary-box" aria-label="ASIN集計">
-        <div class="summary-head">
-          <div class="summary-title">ASIN集計</div>
-          <div class="hinttxt" style="margin:0; opacity:.65; font-weight:1000; font-size:11px;">
-            ※販売額/入金/粗利益は仮計算
+        <!-- ASIN集計 -->
+        <div class="summary-box" aria-label="ASIN集計">
+          <div class="summary-head">
+            <div class="summary-title">ASIN集計</div>
+            <div class="hinttxt" style="margin:0; opacity:.65; font-weight:1000; font-size:11px;">
+              ※販売額/入金/粗利益は仮計算
+            </div>
+          </div>
+
+          <div class="summary-grid">
+            <div class="sum-row"><div class="k">合計仕入れ個数</div><div class="v" id="sumQty">—</div></div>
+            <div class="sum-row"><div class="k">仕入れ平均額</div><div class="v" id="sumAvg">—</div></div>
+            <div class="sum-row"><div class="k">仕入れ額合計</div><div class="v" id="sumBuyTotal">—</div></div>
+            <div class="sum-row"><div class="k">販売額合計</div><div class="v" id="sumSalesTotal">—</div></div>
+            <div class="sum-row"><div class="k">入金額合計</div><div class="v" id="sumPayoutTotal">—</div></div>
+            <div class="sum-row"><div class="k">粗利益額合計（粗利益率）</div><div class="v" id="sumProfit">—</div></div>
           </div>
         </div>
 
-        <div class="summary-grid">
-          <div class="sum-row"><div class="k">合計仕入れ個数</div><div class="v" id="sumQty">—</div></div>
-          <div class="sum-row"><div class="k">仕入れ平均額</div><div class="v" id="sumAvg">—</div></div>
-          <div class="sum-row"><div class="k">仕入れ額合計</div><div class="v" id="sumBuyTotal">—</div></div>
-          <div class="sum-row"><div class="k">販売額合計</div><div class="v" id="sumSalesTotal">—</div></div>
-          <div class="sum-row"><div class="k">入金額合計</div><div class="v" id="sumPayoutTotal">—</div></div>
-          <div class="sum-row"><div class="k">粗利益額合計（粗利益率）</div><div class="v" id="sumProfit">—</div></div>
+        <div class="dash"></div>
+
+        <div class="actions">
+          <button class="btn" type="button">後で（仕入れリスト仮登録）</button>
+          <button class="btn primary" type="button">仕入れた（仕入れリスト登録）</button>
         </div>
-      </div>
-
-      <div class="dash"></div>
-
-      <div class="actions">
-        <button class="btn" type="button">後で（仕入れリスト仮登録）</button>
-        <button class="btn primary" type="button">仕入れた（仕入れリスト登録）</button>
       </div>
     </aside>
   </div>
@@ -968,7 +1040,7 @@
     document.getElementById("openModalBtn").disabled = items.length === 0;
   }
 
-  /* カート：qty>0 を行表示 */
+  /* カート：qty>0 を行表示（増えたらスクロール領域で対応） */
   function renderWishList(){
     const root = document.getElementById("wishList");
     root.innerHTML = "";
@@ -1044,7 +1116,7 @@
     }
   }
 
-  /* 主要項目：予測〇日（入力→同一枠の右側に自動反映） */
+  /* 主要項目：予測〇日 */
   function clampInt(v, min, max){
     const n = Math.floor(Number(v));
     if (!Number.isFinite(n)) return min;
@@ -1063,7 +1135,7 @@
     outEl.textContent = String(computePred(days));
   }
 
-  /* Modal：1件目から全部（数量操作あり） */
+  /* Modal：1件目から全部 */
   const overlay = document.getElementById("overlay");
   const openModalBtn = document.getElementById("openModalBtn");
   const closeBtn = document.getElementById("closeBtn");
@@ -1127,7 +1199,9 @@
   okBtn.addEventListener("click", () => { renderAll(); closeModal(); });
   overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
 
-  window.addEventListener("keydown", (e) => { if (e.key === "Escape" && overlay.classList.contains("open")) closeModal(); });
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
+  });
 
   document.getElementById("predDays").addEventListener("input", renderPrediction);
 
