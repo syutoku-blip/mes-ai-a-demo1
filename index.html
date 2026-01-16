@@ -154,7 +154,7 @@
       flex-direction:column;
       justify-content:center;
       gap:8px;
-      overflow:hidden;
+      overflow:hidden; /* ←元のままOK（下で予測枠だけ上書き） */
     }
     .m-input .label{ font-size:12px; color:var(--muted); font-weight:1000; line-height:1.2; }
     .m-input input{
@@ -184,7 +184,7 @@
       gap:6px;
       flex:0 0 auto;
     }
-    /* ★入力欄を小さく */
+    /* 入力欄を小さく */
     .predbox .days input{
       width:56px;
       text-align:right;
@@ -197,7 +197,7 @@
       color:var(--muted);
       white-space:nowrap;
     }
-    /* ★自動反映数字を必ず表示（省略しない） */
+    /* 自動反映数字 */
     .predbox .val{
       flex:0 0 auto;
       min-width: 64px;
@@ -291,7 +291,10 @@
     .chart-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
     .chart-head .title{ font-weight:1000; }
     .toggles{ display:flex; gap:10px; align-items:center; color:var(--muted); font-size:12px; font-weight:1000; }
-    .toggles label{ display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none; white-spaceível; white-space:nowrap; }
+    .toggles label{
+      display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none;
+      white-space:nowrap; /* ←誤字修正（white-spaceível; を排除） */
+    }
     .fake-graph{
       height:260px;
       border-radius:12px;
@@ -486,7 +489,7 @@
 
     .hinttxt{ font-size:12px; font-weight:900; opacity:.75; line-height:1.35; }
 
-    /* ★カートに入れた項目がわかりやすいように、枠付きのコンテナにする */
+    /* カートに入れた項目がわかりやすいように、枠付きのコンテナにする */
     .cart-box{
       margin: 0 6px;
       padding: 10px;
@@ -690,6 +693,24 @@
       box-shadow: 0 10px 20px rgba(255,47,47,.25), inset 0 0 0 2px rgba(255,255,255,.15);
     }
 
+    /* =========================
+       ★ ここが今回の修正ポイント
+       右側の数値が切れないように調整
+       ========================= */
+    .predbox{ min-width:0; }
+    .predbox .days{ flex:0 0 auto; }
+    .predbox .val{
+      flex:1 1 auto;
+      min-width:0;
+      text-align:right;
+      padding-left:10px;
+      font-size: clamp(14px, 1.4vw, 16px);
+      line-height:1.1;
+      white-space:nowrap;
+    }
+    /* この枠だけは切り落とさない（m-inputのoverflow:hidden対策） */
+    .m-input .predbox{ overflow:visible; }
+
     @media (max-width: 1180px){
       .stage{ grid-template-columns: 1fr; }
       .side{ position:relative; top:auto; height:auto; overflow:visible; }
@@ -806,7 +827,7 @@
                     <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
                     <span class="u">日</span>
                   </div>
-                  <!-- ★ここに必ず自動反映値が入る -->
+                  <!-- 自動反映値 -->
                   <div class="val" id="predValue">—</div>
                 </div>
               </div>
@@ -883,7 +904,7 @@
           <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
         </div>
 
-        <!-- ★枠付き（カートに入れた項目がわかる） -->
+        <!-- カート枠 -->
         <div class="cart-box" aria-label="カートに入れた項目">
           <div class="cart-box-head">
             <div>カートに入れた項目</div>
@@ -934,309 +955,310 @@
     </div>
   </div>
 
-<script>
-  // ====== 仮計算パラメータ（プロトタイプ用） ======
-  const FX_RATE_JPY_PER_USD = 150;
-  const SELL_PRICE_USD = 39.99;
-  const PAYOUT_RATE = 0.85;
+  <script>
+    // ====== 仮計算パラメータ（プロトタイプ用） ======
+    const FX_RATE_JPY_PER_USD = 150;
+    const SELL_PRICE_USD = 39.99;
+    const PAYOUT_RATE = 0.85;
 
-  const shopData = [
-    { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
-      { id: "amz-1", price: 3980, stock: 9,  qty: 0, manual:false },
-      { id: "amz-2", price: 4200, stock: 3,  qty: 0, manual:false },
-    ]},
-    { shop: "楽天", slug:"rakuten", includeInShopList: true, offers: [
-      { id: "rkt-1", price: 4150, stock: 5,  qty: 0, manual:false },
-    ]},
-    { shop: "Yahoo", slug:"yahoo", includeInShopList: true, offers: [
-      { id: "yah-1", price: 4090, stock: 12, qty: 0, manual:false },
-    ]},
-    { shop: "その他", slug:"other", includeInShopList: false, offers: [] },
-  ];
+    const shopData = [
+      { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
+        { id: "amz-1", price: 3980, stock: 9,  qty: 0, manual:false },
+        { id: "amz-2", price: 4200, stock: 3,  qty: 0, manual:false },
+      ]},
+      { shop: "楽天", slug:"rakuten", includeInShopList: true, offers: [
+        { id: "rkt-1", price: 4150, stock: 5,  qty: 0, manual:false },
+      ]},
+      { shop: "Yahoo", slug:"yahoo", includeInShopList: true, offers: [
+        { id: "yah-1", price: 4090, stock: 12, qty: 0, manual:false },
+      ]},
+      { shop: "その他", slug:"other", includeInShopList: false, offers: [] },
+    ];
 
-  const yen = (n) => (Number.isFinite(n) ? "¥" + n.toLocaleString("ja-JP") : "¥—");
-  function escapeHTML(str){
-    return String(str)
-      .replaceAll("&","&amp;")
-      .replaceAll("<","&lt;")
-      .replaceAll(">","&gt;")
-      .replaceAll('"',"&quot;")
-      .replaceAll("'","&#039;");
-  }
-  function shopClass(slug){ return "shop-" + slug; }
-  function sortOffersByPrice(s){ s.offers.sort((a,b) => (a.price||0) - (b.price||0)); }
+    const yen = (n) => (Number.isFinite(n) ? "¥" + n.toLocaleString("ja-JP") : "¥—");
 
-  function findOfferById(id){
-    for (const s of shopData){
-      const o = s.offers.find(x => x.id === id);
-      if (o) return {shop:s, offer:o};
+    function escapeHTML(str){
+      return String(str)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
     }
-    return null;
-  }
-  function setQty(id, nextQty){
-    const found = findOfferById(id);
-    if (!found) return;
-    found.offer.qty = Math.max(0, Math.min(999, nextQty));
-  }
-  function incQty(id, delta){
-    const found = findOfferById(id);
-    if (!found) return;
-    setQty(id, (Number(found.offer.qty)||0) + delta);
-  }
+    function shopClass(slug){ return "shop-" + slug; }
+    function sortOffersByPrice(s){ s.offers.sort((a,b) => (a.price||0) - (b.price||0)); }
 
-  function renderStepper(qty, onMinus, onPlus){
-    const wrap = document.createElement("div");
-    wrap.className = "stepper";
-    wrap.innerHTML = `
-      <div class="label">数量</div>
-      <div class="controls">
-        <button class="qbtn" type="button" data-minus>−</button>
-        <div class="qval" data-val>${qty}</div>
-        <button class="qbtn" type="button" data-plus>＋</button>
-      </div>
-    `;
-    wrap.querySelector("[data-minus]").addEventListener("click", onMinus);
-    wrap.querySelector("[data-plus]").addEventListener("click", onPlus);
-    return wrap;
-  }
+    function findOfferById(id){
+      for (const s of shopData){
+        const o = s.offers.find(x => x.id === id);
+        if (o) return {shop:s, offer:o};
+      }
+      return null;
+    }
+    function setQty(id, nextQty){
+      const found = findOfferById(id);
+      if (!found) return;
+      found.offer.qty = Math.max(0, Math.min(999, nextQty));
+    }
+    function incQty(id, delta){
+      const found = findOfferById(id);
+      if (!found) return;
+      setQty(id, (Number(found.offer.qty)||0) + delta);
+    }
 
-  function flattenShopOffersSorted(){
-    const items = [];
-    shopData.filter(s => s.includeInShopList).forEach(s => {
-      s.offers.forEach(o => items.push({ shop:s, offer:o }));
-    });
-    items.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
-    return items;
-  }
-
-  function renderTop3(){
-    const list = document.getElementById("top3List");
-    list.innerHTML = "";
-
-    const items = flattenShopOffersSorted();
-    const top3 = items.slice(0, 3);
-
-    if (top3.length === 0){
-      const empty = document.createElement("div");
-      empty.className = "row dim";
-      empty.innerHTML = `
-        <div class="left">
-          <div class="rank">—</div>
-          <div class="shopname">—</div>
+    function renderStepper(qty, onMinus, onPlus){
+      const wrap = document.createElement("div");
+      wrap.className = "stepper";
+      wrap.innerHTML = `
+        <div class="label">数量</div>
+        <div class="controls">
+          <button class="qbtn" type="button" data-minus>−</button>
+          <div class="qval" data-val>${qty}</div>
+          <button class="qbtn" type="button" data-plus>＋</button>
         </div>
-        <div class="price">¥—</div>
-        <div class="right"></div>
       `;
-      const st = renderStepper("", ()=>{}, ()=>{});
-      st.style.opacity = ".55";
-      st.querySelector("[data-minus]").disabled = true;
-      st.querySelector("[data-plus]").disabled = true;
-      empty.querySelector(".right").appendChild(st);
-      list.appendChild(empty);
-    } else {
-      top3.forEach(({shop, offer}, i) => {
-        const r = document.createElement("div");
-        r.className = `row ${shopClass(shop.slug)}`;
-        r.innerHTML = `
+      wrap.querySelector("[data-minus]").addEventListener("click", onMinus);
+      wrap.querySelector("[data-plus]").addEventListener("click", onPlus);
+      return wrap;
+    }
+
+    function flattenShopOffersSorted(){
+      const items = [];
+      shopData.filter(s => s.includeInShopList).forEach(s => {
+        s.offers.forEach(o => items.push({ shop:s, offer:o }));
+      });
+      items.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
+      return items;
+    }
+
+    function renderTop3(){
+      const list = document.getElementById("top3List");
+      list.innerHTML = "";
+
+      const items = flattenShopOffersSorted();
+      const top3 = items.slice(0, 3);
+
+      if (top3.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "row dim";
+        empty.innerHTML = `
           <div class="left">
-            <div class="rank">${i+1}</div>
-            <div class="shopname">${escapeHTML(shop.shop)}</div>
+            <div class="rank">—</div>
+            <div class="shopname">—</div>
           </div>
-          <div class="price">${yen(offer.price)}</div>
+          <div class="price">¥—</div>
           <div class="right"></div>
         `;
-        const st = renderStepper(offer.qty,
-          ()=>{ incQty(offer.id, -1); renderAll(false); },
-          ()=>{ incQty(offer.id, +1); renderAll(false); }
-        );
-        r.querySelector(".right").appendChild(st);
-        list.appendChild(r);
-      });
-    }
-
-    document.getElementById("openModalBtn").disabled = items.length === 0;
-  }
-
-  function renderWishList(){
-    const root = document.getElementById("wishList");
-    root.innerHTML = "";
-
-    const picked = [];
-    shopData.forEach(s => s.offers.forEach(o => {
-      if ((o.qty ?? 0) > 0) picked.push({shop:s, offer:o});
-    }));
-
-    if (picked.length === 0){
-      const empty = document.createElement("div");
-      empty.className = "cart-row";
-      empty.style.opacity = ".75";
-      empty.innerHTML = `<div class="txt">— ¥—</div><div class="right"></div>`;
-      const st = renderStepper("", ()=>{}, ()=>{});
-      st.style.opacity = ".55";
-      st.querySelector("[data-minus]").disabled = true;
-      st.querySelector("[data-plus]").disabled = true;
-      empty.querySelector(".right").appendChild(st);
-      root.appendChild(empty);
-    } else {
-      picked.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
-      picked.forEach(({shop, offer}) => {
-        const row = document.createElement("div");
-        row.className = "cart-row";
-        row.innerHTML = `<div class="txt">${escapeHTML(shop.shop)} ${yen(offer.price)}</div><div class="right"></div>`;
-        const st = renderStepper(offer.qty,
-          ()=>{ incQty(offer.id, -1); renderAll(false); },
-          ()=>{ incQty(offer.id, +1); renderAll(false); }
-        );
-        row.querySelector(".right").appendChild(st);
-        root.appendChild(row);
-      });
-    }
-  }
-
-  function computeStats(){
-    let buyTotal = 0;
-    let qtyTotal = 0;
-    shopData.forEach(s => s.offers.forEach(o => {
-      const q = Number(o.qty)||0;
-      const p = Number(o.price)||0;
-      if (q>0 && p>0){
-        buyTotal += p*q;
-        qtyTotal += q;
+        const st = renderStepper("", ()=>{}, ()=>{});
+        st.style.opacity = ".55";
+        st.querySelector("[data-minus]").disabled = true;
+        st.querySelector("[data-plus]").disabled = true;
+        empty.querySelector(".right").appendChild(st);
+        list.appendChild(empty);
+      } else {
+        top3.forEach(({shop, offer}, i) => {
+          const r = document.createElement("div");
+          r.className = `row ${shopClass(shop.slug)}`;
+          r.innerHTML = `
+            <div class="left">
+              <div class="rank">${i+1}</div>
+              <div class="shopname">${escapeHTML(shop.shop)}</div>
+            </div>
+            <div class="price">${yen(offer.price)}</div>
+            <div class="right"></div>
+          `;
+          const st = renderStepper(offer.qty,
+            ()=>{ incQty(offer.id, -1); renderAll(false); },
+            ()=>{ incQty(offer.id, +1); renderAll(false); }
+          );
+          r.querySelector(".right").appendChild(st);
+          list.appendChild(r);
+        });
       }
-    }));
 
-    const avg = qtyTotal>0 ? Math.round(buyTotal/qtyTotal) : null;
-
-    const sellJpyPerUnit = Math.round(SELL_PRICE_USD * FX_RATE_JPY_PER_USD);
-    const salesTotal = qtyTotal>0 ? sellJpyPerUnit * qtyTotal : null;
-    const payoutTotal = salesTotal ? Math.round(salesTotal * PAYOUT_RATE) : null;
-
-    const profit = (payoutTotal!=null) ? (payoutTotal - buyTotal) : null;
-    const margin = (payoutTotal && payoutTotal>0 && profit!=null) ? (profit / payoutTotal) : null;
-
-    return { qtyTotal, avg, buyTotal: qtyTotal>0 ? buyTotal : null, salesTotal, payoutTotal, profit, margin };
-  }
-  function renderSummary(){
-    const s = computeStats();
-    document.getElementById("sumQty").textContent = s.qtyTotal ? s.qtyTotal.toLocaleString("ja-JP") : "—";
-    document.getElementById("sumAvg").textContent = s.avg!=null ? yen(s.avg) : "—";
-    document.getElementById("sumBuyTotal").textContent = s.buyTotal!=null ? yen(s.buyTotal) : "—";
-    document.getElementById("sumSalesTotal").textContent = s.salesTotal!=null ? yen(s.salesTotal) : "—";
-    document.getElementById("sumPayoutTotal").textContent = s.payoutTotal!=null ? yen(s.payoutTotal) : "—";
-    if (s.profit==null){
-      document.getElementById("sumProfit").textContent = "—";
-    } else {
-      const pct = (s.margin!=null) ? ` (${(s.margin*100).toFixed(1)}%)` : "";
-      document.getElementById("sumProfit").textContent = `${yen(s.profit)}${pct}`;
-    }
-  }
-
-  function clampInt(v, min, max){
-    const n = Math.floor(Number(v));
-    if (!Number.isFinite(n)) return min;
-    return Math.min(max, Math.max(min, n));
-  }
-
-  // ★予測値：必ず predValue に反映
-  function computePred(days){
-    const act30 = Number(document.getElementById("act30")?.textContent) || 0;
-    const perDay = act30 / 30;
-    return Math.round(perDay * days);
-  }
-  function renderPrediction(){
-    const daysEl = document.getElementById("predDays");
-    const outEl  = document.getElementById("predValue");
-    if (!daysEl || !outEl) return;
-
-    const days = clampInt(daysEl.value, 1, 999);
-    daysEl.value = String(days);
-
-    const val = computePred(days);
-    outEl.textContent = String(val); // ←必ず表示
-  }
-
-  /* Modal */
-  const overlay = document.getElementById("overlay");
-  const openModalBtn = document.getElementById("openModalBtn");
-  const closeBtn = document.getElementById("closeBtn");
-  const okBtn = document.getElementById("okBtn");
-
-  function renderModal(){
-    const list = document.getElementById("modalList");
-    list.innerHTML = "";
-    const items = flattenShopOffersSorted();
-
-    if (items.length === 0){
-      const card = document.createElement("div");
-      card.className = "card shop-other";
-      card.innerHTML = `
-        <div class="card-head"><div>表示できるショップがありません</div><div>&nbsp;</div></div>
-        <div class="meta">
-          <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
-          <div class="pill"><span>数量</span><span style="font-weight:1000;">—</span></div>
-        </div>`;
-      list.appendChild(card);
-      return;
+      document.getElementById("openModalBtn").disabled = items.length === 0;
     }
 
-    items.forEach(({shop, offer}, idx) => {
-      const card = document.createElement("div");
-      card.className = `card ${shopClass(shop.slug)}`;
-      card.innerHTML = `
-        <div class="card-head">
-          <div>${idx+1}. ショップ名：${escapeHTML(shop.shop)}</div>
-          <div style="font-size:12px; font-weight:1000; opacity:.86;">&nbsp;</div>
-        </div>
-        <div class="meta">
-          <div class="pill"><span>価格</span><span style="font-weight:1000;">${yen(offer.price)}</span></div>
-          <div class="pill" data-stepper-host></div>
-        </div>`;
-      const host = card.querySelector("[data-stepper-host]");
-      const st = renderStepper(offer.qty,
-        ()=>{ incQty(offer.id, -1); refreshModalOnly(); },
-        ()=>{ incQty(offer.id, +1); refreshModalOnly(); }
-      );
-      st.style.minWidth = "100%";
-      st.style.maxWidth = "100%";
-      host.appendChild(st);
-      list.appendChild(card);
+    function renderWishList(){
+      const root = document.getElementById("wishList");
+      root.innerHTML = "";
+
+      const picked = [];
+      shopData.forEach(s => s.offers.forEach(o => {
+        if ((o.qty ?? 0) > 0) picked.push({shop:s, offer:o});
+      }));
+
+      if (picked.length === 0){
+        const empty = document.createElement("div");
+        empty.className = "cart-row";
+        empty.style.opacity = ".75";
+        empty.innerHTML = `<div class="txt">— ¥—</div><div class="right"></div>`;
+        const st = renderStepper("", ()=>{}, ()=>{});
+        st.style.opacity = ".55";
+        st.querySelector("[data-minus]").disabled = true;
+        st.querySelector("[data-plus]").disabled = true;
+        empty.querySelector(".right").appendChild(st);
+        root.appendChild(empty);
+      } else {
+        picked.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
+        picked.forEach(({shop, offer}) => {
+          const row = document.createElement("div");
+          row.className = "cart-row";
+          row.innerHTML = `<div class="txt">${escapeHTML(shop.shop)} ${yen(offer.price)}</div><div class="right"></div>`;
+          const st = renderStepper(offer.qty,
+            ()=>{ incQty(offer.id, -1); renderAll(false); },
+            ()=>{ incQty(offer.id, +1); renderAll(false); }
+          );
+          row.querySelector(".right").appendChild(st);
+          root.appendChild(row);
+        });
+      }
+    }
+
+    function computeStats(){
+      let buyTotal = 0;
+      let qtyTotal = 0;
+      shopData.forEach(s => s.offers.forEach(o => {
+        const q = Number(o.qty)||0;
+        const p = Number(o.price)||0;
+        if (q>0 && p>0){
+          buyTotal += p*q;
+          qtyTotal += q;
+        }
+      }));
+
+      const avg = qtyTotal>0 ? Math.round(buyTotal/qtyTotal) : null;
+
+      const sellJpyPerUnit = Math.round(SELL_PRICE_USD * FX_RATE_JPY_PER_USD);
+      const salesTotal = qtyTotal>0 ? sellJpyPerUnit * qtyTotal : null;
+      const payoutTotal = salesTotal ? Math.round(salesTotal * PAYOUT_RATE) : null;
+
+      const profit = (payoutTotal!=null) ? (payoutTotal - buyTotal) : null;
+      const margin = (payoutTotal && payoutTotal>0 && profit!=null) ? (profit / payoutTotal) : null;
+
+      return { qtyTotal, avg, buyTotal: qtyTotal>0 ? buyTotal : null, salesTotal, payoutTotal, profit, margin };
+    }
+    function renderSummary(){
+      const s = computeStats();
+      document.getElementById("sumQty").textContent = s.qtyTotal ? s.qtyTotal.toLocaleString("ja-JP") : "—";
+      document.getElementById("sumAvg").textContent = s.avg!=null ? yen(s.avg) : "—";
+      document.getElementById("sumBuyTotal").textContent = s.buyTotal!=null ? yen(s.buyTotal) : "—";
+      document.getElementById("sumSalesTotal").textContent = s.salesTotal!=null ? yen(s.salesTotal) : "—";
+      document.getElementById("sumPayoutTotal").textContent = s.payoutTotal!=null ? yen(s.payoutTotal) : "—";
+      if (s.profit==null){
+        document.getElementById("sumProfit").textContent = "—";
+      } else {
+        const pct = (s.margin!=null) ? ` (${(s.margin*100).toFixed(1)}%)` : "";
+        document.getElementById("sumProfit").textContent = `${yen(s.profit)}${pct}`;
+      }
+    }
+
+    function clampInt(v, min, max){
+      const n = Math.floor(Number(v));
+      if (!Number.isFinite(n)) return min;
+      return Math.min(max, Math.max(min, n));
+    }
+
+    // 予測値：必ず predValue に反映
+    function computePred(days){
+      const act30 = Number(document.getElementById("act30")?.textContent) || 0;
+      const perDay = act30 / 30;
+      return Math.round(perDay * days);
+    }
+    function renderPrediction(){
+      const daysEl = document.getElementById("predDays");
+      const outEl  = document.getElementById("predValue");
+      if (!daysEl || !outEl) return;
+
+      const days = clampInt(daysEl.value, 1, 999);
+      daysEl.value = String(days);
+
+      const val = computePred(days);
+      outEl.textContent = String(val); // 必ず表示
+    }
+
+    /* Modal */
+    const overlay = document.getElementById("overlay");
+    const openModalBtn = document.getElementById("openModalBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const okBtn = document.getElementById("okBtn");
+
+    function renderModal(){
+      const list = document.getElementById("modalList");
+      list.innerHTML = "";
+      const items = flattenShopOffersSorted();
+
+      if (items.length === 0){
+        const card = document.createElement("div");
+        card.className = "card shop-other";
+        card.innerHTML = `
+          <div class="card-head"><div>表示できるショップがありません</div><div>&nbsp;</div></div>
+          <div class="meta">
+            <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
+            <div class="pill"><span>数量</span><span style="font-weight:1000;">—</span></div>
+          </div>`;
+        list.appendChild(card);
+        return;
+      }
+
+      items.forEach(({shop, offer}, idx) => {
+        const card = document.createElement("div");
+        card.className = `card ${shopClass(shop.slug)}`;
+        card.innerHTML = `
+          <div class="card-head">
+            <div>${idx+1}. ショップ名：${escapeHTML(shop.shop)}</div>
+            <div style="font-size:12px; font-weight:1000; opacity:.86;">&nbsp;</div>
+          </div>
+          <div class="meta">
+            <div class="pill"><span>価格</span><span style="font-weight:1000;">${yen(offer.price)}</span></div>
+            <div class="pill" data-stepper-host></div>
+          </div>`;
+        const host = card.querySelector("[data-stepper-host]");
+        const st = renderStepper(offer.qty,
+          ()=>{ incQty(offer.id, -1); refreshModalOnly(); },
+          ()=>{ incQty(offer.id, +1); refreshModalOnly(); }
+        );
+        st.style.minWidth = "100%";
+        st.style.maxWidth = "100%";
+        host.appendChild(st);
+        list.appendChild(card);
+      });
+    }
+
+    function openModal(){
+      if (flattenShopOffersSorted().length === 0) return;
+      renderModal();
+      overlay.classList.add("open");
+    }
+    function closeModal(){ overlay.classList.remove("open"); }
+    function refreshModalOnly(){
+      if (overlay.classList.contains("open")) renderModal();
+      renderAll(false);
+    }
+
+    openModalBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+    okBtn.addEventListener("click", () => { renderAll(); closeModal(); });
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
     });
-  }
 
-  function openModal(){
-    if (flattenShopOffersSorted().length === 0) return;
-    renderModal();
-    overlay.classList.add("open");
-  }
-  function closeModal(){ overlay.classList.remove("open"); }
-  function refreshModalOnly(){
-    if (overlay.classList.contains("open")) renderModal();
-    renderAll(false);
-  }
+    document.getElementById("predDays")?.addEventListener("input", renderPrediction);
 
-  openModalBtn.addEventListener("click", openModal);
-  closeBtn.addEventListener("click", closeModal);
-  okBtn.addEventListener("click", () => { renderAll(); closeModal(); });
-  overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
+    function renderAll(rerenderModalToo=true){
+      shopData.forEach(sortOffersByPrice);
+      renderTop3();
+      renderWishList();
+      renderSummary();
+      renderPrediction(); // 初回も確実に反映
+      if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
+    }
 
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-  });
-
-  document.getElementById("predDays")?.addEventListener("input", renderPrediction);
-
-  function renderAll(rerenderModalToo=true){
-    shopData.forEach(sortOffersByPrice);
-    renderTop3();
-    renderWishList();
-    renderSummary();
-    renderPrediction(); // ←初回も確実に反映
-    if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
-  }
-
-  // ★念のため：DOM描画後に1回強制反映
-  renderAll();
-  requestAnimationFrame(renderPrediction);
-</script>
+    // DOM描画後に1回強制反映
+    renderAll();
+    requestAnimationFrame(renderPrediction);
+  </script>
 </body>
 </html>
