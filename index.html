@@ -476,7 +476,35 @@
       font-size:10px;
     }
     .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
-    .top3-list{ display:flex; flex-direction:column; gap:8px; }
+    
+
+    /* === Top3: move button under list + manual input === */
+    .morebtn-wide{ width:100%; margin-top:8px; justify-content:center; }
+
+    .manual-wrap{ margin-top:10px; }
+    .manual-title{ font-weight:1000; font-size:11px; opacity:.92; margin: 0 2px 6px; }
+    .manual-row{ background: rgba(255,255,255,.35); }
+
+    .manual-price{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      min-width: 120px;
+      justify-content:flex-end;
+    }
+    .manual-price .yenmark{ font-weight:1000; opacity:.9; }
+    .manual-price input{
+      width: 82px;
+      height: 28px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,.12);
+      background: rgba(255,255,255,.75);
+      font-weight:1000;
+      text-align:right;
+      outline:none;
+    }
+.top3-list{ display:flex; flex-direction:column; gap:8px; }
 
     .row{
       border-radius: 999px;
@@ -1215,9 +1243,26 @@
         <div class="top3-wrap" aria-label="上位3ショップ">
           <div class="top3-head">
             <div class="top3-title">上位3ショップ（価格の安い順）</div>
-            <button class="morebtn" id="openModalBtn" type="button">全ショップを見る</button>
           </div>
           <div class="top3-list" id="top3List"></div>
+
+          <button class="morebtn morebtn-wide" id="openModalBtn" type="button">全ショップを見る</button>
+
+          <div class="manual-wrap" aria-label="その他（手動入力）">
+            <div class="manual-title">その他（手動入力）</div>
+            <div class="row shop-other manual-row">
+              <div class="left">
+                <div class="rank">＋</div>
+                <div class="shopname">その他</div>
+              </div>
+              <div class="price manual-price">
+                <span class="yenmark">¥</span>
+                <input id="manualPrice" type="number" inputmode="numeric" min="0" placeholder="価格" />
+              </div>
+              <div class="right" id="manualStepperHost"></div>
+            </div>
+          </div>
+
           <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
         </div>
 
@@ -1280,6 +1325,49 @@
       ]},
       { shop: "その他", slug:"other", includeInShopList: false, offers: [] },
     ];
+
+
+    // 手動入力（その他）
+    const MANUAL_OFFER_ID = "manual-1";
+    const otherShop = shopData.find(s => s.slug === "other");
+    if (otherShop && !otherShop.offers.some(o => o.id === MANUAL_OFFER_ID)){
+      otherShop.offers.push({ id: MANUAL_OFFER_ID, price: 0, stock: null, qty: 0, manual: true });
+    }
+
+    function renderManual(){
+      const host = document.getElementById("manualStepperHost");
+      const priceEl = document.getElementById("manualPrice");
+      if (!host || !priceEl) return;
+
+      const found = findOfferById(MANUAL_OFFER_ID);
+      if (!found) return;
+
+      // price input
+      const curPrice = Number(found.offer.price) || 0;
+      if (document.activeElement !== priceEl){
+        priceEl.value = curPrice > 0 ? String(curPrice) : "";
+      }
+
+      // stepper
+      host.innerHTML = "";
+      const st = renderStepper(found.offer.qty,
+        ()=>{ incQty(MANUAL_OFFER_ID, -1); renderAll(false); },
+        ()=>{ incQty(MANUAL_OFFER_ID, +1); renderAll(false); }
+      );
+      st.style.width = "104px";
+      host.appendChild(st);
+
+      // bind input once
+      if (!priceEl.dataset.bound){
+        priceEl.addEventListener("input", () => {
+          const v = Number(priceEl.value);
+          found.offer.price = (Number.isFinite(v) && v > 0) ? Math.round(v) : 0;
+          renderSummary();
+        });
+        priceEl.dataset.bound = "1";
+      }
+    }
+
 
     const yen = (n) => (Number.isFinite(n) ? "¥" + n.toLocaleString("ja-JP") : "¥—");
 
@@ -1610,7 +1698,8 @@
       shopData.forEach(sortOffersByPrice);
       renderTop3();
       renderSummary();
-      renderPrediction(); // 初回も確実に反映
+      renderPrediction();
+      renderManual(); // 初回も確実に反映
       if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
     }
     // DOM描画後に1回強制反映
