@@ -1,1712 +1,235 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>カートUI（プロトタイプ） v3</title>
+  <meta charset="UTF-8" />
+  <title>販売予測ダッシュボード 再現</title>
   <style>
-    :root{
-      --panel:#d9d39a;
-      --ink:#1a1a1a;
-      --shadow: 0 10px 30px rgba(0,0,0,.18);
-      --radius: 28px;
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    body { background:#f3f6fb; padding:20px; }
+    .card { background:#eaf3ff; border-radius:24px; padding:24px; max-width:1300px; margin:auto; }
 
-      /* shop colors */
-      --amz1:#f1b35d; --amz2:#e7a54a;
-      --rkt1:#f0a2a6; --rkt2:#e6868f;
-      --yah1:#b2a7f5; --yah2:#8f84df;
-      --oth1:#bdbdbd; --oth2:#a8a8a8;
+    /* ===== 共通：左ラベル幅 ===== */
+    .left-legend { min-width:160px; }
 
-      --empty:#bdbdbd;
-      --chip:#ffffff66;
-      --danger:#f04c4c;
-      --dark:#111;
-
-      /* left UI */
-      --cardbg:#ffffff;
-      --stroke: rgba(0,0,0,.08);
-      --softshadow: 0 8px 24px rgba(0,0,0,.08);
-      --muted:#6b7280;
-
-      /* heights */
-      --topRowH: 420px;
-      --demandCardH: 360px;
-      --lowerGap: 14px;
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-      color:var(--ink);
-      background:#f3f3f3;
-      display:flex;
-      justify-content:center;
-      padding:24px;
-    }
-
-    .stage{
-      width: min(1560px, 100%);
-      display:grid;
-      grid-template-columns: minmax(820px, 1fr) 360px;
-      gap:18px;
-      align-items:start;
-    }
-
-    /* ===== Left ===== */
-    .mock{ border-radius:18px; background:transparent; position:relative; overflow:visible; min-height:680px; }
-
-    .card-ui{
-      background: var(--cardbg);
-      border-radius: 18px;
-      box-shadow: var(--softshadow);
-      border: 1px solid var(--stroke);
-      padding: 14px;
-      overflow:hidden;
-    }
-    .card-ui h4{ margin:0 0 10px; font-size:15px; font-weight:1000; letter-spacing:.02em; }
-    .subtle{ color:var(--muted); font-size:10px; font-weight:900; }
-
-    .top-row{
-      display:grid;
-      grid-template-columns: 1.05fr 1.05fr 1.55fr;
-      gap:14px;
-      align-items:stretch;
-      grid-auto-rows: var(--topRowH);
-    }
-    .top-row .card-ui{
-      height: var(--topRowH);
-      display:flex;
-      flex-direction:column;
-    }
-
-    .product-image{ display:flex; flex-direction:column; gap:12px; flex:1; min-height:0; }
-    .img-frame{
-      width:100%;
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.08);
-      background:#f6f7f9;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
+    /* ===== 共通カラム（推奨仕入数と同一） ===== */
+    .columns { display:flex; gap:16px; }
+    .col {
+      width:140px;
+      background:#cfe5ff;
+      border-radius:22px;
       padding:12px;
-      flex:1;
-      min-height:0;
-    }
-    .img-frame img{ width:100%; height:100%; object-fit:contain; display:block; }
-
-    .info-list{
-      display:grid;
-      grid-template-columns: 120px 1fr;
-      gap:10px 14px;
-      font-size:12px;
-      font-weight:900;
-      line-height:1.35;
-    }
-    .info-list .k{ color:var(--muted); font-weight:1000; letter-spacing:.02em; }
-    .info-list .v{ font-weight:1000; min-width:0; word-break:break-word; }
-    .stars{ letter-spacing:.06em; color:#111; }
-    .badge-row{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
-    .badge{
-      font-size:10px; font-weight:1000;
-      padding:5px 8px; border-radius:999px;
-      border:1px solid rgba(0,0,0,.08);
-      background:#f8fafc; white-space:nowrap;
-    }
-    .badge.red{ color:#b91c1c; background:#fee2e2; border-color: rgba(185,28,28,.18); }
-    .badge.blue{ color:#1d4ed8; background:#dbeafe; border-color: rgba(29,78,216,.18); }
-    .badge.orange{ color:#9a3412; background:#ffedd5; border-color: rgba(154,52,18,.18); }
-
-    .card-ui.scrollable .scroll-area{ overflow:auto; padding-right:6px; flex:1; min-height:0; }
-
-    /* ===== 主要項目 ===== */
-    .metrics-card{ padding:10px; }
-    .metrics-card h4{ margin:0 0 8px; font-size:14px; }
-
-
-    /* 主要項目ヘッダー：危険値指標（3つの丸ゲージ） */
-    .metrics-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:6px;
-    }
-    .metrics-head h4{ margin:0; }
-    .danger-gauges{ display:flex; gap:10px; align-items:flex-end; }
-    .gauge-wrap{ display:flex; flex-direction:column; align-items:center; gap:4px; }
-    .gauge-label{ font-size:9px; font-weight:1000; color:var(--muted); white-space:nowrap; }
-
-    .gauge{
-      --p: 60;
-      width:54px; height:54px;
-      border-radius:50%;
-      position:relative;
-      display:grid;
-      place-items:center;
-      background: conic-gradient(#f59e0b calc(var(--p)*1%), #e5e7eb 0);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-    }
-    .gauge[data-state='stable']{
-      background: conic-gradient(#22c55e calc(var(--p)*1%), #e5e7eb 0);
-    }
-    .gauge[data-state='warn']{
-      background: conic-gradient(#f59e0b calc(var(--p)*1%), #e5e7eb 0);
-    }
-    .gauge[data-state='danger']{
-      background: conic-gradient(#ef4444 calc(var(--p)*1%), #e5e7eb 0);
-    }
-    .gauge::before{
-      content:'';
-      position:absolute;
-      inset:6px;
-      border-radius:50%;
-      background:#fff;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-    }
-    .gauge-inner{
-      position:relative;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      line-height:1;
-    }
-    .gauge-inner .num{
-      font-size:14px;
-      font-weight:1000;
-      letter-spacing:.02em;
-    }
-    .gauge-inner .state{
-      margin-top:2px;
-      font-size:9px;
-      font-weight:1000;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-
-
-    .metric-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:6px;
-      margin-top: 6px;
-    }
-    .metric{
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 14px;
-      padding: 8px;
-      background: #fff;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
-      min-height: 58px;
-    }
-    .metric .label{ font-size:9px; color:var(--muted); font-weight:1000; }
-    .metric .value{ margin-top:2px; font-size:15px; font-weight:1000; }
-
-    .inputs-grid{
-      display:grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap:6px;
-      margin-top: 6px;
-    }
-    .m-input{
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 14px;
-      background:#fff;
-      padding: 8px 10px;
-      min-height: 58px;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      gap:5px;
-      overflow:hidden; /* ←元のままOK（下で予測枠だけ上書き） */
-    }
-    .m-input .label{ font-size:9px; color:var(--muted); font-weight:1000; line-height:1.15; }
-
-    /* 予測カード：タイトル右に日数入力を配置 */
-    .predhead{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-    }
-    .days-inline{
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-      flex:0 0 auto;
-    }
-    .days-inline input{
-      width:34px;
-      text-align:right;
-      padding:3px 5px;
-      border:1px solid rgba(0,0,0,.10);
-      border-radius:8px;
-      font-weight:1000;
-      outline:none;
-      background:#fff;
-      color:#111;
-    }
-    .days-inline .u{
-      font-size:10px;
-      font-weight:1000;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-
-    .m-input input{
-      width:100%;
-      border:1px solid rgba(0,0,0,.10);
-      border-radius:10px;
-      padding:8px 10px;
-      font-weight:1000;
-      outline:none;
-      background:#fff;
-      text-align:left;
-      color:#111;
-    }
-    .m-input input[readonly]{ background:#f8fafc; cursor:not-allowed; pointer-events:none; }
-
-    /* 予測〇日：入力と自動反映（同じ枠内） */
-    .predbox{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:6px;
-      width:100%;
-    }
-    .predbox .days{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      flex:0 0 auto;
-    }
-    /* 入力欄を小さく */
-    .predbox .days input{
-      width:44px;
-      text-align:right;
-      padding:6px 8px;
-      border-radius: 10px;
-    }
-    .predbox .days .u{
-      font-size:10px;
-      font-weight:1000;
-      color:var(--muted);
-      white-space:nowrap;
-    }
-    /* 自動反映数字 */
-    .predbox .val{
-      flex:0 0 auto;
-      min-width: 64px;
-      text-align:right;
-      font-size:16px;
-      font-weight:1000;
-      white-space:nowrap;
-    }
-
-    /* ===== 行ごと背景（上：濃い → 下：薄い） ===== */
-    .metrics-row.row1 .metric,
-    .metrics-row.row1 .m-input{ background: rgba(147,197,253,.70); }
-    .metrics-row.row2 .metric,
-    .metrics-row.row2 .m-input{ background: rgba(191,219,254,.62); }
-    .metrics-row.row3 .metric,
-    .metrics-row.row3 .m-input{ background: rgba(219,234,254,.55); }
-
-    .metrics-row .metric, .metrics-row .m-input{
-      border-color: rgba(0,0,0,.07);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.20);
-    }
-
-    .bottom-pills{
-      margin-top: 12px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:8px;
-    }
-    .pillbox{
-      border-radius:14px;
-      border:1px solid rgba(0,0,0,.08);
-      background:#f5f7ff;
-      padding:12px 14px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      font-weight:1000;
-      gap:8px;
-    }
-    .pillbox .l{ font-size:10px; color:var(--muted); font-weight:1000; }
-    .pillbox .r{ font-size:16px; font-weight:1000; white-space:nowrap; }
-    .metrics-card .bottom-pills{ margin-top:auto; }
-
-    /* ===== Lower row ===== */
-    .lower{
-      margin-top: var(--lowerGap);
-      display:grid;
-      grid-template-columns: 1fr 2fr;
-      gap:14px;
-      align-items:start;
-    }
-    .placeholder{
-      border-radius:14px;
-      border:1px dashed rgba(0,0,0,.18);
-      background:#f6f7f9;
-      min-height:260px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:#9aa0a6;
-      font-weight:1000;
-      user-select:none;
       text-align:center;
-      padding:12px;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+      flex: 0 0 auto;
     }
-
-    .card-ui.demand-card{
-      height: var(--demandCardH);
-      display:flex;
-      flex-direction:column;
-    }
-    .card-ui.demand-card .chart-wrap{
-      flex:1;
-      min-height:0;
-      display:flex;
-      flex-direction:column;
-    }
-    .card-ui.demand-card .fake-graph{
-      flex:1;
-      min-height:0;
-      height:auto;
-    }
-
-    .chart-wrap{
+    .col-title {
+      background:#e6f1ff;
       border-radius:14px;
-      border:1px solid rgba(0,0,0,.08);
-      background:#fff;
-      padding:12px;
-      overflow:hidden;
+      padding:8px 0;
+      font-weight:700;
+      margin-bottom:12px;
     }
-    .chart-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; }
-    .chart-head .title{ font-weight:1000; }
-    .toggles{ display:flex; gap:8px; align-items:center; color:var(--muted); font-size:10px; font-weight:1000; }
-    .toggles label{
-      display:flex; gap:6px; align-items:center; cursor:pointer; user-select:none;
-      white-space:nowrap; /* ←誤字修正（white-spaceível; を排除） */
-    }
-    .fake-graph{
-      height:260px;
-      border-radius:10px;
-      background:
-        linear-gradient(to right, rgba(0,0,0,.05) 1px, transparent 1px) 0 0/32px 32px,
-        linear-gradient(to bottom, rgba(0,0,0,.05) 1px, transparent 1px) 0 0/32px 32px,
-        linear-gradient(180deg, #f8fafc, #ffffff);
-      border:1px solid rgba(0,0,0,.06);
-      position:relative;
-      overflow:hidden;
-    }
-    .fake-line{ position:absolute; inset:0; }
-    .fake-line::before{
-      content:""; position:absolute; left:-10%; top:52%;
-      width:120%; height:2px; background: rgba(59,130,246,.9);
-      transform: rotate(-12deg); filter: blur(.1px);
-    }
-    .fake-line::after{
-      content:""; position:absolute; left:-10%; top:68%;
-      width:120%; height:2px; background: rgba(245,158,11,.9);
-      transform: rotate(-6deg); filter: blur(.1px);
-    }
-    .legend{ margin-top:10px; display:flex; gap:12px; flex-wrap:wrap; font-size:10px; font-weight:1000; color:var(--muted); }
-    .dot{ width:10px;height:10px;border-radius:999px;display:inline-block;margin-right:6px; }
-
-    /* ===== Right（固定サイズ） ===== */
-    .side{
-      background: var(--panel);
-      border-radius: var(--radius);
-      padding: 12px 14px 10px;
-      box-shadow: var(--shadow);
-      position:sticky;
-      top:16px;
-
-      height: calc(var(--topRowH) + var(--demandCardH) + var(--lowerGap));
-      display:flex;
-      flex-direction:column;
-      overflow:hidden;
-    }
-
-    .side-body{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      min-height:0;
-      flex:1;
-      overflow:hidden;
-    }
-
-    .top3-wrap{
-      margin-top: 0;
-      padding: 8px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.35);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      flex:0 0 auto;
-    }
-    .top3-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      margin-bottom: 8px;
-    }
-    .top3-title{
-      font-weight:1000;
-      letter-spacing:.02em;
-      font-size:12px;
-      opacity:.92;
-      line-height:1.2;
-    }
-    .morebtn{
-      border:0;
-      background: rgba(0,0,0,.10);
-      color:#111;
-      font-weight:1000;
-      padding: 9px 10px;
-      border-radius: 999px;
-      cursor:pointer;
-      white-space:nowrap;
-      font-size:10px;
-    }
-    .morebtn:disabled{ cursor:not-allowed; opacity:.55; }
-    
-
-    /* === Top3: move button under list + manual input === */
-    .morebtn-wide{ width:100%; margin-top:8px; justify-content:center; }
-
-    .manual-wrap{ margin-top:10px; }
-    .manual-title{ font-weight:1000; font-size:11px; opacity:.92; margin: 0 2px 6px; }
-    .manual-row{ background: rgba(255,255,255,.35); }
-
-    .manual-price{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      min-width: 120px;
-      justify-content:flex-end;
-    }
-    .manual-price .yenmark{ font-weight:1000; opacity:.9; }
-    .manual-price input{
-      width: 82px;
-      height: 28px;
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(0,0,0,.12);
-      background: rgba(255,255,255,.75);
-      font-weight:1000;
-      text-align:right;
-      outline:none;
-    }
-.top3-list{ display:flex; flex-direction:column; gap:8px; }
-
-    .row{
-      border-radius: 999px;
-      padding: 8px 10px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
-      font-weight:900;
-      gap:5px;
-      overflow:hidden;
-    }
-    .row .left{
-      display:flex;
-      align-items:center;
-      gap:8px;
-      min-width: 110px;
-      overflow:hidden;
-      flex: 1 1 auto;
-    }
-    .rank{
-      width:26px;height:26px;
-      border-radius:999px;
-      display:grid; place-items:center;
-      background: rgba(0,0,0,.14);
-      font-weight:1000;
-      color:#111;
-      flex:0 0 auto;
-      font-size:12px;
-    }
-    .shopname{
-      font-weight:1000;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      max-width: 110px;
-      font-size:14px;
-    }
-    .row .price{
-      min-width: 74px;
-      font-size:15px;
-      white-space:nowrap;
-      flex:0 0 auto;
-    }
-    .row .right{
-      display:flex;
-      align-items:center;
-      gap:6px;
-      margin-left:auto;
-      flex: 0 0 auto;
-      max-width: 116px;
-    }
-
-    /* qty stepper（はみ出し防止） */
-    .stepper{
-      display:flex;
-      align-items:center;
-      gap:5px;
-      background: var(--chip);
-      padding: 4px 6px;
-      border-radius: 999px;
-      width: 104px;
-      min-width: 104px;
-      max-width: 104px;
-      justify-content:space-between;
-      flex: 0 0 auto;
-      overflow:hidden;
-    }
-    .stepper .label{
-      font-weight:1000;
-      opacity:.92;
-      white-space:nowrap;
-      font-size:10.5px;
-      letter-spacing:.01em;
-      flex:0 0 auto;
-    }
-    .stepper .controls{
-      display:flex;
-      align-items:center;
-      gap:5px;
-      flex:0 0 auto;
-    }
-    .stepper .qbtn{
-      width:20px;height:20px;
-      border-radius:999px;
-      border:0;
-      cursor:pointer;
-      background: rgba(0,0,0,.12);
-      font-weight:1000;
-      line-height:1;
-      flex:0 0 auto;
-      font-size:10px;
-    }
-    .stepper .qval{
-      min-width: 16px;
-      text-align:center;
-      font-weight:1000;
-      font-size:11.5px;
-      flex:0 0 auto;
-    }
-
-    .row.dim{ background: var(--empty); opacity:.78; box-shadow:none; }
-
-    .shop-amazon { background: linear-gradient(180deg,var(--amz1),var(--amz2)); }
-    .shop-rakuten{ background: linear-gradient(180deg,var(--rkt1),var(--rkt2)); }
-    .shop-yahoo  { background: linear-gradient(180deg,var(--yah1),var(--yah2)); }
-    .shop-other  { background: linear-gradient(180deg,var(--oth1),var(--oth2)); }
-
-    .hinttxt{ font-size:10px; font-weight:900; opacity:.75; line-height:1.35; }
-
-    /* ASIN集計 */
-    .summary-box{
-      margin: 0 6px;
-      padding: 8px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.35);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      flex:0 0 auto;
-    }
-    .summary-head{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom: 8px;
-      gap:8px;
-    }
-    .summary-title{
-      font-weight:1000;
-      letter-spacing:.02em;
-      font-size:12px;
-      opacity:.92;
-    }
-    .summary-grid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:6px;
-    }
-    .sum-row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      padding: 8px 10px;
-      border-radius: 14px;
-      background: rgba(255,255,255,.55);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      font-weight:1000;
-      font-size:12px;
-    }
-    .sum-row .k{ color: rgba(0,0,0,.70); font-weight:1000; }
-    .sum-row .v{ font-weight:1000; white-space:nowrap; }
-
-    .dash{ border-top: 2px dashed rgba(0,0,0,.35); margin: 10px 6px 10px; flex:0 0 auto; }
-
-    .actions{ display:flex; gap:8px; justify-content:center; padding: 4px 6px 2px; flex:0 0 auto; }
-    .btn{
-      border:0;
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-weight:1000;
-      cursor:pointer;
-      background: rgba(255,255,255,.6);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
-      width: 50%;
-      font-size:12px;
-    }
-    .btn.primary{ background: rgba(255,255,255,.85); }
-
-    /* Modal */
-    .overlay{
-      position:fixed; inset:0;
-      background: rgba(0,0,0,.55);
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:18px;
-      z-index:50;
-    }
-    .overlay.open{display:flex;}
-    .modal{
-      width:min(720px, 100%);
-      background: var(--panel);
-      border-radius: 26px;
-      box-shadow: var(--shadow);
-      padding: 18px;
-      position:relative;
-    }
-    .close{
-      position:absolute;
-      right:14px; top:14px;
-      width:34px; height:34px;
-      border-radius:999px;
-      border:0;
-      background: var(--danger);
-      color:#fff;
-      font-weight:1000;
-      cursor:pointer;
-      box-shadow: inset 0 0 0 2px rgba(255,255,255,.25);
-    }
-    .modal h3{
-      margin: 4px 8px 12px;
+    .col-box {
+      background:#c7e0ff;
+      border-radius:14px;
+      padding:14px 0;
+      margin-bottom:10px;
+      color:#7d8fa6;
+      font-weight:600;
       font-size:16px;
-      font-weight:1000;
-      letter-spacing:.02em;
-      opacity:.95;
     }
-    .modal-list{
+    .col-box:last-child { margin-bottom:0; }
+
+    /* ===== セクション枠 ===== */
+    .section { margin-bottom:18px; }
+    .section-header {
       display:flex;
-      flex-direction:column;
-      gap:12px;
-      margin-top: 6px;
-      max-height: 62vh;
-      overflow:auto;
-      padding-right: 4px;
+      align-items:flex-start;
+      gap:24px;
     }
-    .card{
-      border-radius: 22px;
-      padding: 14px 14px;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
-    }
-    .card-head{
-      display:flex; justify-content:space-between; align-items:flex-start;
-      gap:12px;
-      font-weight:1000;
-    }
-    .meta{
-      margin-top:10px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px 12px;
-      align-items:center;
-    }
-    .pill{
-      display:flex; justify-content:space-between; align-items:center;
-      padding: 8px 10px;
-      background: rgba(255,255,255,.35);
-      border-radius: 14px;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      font-weight:1000;
-      gap:8px;
-    }
-    .okwrap{ display:flex; justify-content:center; margin: 16px 0 8px; }
-    .ok{
-      border:0;
-      width:min(420px, 100%);
-      border-radius: 999px;
-      padding: 14px 16px;
-      background:#ff2f2f;
-      color:#fff;
-      font-weight:1000;
+    .section-title {
+      margin:0 0 12px;
       font-size:18px;
-      cursor:pointer;
-      box-shadow: 0 10px 20px rgba(255,47,47,.25), inset 0 0 0 2px rgba(255,255,255,.15);
+      font-weight:800;
+      color:#2b3a4e;
     }
-
-    /* =========================
-       ★ ここが今回の修正ポイント
-       右側の数値が切れないように調整
-       ========================= */
-    .predbox{ min-width:0; }
-    .predbox .days{ flex:0 0 auto; }
-    .predbox .val{
-      flex:1 1 auto;
-      min-width:0;
-      text-align:right;
-      padding-left:10px;
-      font-size: clamp(14px, 1.4vw, 16px);
-      line-height:1.1;
-      white-space:nowrap;
-    }
-    /* この枠だけは切り落とさない（m-inputのoverflow:hidden対策） */
-    .m-input .predbox{ overflow:visible; }
-
-
-    /* =========================
-       ★ v10: 主要項目の整理 & 予測日数入力をコンパクト化
-       - 予測〇日販売数：ラベル＋入力を横並びで1行に
-       - 日数入力欄を小さく
-       - 主要項目の余白/行間を少し締めて見やすく
-       ========================= */
-    .predhead{
-      justify-content:flex-start; /* space-between → 左寄せ */
+    .legend-item {
+      display:flex;
+      align-items:center;
       gap:8px;
-    }
-    .predhead .label{
-      white-space:nowrap;
-      font-size:10px;
-      font-weight:1000;
-      color:var(--muted);
-    }
-    .days-inline input{
-      width:36px;     /* 小さく */
-      height:26px;
-      padding:2px 4px;
-      font-size:12px;
-      border-radius:6px;
-    }
-
-    /* 主要項目を少しコンパクトに */
-    .metrics-card{ padding:10px; }
-    .m-input{
-      padding:8px 10px;
-      min-height:auto;
-      gap:6px;
-    }
-    .variants{ gap:4px; margin-top:6px; }
-    .vrow{ padding:4px 6px; }
-
-
-    /* ===== 予測販売数：3パターン表示（リスク/利益/攻め） ===== */
-    .scenario-bar{
-      display:flex;
-      gap:6px;
-      align-items:center;
-      margin: 4px 0 6px;
-      flex-wrap:wrap;
-    }
-    .scenario-bar .hint{
-      font-size:10px;
-      font-weight:1000;
-      color:var(--muted);
-      margin-right:4px;
-      white-space:nowrap;
-    }
-    .scenario-opt{
-      position:relative;
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      padding:5px 8px;
-      border-radius:10px;
-      border:1px solid rgba(0,0,0,.10);
-      background: rgba(255,255,255,.55);
-      cursor:pointer;
-      user-select:none;
-      font-weight:1000;
-      font-size:10px;
-      line-height:1;
-    
-      opacity:.35;
-      filter:saturate(.85);
-    }
-    .scenario-opt input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
-    
-    .scenario-opt .box{
-      width:18px; height:18px;
-      border-radius:4px;
-      border:1.8px solid rgba(0,0,0,.28);
-      background: rgba(255,255,255,.85);
-      display:grid;
-      place-items:center;
-      flex:0 0 auto;
-    }
-    .scenario-opt .box::after{
-      content:"";
-      font-size:12px;
-      font-weight:1000;
-      line-height:1;
-      transform: translateY(-0.5px);
-      color:#111;
-    }
-    .scenario-opt[data-active="true"] .box::after{
-      content:"✓";
-    }
-.scenario-opt[data-active="true"]{
-      background: rgba(255,255,255,.92);
-      border-color: rgba(0,0,0,.14);
-      box-shadow: 0 6px 16px rgba(0,0,0,.08);
-    
-      opacity:1;
-      filter:none;
-      box-shadow: 0 10px 22px rgba(0,0,0,.12);
-    }
-    .scenario-opt[data-active="true"] .box{
-      border-color: rgba(0,0,0,.30);
-      background:#fff;
-    
-      box-shadow: inset 0 0 0 2px rgba(0,0,0,.08);
-    }
-
-    .variants{
-      display:flex;
-      flex-direction:column;
-      gap:3px;
-      margin-top:4px;
-    }
-    .vrow{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      padding:4px 8px;
-      border-radius:10px;
-      background: rgba(255,255,255,.35);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
-      overflow:hidden;
-    }
-    .vrow .k{
-      font-size:9px;
-      font-weight:1000;
-      color: rgba(0,0,0,.70);
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .vrow .v{
-      font-size:11px;
-      font-weight:1000;
-      white-space:nowrap;
-      flex:0 0 auto;
-    }
-    .vrow[data-active="true"]{
-      background: rgba(255,255,255,.75);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.10), 0 6px 14px rgba(0,0,0,.08);
-    }
-     .vrow[data-active="true"] .v{
+      margin-bottom:8px;
+      color:#4a5d75;
       font-size:14px;
+      font-weight:700;
     }
+    .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+    .green{background:#3bb273;}
+    .orange{background:#f5a623;}
+    .red{background:#e94e4e;}
+    .blue1{background:#7fb7ff;}
+    .blue2{background:#4aa0ff;}
 
-
-    /* vrow emphasis override */
-    .vrow{
-      opacity:.28;
-      background: rgba(255,255,255,.16);
+    /* ===== 販売数：スクロール領域 ===== */
+    .scroll-area {
+      background:#d9ebff;
+      border-radius:22px;
+      padding:16px 16px 18px;
+      max-height:240px;          /* スクロール可能にする高さ */
+      overflow-y:auto;
+      overflow-x:hidden;
     }
-    .vrow[data-active="false"]{
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.05);
+    .scroll-area::-webkit-scrollbar { width:10px; }
+    .scroll-area::-webkit-scrollbar-thumb {
+      background: rgba(74,93,117,0.22);
+      border-radius: 999px;
     }
-    .vrow[data-active="false"] .k,
-    .vrow[data-active="false"] .v{
-      color: rgba(0,0,0,.52);
+    .scroll-area::-webkit-scrollbar-track { background: transparent; }
+
+    /* ===== 追加項目（5列グリッド） ===== */
+    .metrics5 {
+      margin-top:14px;
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:14px;
     }
-    .vrow[data-active="true"]{
-      opacity:1;
-      background: rgba(255,255,255,.88);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.14), 0 12px 26px rgba(0,0,0,.14);
+    .mcard{
+      background:#fff;
+      border-radius:18px;
+      padding:14px 16px;
+      min-height:76px;
     }
-    .vrow[data-active="true"] .k{ color: rgba(0,0,0,.85); }
-    .vrow[data-active="true"] .v{ color:#111; }
+    .mlabel{ font-size:12px; color:#7a8ca5; margin-bottom:4px; }
+    .mval{ font-size:20px; font-weight:800; color:#1f2a3a; }
 
-
-    @media (max-width: 1180px){
-      .stage{ grid-template-columns: 1fr; }
-      .side{ position:relative; top:auto; height:auto; overflow:visible; }
-      .side-body{ overflow:visible; }
-      .cart-box{ min-height:auto; }
-      .cart-scroll{ overflow:visible; }
+    /* ===== 下部指標（既存） ===== */
+    .grid-top {
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap:14px;
+      margin-top:18px;
+      margin-bottom:16px;
     }
-    @media (max-width: 1080px){
-      :root{ --topRowH: auto; --demandCardH: auto; }
-      .top-row{ grid-template-columns: 1fr; grid-auto-rows: auto; }
-      .top-row .card-ui{ height:auto; }
-      .lower{ grid-template-columns: 1fr; }
-      .metric-grid, .inputs-grid{ grid-template-columns: 1fr; }
-      .card-ui.demand-card{ height:auto; }
+    .grid-bottom {
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:14px;
     }
-    @media (max-width: 900px){
-      body{padding:14px}
+    .item {
+      background:#fff;
+      border-radius:18px;
+      padding:14px 16px;
+      min-height:76px;
     }
-  
-/* === Compact metrics layout v11 === */
-.metrics-head{ margin-bottom:4px; }
-.metrics-row{ margin-top:4px; }
-
-.inputs-grid,
-.metric-grid{
-  gap:6px;
-}
-
-.m-input,
-.metric{
-  padding:6px 8px;
-  min-height:48px;
-}
-
-.m-input .label,
-.metric .label{
-  font-size:9px;
-}
-
-.metric .value{
-  font-size:14px;
-  margin-top:2px;
-}
-
-/* variants rows tighter */
-.variants{ gap:2px; margin-top:4px; }
-.vrow{ padding:3px 6px; }
-.vrow .k{ font-size:9px; }
-.vrow .v{ font-size:12px; }
-
-/* bottom pills compact */
-.bottom-pills{ margin-top:8px; gap:6px; }
-.pillbox{ padding:8px 10px; }
-.pillbox .r{ font-size:14px; }
-
-</style>
+    .label { font-size:12px; color:#7a8ca5; margin-bottom:4px; }
+    .num { font-size:22px; font-weight:800; }
+    .note {
+      font-size:12px;
+      color:#7a8ca5;
+      line-height:1.5;
+      margin-top:6px;
+    }
+  </style>
 </head>
 <body>
-  <div class="stage">
+<div class="card">
 
-    <!-- LEFT -->
-    <main class="mock" aria-label="商品ページモック">
-      <div class="top-row">
-
-        <!-- 商品画像 -->
-        <section class="card-ui image-card">
-          <h4>商品画像</h4>
-          <div class="product-image">
-            <div class="img-frame" aria-label="商品画像プレースホルダー">
-              <img alt="商品画像" src="https://dummyimage.com/800x520/e5e7eb/9ca3af.png&text=Product+Image" />
-            </div>
-          </div>
-        </section>
-
-        <!-- 商品情報 -->
-        <section class="card-ui scrollable">
-          <h4>商品情報</h4>
-          <div class="scroll-area">
-            <div class="info-list">
-              <div class="k">注意事項</div>
-              <div class="v">
-                <div class="badge-row">
-                  <span class="badge red">輸出不可</span>
-                  <span class="badge blue">知財</span>
-                  <span class="badge orange">大型</span>
-                </div>
-              </div>
-
-              <div class="k">商品名</div><div class="v">スーパーアクションヒーロー 5体セット</div>
-              <div class="k">ブランド</div><div class="v">HeroWorks</div>
-              <div class="k">評価</div><div class="v"><span class="stars">★★★★☆</span> <span class="subtle">(523)</span></div>
-              <div class="k">各種ASIN</div><div class="v">日本：B0J0000001 / US：B0A0000001</div>
-              <div class="k">JAN</div><div class="v">4900000000001</div>
-              <div class="k">SKU</div><div class="v">HW-HERO-SET-5</div>
-              <div class="k">サイズ</div><div class="v">32×26×8</div>
-              <div class="k">重量（実積重量）</div><div class="v">1.10kg（1.20kg）</div>
-              <div class="k">カテゴリ</div><div class="v">Toys &amp; Games / Action Figures</div>
-              <div class="k">材質</div><div class="v">プラスチック / 紙</div>
-              <div class="k">備考</div><div class="v">長くなってもカード内スクロールで見られます。</div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 主要項目 -->
-        <section class="card-ui metrics-card">
-          <div class="metrics-head">
-            <h4>主要項目</h4>
-            <div class="danger-gauges" aria-label="危険値指標">
-              <div class="gauge-wrap">
-                <div class="gauge" id="g_recent" data-state="warn" style="--p:62">
-                  <div class="gauge-inner">
-                    <div class="num" id="g_recent_num">62</div>
-                    <div class="state" id="g_recent_state">注意</div>
-                  </div>
-                </div>
-                <div class="gauge-label">直近重視</div>
-              </div>
-              <div class="gauge-wrap">
-                <div class="gauge" id="g_count" data-state="stable" style="--p:38">
-                  <div class="gauge-inner">
-                    <div class="num" id="g_count_num">38</div>
-                    <div class="state" id="g_count_state">安定</div>
-                  </div>
-                </div>
-                <div class="gauge-label">回数重視</div>
-              </div>
-              <div class="gauge-wrap">
-                <div class="gauge" id="g_both" data-state="warn" style="--p:54">
-                  <div class="gauge-inner">
-                    <div class="num" id="g_both_num">54</div>
-                    <div class="state" id="g_both_state">注意</div>
-                  </div>
-                </div>
-                <div class="gauge-label">両方</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 1行目（予測：シナリオ表示） -->
-          <div class="metrics-row row1">
-
-            <!-- シナリオ選択（チェックしたものが目立つ） -->
-            <div class="scenario-bar" aria-label="予測シナリオ選択">
-              <div class="hint">表示：</div>
-
-              <label class="scenario-opt" id="opt-risk" data-active="false">
-                <span class="box" aria-hidden="true"></span>
-                <input type="radio" name="scenario" value="risk" />
-                <span>リスク重視🍀</span>
-              </label>
-
-              <label class="scenario-opt" id="opt-profit" data-active="true">
-                <span class="box" aria-hidden="true"></span>
-                <input type="radio" name="scenario" value="profit" checked />
-                <span>利益ベース✨</span>
-              </label>
-
-              <label class="scenario-opt" id="opt-attack" data-active="false">
-                <span class="box" aria-hidden="true"></span>
-                <input type="radio" name="scenario" value="attack" />
-                <span>攻め🔥</span>
-              </label>
-            </div>
-
-            <div class="inputs-grid" style="margin-top:6px;">
-              <!-- 予測〇日（入力 + 3パターン） -->
-              <div class="m-input">
-                <div class="predhead">
-                  <div class="label">予測〇日販売数</div>
-                  <div class="days-inline" aria-label="予測日数入力">
-                    <input id="predDays" inputmode="numeric" value="180" aria-label="予測日数" />
-                    <span class="u">日</span>
-                  </div>
-                </div>
-                <div class="variants" aria-label="予測〇日販売数（3パターン）">
-                  <div class="vrow" data-scn="risk" data-active="false"><div class="k">リスク重視🍀</div><div class="v" id="predVarRisk">—</div></div>
-                  <div class="vrow" data-scn="profit" data-active="true"><div class="k">利益ベース✨</div><div class="v" id="predVarProfit">—</div></div>
-                  <div class="vrow" data-scn="attack" data-active="false"><div class="k">攻め🔥</div><div class="v" id="predVarAttack">—</div></div>
-                </div>
-              </div>
-
-              <!-- 予測90日（3パターン） -->
-              <div class="m-input">
-                <div class="label">予測90日販売数</div>
-                <div class="variants" aria-label="予測90日販売数（3パターン）">
-                  <div class="vrow" data-scn="risk" data-active="false"><div class="k">リスク重視🍀</div><div class="v" id="pred90Risk">—</div></div>
-                  <div class="vrow" data-scn="profit" data-active="true"><div class="k">利益ベース✨</div><div class="v" id="pred90Profit">—</div></div>
-                  <div class="vrow" data-scn="attack" data-active="false"><div class="k">攻め🔥</div><div class="v" id="pred90Attack">—</div></div>
-                </div>
-              </div>
-
-              <!-- 予測30日（3パターン） -->
-              <div class="m-input">
-                <div class="label">予測30日販売数</div>
-                <div class="variants" aria-label="予測30日販売数（3パターン）">
-                  <div class="vrow" data-scn="risk" data-active="false"><div class="k">リスク重視🍀</div><div class="v" id="pred30Risk">—</div></div>
-                  <div class="vrow" data-scn="profit" data-active="true"><div class="k">利益ベース✨</div><div class="v" id="pred30Profit">—</div></div>
-                  <div class="vrow" data-scn="attack" data-active="false"><div class="k">攻め🔥</div><div class="v" id="pred30Attack">—</div></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          
-
-<!-- 2行目（実績） -->
-          <div class="metrics-row row2">
-            <div class="metric-grid">
-              <div class="metric">
-                <div class="label">180日販売数（実績）</div>
-                <div class="value" id="act180">510</div>
-              </div>
-              <div class="metric">
-                <div class="label">90日販売数（実績）</div>
-                <div class="value" id="act90">260</div>
-              </div>
-              <div class="metric">
-                <div class="label">30日販売数（実績）</div>
-                <div class="value" id="act30">95</div>
-              </div>
-            </div>
-          </div>
-
-          
-
-<!-- 3行目（FBA/在庫など） -->
-          <div class="metrics-row row3">
-            <div class="metric-grid" style="margin-top:10px;">
-              <div class="metric">
-                <div class="label">在庫数</div>
-                <div class="value" id="invQty">342</div>
-              </div>
-              <div class="metric">
-                <div class="label">販売価格（$）</div>
-                <div class="value" id="fbaLow">$39.99</div>
-              </div>
-              <div class="metric">
-                <div class="label">出品セラー数（FBA）</div>
-                <div class="value" id="fbaSellers">12</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="bottom-pills">
-            <div class="pillbox">
-              <div class="l">販売価格（$）</div>
-              <div class="r">$39.99</div>
-            </div>
-            <div class="pillbox">
-              <div class="l">粗利益</div>
-              <div class="r">¥2,498 <span class="subtle">(40.3%)</span></div>
-            </div>
-          </div>
-        </section>
+  <!-- 推奨仕入数 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="left-legend">
+        <div class="section-title">推奨仕入数</div>
+        <div class="legend-item"><span class="dot green"></span>コツコツ</div>
+        <div class="legend-item"><span class="dot orange"></span>ほどよく</div>
+        <div class="legend-item"><span class="dot red"></span>しっかり</div>
       </div>
 
-      <!-- LOWER ROW -->
-      <div class="lower">
-        <section class="card-ui">
-          <h4>keepaグラフ</h4>
-          <div class="placeholder">（グラフ画像 / iframe想定）</div>
-        </section>
-
-        <section class="card-ui demand-card">
-          <h4>需要供給グラフ（180日）</h4>
-
-          <div class="chart-wrap">
-            <div class="chart-head">
-              <div class="title">需要供給グラフ（180日）</div>
-              <div class="toggles">
-                <label><input type="checkbox" checked /> 需要&amp;供給</label>
-                <label><input type="checkbox" /> 供給&amp;価格</label>
-              </div>
-            </div>
-
-            <div class="fake-graph" aria-label="グラフの見た目を再現したプレースホルダー">
-              <div class="fake-line"></div>
-            </div>
-
-            <div class="legend">
-              <span><i class="dot" style="background:rgba(59,130,246,.9)"></i>ランキング</span>
-              <span><i class="dot" style="background:rgba(245,158,11,.9)"></i>セラー数</span>
-              <span><i class="dot" style="background:rgba(16,185,129,.9)"></i>価格(USD)</span>
-            </div>
-          </div>
-        </section>
+      <div class="columns">
+        <div class="col"><div class="col-title">180日間</div><div class="col-box">—</div><div class="col-box">—</div><div class="col-box">—</div></div>
+        <div class="col"><div class="col-title">120日間</div><div class="col-box">—</div><div class="col-box">—</div><div class="col-box">—</div></div>
+        <div class="col"><div class="col-title">90日間</div><div class="col-box">119</div><div class="col-box">140</div><div class="col-box">168</div></div>
+        <div class="col"><div class="col-title">60日間</div><div class="col-box">98</div><div class="col-box">115</div><div class="col-box">138</div></div>
+        <div class="col"><div class="col-title">30日間</div><div class="col-box">43</div><div class="col-box">50</div><div class="col-box">60</div></div>
       </div>
-    </main>
-
-    <!-- RIGHT -->
-    <aside class="side" aria-label="カート">
-      <div class="side-body">
-
-        <!-- 上位3ショップ -->
-        <div class="top3-wrap" aria-label="上位3ショップ">
-          <div class="top3-head">
-            <div class="top3-title">上位3ショップ（価格の安い順）</div>
-          </div>
-          <div class="top3-list" id="top3List"></div>
-
-          <button class="morebtn morebtn-wide" id="openModalBtn" type="button">全ショップを見る</button>
-
-          <div class="manual-wrap" aria-label="その他（手動入力）">
-            <div class="manual-title">その他（手動入力）</div>
-            <div class="row shop-other manual-row">
-              <div class="left">
-                <div class="rank">＋</div>
-                <div class="shopname">その他</div>
-              </div>
-              <div class="price manual-price">
-                <span class="yenmark">¥</span>
-                <input id="manualPrice" type="number" inputmode="numeric" min="0" placeholder="価格" />
-              </div>
-              <div class="right" id="manualStepperHost"></div>
-            </div>
-          </div>
-
-          <div class="hinttxt" style="margin:8px 2px 0;">※ここでも数量を＋/−で変更できます</div>
-        </div>
-
-        <!-- ASIN集計 -->
-        <div class="summary-box" aria-label="ASIN集計">
-          <div class="summary-head">
-            <div class="summary-title">ASIN集計</div>
-            <div class="hinttxt" style="margin:0; opacity:.65; font-weight:1000; font-size:10px;">
-              ※販売額/入金/粗利益は仮計算
-            </div>
-          </div>
-
-          <div class="summary-grid">
-            <div class="sum-row"><div class="k">合計仕入れ個数</div><div class="v" id="sumQty">—</div></div>
-            <div class="sum-row"><div class="k">仕入れ平均額</div><div class="v" id="sumAvg">—</div></div>
-            <div class="sum-row"><div class="k">仕入れ額合計</div><div class="v" id="sumBuyTotal">—</div></div>
-            <div class="sum-row"><div class="k">販売額合計</div><div class="v" id="sumSalesTotal">—</div></div>
-            <div class="sum-row"><div class="k">入金額合計</div><div class="v" id="sumPayoutTotal">—</div></div>
-            <div class="sum-row"><div class="k">粗利益額合計（粗利益率）</div><div class="v" id="sumProfit">—</div></div>
-          </div>
-        </div>
-
-        <div class="dash"></div>
-
-        <div class="actions">
-          <button class="btn" type="button">後で（仕入れリスト仮登録）</button>
-          <button class="btn primary" type="button">仕入れた（仕入れリスト登録）</button>
-        </div>
-      </div>
-    </aside>
-  </div>
-
-  <!-- Modal -->
-  <div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="各ショップの価格">
-    <div class="modal">
-      <button class="close" id="closeBtn" type="button">×</button>
-      <h3>ショップ別の価格（価格の安い順）</h3>
-      <div class="modal-list" id="modalList"></div>
-      <div class="okwrap"><button class="ok" id="okBtn" type="button">OK</button></div>
-      <div class="hinttxt" style="margin:0 8px 2px;">※この画面でも数量を＋/−で変更できます</div>
     </div>
   </div>
 
-  <script>
-    // ====== 仮計算パラメータ（プロトタイプ用） ======
-    const FX_RATE_JPY_PER_USD = 150;
-    const SELL_PRICE_USD = 39.99;
-    const PAYOUT_RATE = 0.85;
+  <!-- 販売数：スクロール可能領域 -->
+  <div class="section">
+    <div class="section-header">
+      <div class="left-legend">
+        <div class="section-title">販売数</div>
+        <div class="legend-item"><span class="dot blue1"></span>販売数（実績）</div>
+        <div class="legend-item"><span class="dot blue2"></span>販売予測数</div>
+      </div>
 
-    const shopData = [
-      { shop: "Amazon", slug:"amazon", includeInShopList: true, offers: [
-        { id: "amz-1", price: 3980, stock: 9,  qty: 0, manual:false },
-        { id: "amz-2", price: 4200, stock: 3,  qty: 0, manual:false },
-      ]},
-      { shop: "楽天", slug:"rakuten", includeInShopList: true, offers: [
-        { id: "rkt-1", price: 4150, stock: 5,  qty: 0, manual:false },
-      ]},
-      { shop: "Yahoo", slug:"yahoo", includeInShopList: true, offers: [
-        { id: "yah-1", price: 4090, stock: 12, qty: 0, manual:false },
-      ]},
-      { shop: "その他", slug:"other", includeInShopList: false, offers: [] },
-    ];
-
-
-    // 手動入力（その他）
-    const MANUAL_OFFER_ID = "manual-1";
-    const otherShop = shopData.find(s => s.slug === "other");
-    if (otherShop && !otherShop.offers.some(o => o.id === MANUAL_OFFER_ID)){
-      otherShop.offers.push({ id: MANUAL_OFFER_ID, price: 0, stock: null, qty: 0, manual: true });
-    }
-
-    function renderManual(){
-      const host = document.getElementById("manualStepperHost");
-      const priceEl = document.getElementById("manualPrice");
-      if (!host || !priceEl) return;
-
-      const found = findOfferById(MANUAL_OFFER_ID);
-      if (!found) return;
-
-      // price input
-      const curPrice = Number(found.offer.price) || 0;
-      if (document.activeElement !== priceEl){
-        priceEl.value = curPrice > 0 ? String(curPrice) : "";
-      }
-
-      // stepper
-      host.innerHTML = "";
-      const st = renderStepper(found.offer.qty,
-        ()=>{ incQty(MANUAL_OFFER_ID, -1); renderAll(false); },
-        ()=>{ incQty(MANUAL_OFFER_ID, +1); renderAll(false); }
-      );
-      st.style.width = "104px";
-      host.appendChild(st);
-
-      // bind input once
-      if (!priceEl.dataset.bound){
-        priceEl.addEventListener("input", () => {
-          const v = Number(priceEl.value);
-          found.offer.price = (Number.isFinite(v) && v > 0) ? Math.round(v) : 0;
-          renderSummary();
-        });
-        priceEl.dataset.bound = "1";
-      }
-    }
-
-
-    const yen = (n) => (Number.isFinite(n) ? "¥" + n.toLocaleString("ja-JP") : "¥—");
-
-    function escapeHTML(str){
-      return String(str)
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-    }
-    function shopClass(slug){ return "shop-" + slug; }
-    function sortOffersByPrice(s){ s.offers.sort((a,b) => (a.price||0) - (b.price||0)); }
-
-    function findOfferById(id){
-      for (const s of shopData){
-        const o = s.offers.find(x => x.id === id);
-        if (o) return {shop:s, offer:o};
-      }
-      return null;
-    }
-    function setQty(id, nextQty){
-      const found = findOfferById(id);
-      if (!found) return;
-      found.offer.qty = Math.max(0, Math.min(999, nextQty));
-    }
-    function incQty(id, delta){
-      const found = findOfferById(id);
-      if (!found) return;
-      setQty(id, (Number(found.offer.qty)||0) + delta);
-    }
-
-    function renderStepper(qty, onMinus, onPlus){
-      const wrap = document.createElement("div");
-      wrap.className = "stepper";
-      wrap.innerHTML = `
-        <div class="label">数量</div>
-        <div class="controls">
-          <button class="qbtn" type="button" data-minus>−</button>
-          <div class="qval" data-val>${qty}</div>
-          <button class="qbtn" type="button" data-plus>＋</button>
+      <div class="scroll-area" style="flex:1;">
+        <div class="columns" style="margin:0;">
+          <div class="col">
+            <div class="col-title">180日間</div>
+            <div class="col-box">290</div>
+            <div class="col-box">—</div>
+          </div>
+          <div class="col">
+            <div class="col-title">120日間</div>
+            <div class="col-box">—</div>
+            <div class="col-box">—</div>
+          </div>
+          <div class="col">
+            <div class="col-title">90日間</div>
+            <div class="col-box">150</div>
+            <div class="col-box">150</div>
+          </div>
+          <div class="col">
+            <div class="col-title">60日間</div>
+            <div class="col-box">—</div>
+            <div class="col-box">120</div>
+          </div>
+          <div class="col">
+            <div class="col-title">30日間</div>
+            <div class="col-box">55</div>
+            <div class="col-box">65</div>
+          </div>
         </div>
-      `;
-      wrap.querySelector("[data-minus]").addEventListener("click", onMinus);
-      wrap.querySelector("[data-plus]").addEventListener("click", onPlus);
-      return wrap;
-    }
 
-    function flattenShopOffersSorted(){
-      const items = [];
-      shopData.filter(s => s.includeInShopList).forEach(s => {
-        s.offers.forEach(o => items.push({ shop:s, offer:o }));
-      });
-      items.sort((a,b) => (a.offer.price||0) - (b.offer.price||0));
-      return items;
-    }
+        <!-- 追加項目（販売数の下） -->
+        <div class="metrics5">
+          <div class="mcard"><div class="mlabel">日本最安値</div><div class="mval">—</div></div>
+          <div class="mcard"><div class="mlabel">ライバル偏差×２</div><div class="mval">—</div></div>
+          <div class="mcard"><div class="mlabel">ライバル偏差×４</div><div class="mval">—</div></div>
+          <div class="mcard"><div class="mlabel">送料</div><div class="mval">—</div></div>
+          <div class="mcard"><div class="mlabel">FBA手数料</div><div class="mval">—</div></div>
 
-    function renderTop3(){
-      const list = document.getElementById("top3List");
-      list.innerHTML = "";
+          <div class="mcard"><div class="mlabel">入金額</div><div class="mval">—</div></div>
+          <div class="mcard"><div class="mlabel">ライバル増加率</div><div class="mval">—</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      const items = flattenShopOffersSorted();
-      const top3 = items.slice(0, 3);
+  <!-- 下部指標（既存） -->
+  <div class="grid-top">
+    <div class="item"><div class="label">セラー数</div><div class="num">—</div></div>
+    <div class="item"><div class="label">サイズ度</div><div class="num">0</div></div>
+    <div class="item"><div class="label">在庫数</div><div class="num">40</div></div>
+    <div class="item"><div class="label">返品率</div><div class="num">1.6%</div></div>
+    <div class="item"><div class="label">FBA最安値</div><div class="num">—</div></div>
+  </div>
 
-      if (top3.length === 0){
-        const empty = document.createElement("div");
-        empty.className = "row dim";
-        empty.innerHTML = `
-          <div class="left">
-            <div class="rank">—</div>
-            <div class="shopname">—</div>
-          </div>
-          <div class="price">¥—</div>
-          <div class="right"></div>
-        `;
-        const st = renderStepper("", ()=>{}, ()=>{});
-        st.style.opacity = ".55";
-        st.querySelector("[data-minus]").disabled = true;
-        st.querySelector("[data-plus]").disabled = true;
-        empty.querySelector(".right").appendChild(st);
-        list.appendChild(empty);
-      } else {
-        top3.forEach(({shop, offer}, i) => {
-          const r = document.createElement("div");
-          r.className = `row ${shopClass(shop.slug)}`;
-          r.innerHTML = `
-            <div class="left">
-              <div class="rank">${i+1}</div>
-              <div class="shopname">${escapeHTML(shop.shop)}</div>
-            </div>
-            <div class="price">${yen(offer.price)}</div>
-            <div class="right"></div>
-          `;
-          const st = renderStepper(offer.qty,
-            ()=>{ incQty(offer.id, -1); renderAll(false); },
-            ()=>{ incQty(offer.id, +1); renderAll(false); }
-          );
-          r.querySelector(".right").appendChild(st);
-          list.appendChild(r);
-        });
-      }
+  <div class="grid-bottom">
+    <div class="item">
+      <div class="label">販売価格</div>
+      <div class="num">—</div>
+    </div>
+    <div class="item">
+      <div class="label">粗利益</div>
+      <div class="num">—</div>
+      <div class="note">
+        ※ 粗利益 ＝ 入金額 −（仕入れ額 × 販売個数）<br>
+        ※ FBA手数料・送料・関税等は別途考慮
+      </div>
+    </div>
+  </div>
 
-      document.getElementById("openModalBtn").disabled = items.length === 0;
-    }
-    function computeStats(){
-      let buyTotal = 0;
-      let qtyTotal = 0;
-      shopData.forEach(s => s.offers.forEach(o => {
-        const q = Number(o.qty)||0;
-        const p = Number(o.price)||0;
-        if (q>0 && p>0){
-          buyTotal += p*q;
-          qtyTotal += q;
-        }
-      }));
-
-      const avg = qtyTotal>0 ? Math.round(buyTotal/qtyTotal) : null;
-
-      const sellJpyPerUnit = Math.round(SELL_PRICE_USD * FX_RATE_JPY_PER_USD);
-      const salesTotal = qtyTotal>0 ? sellJpyPerUnit * qtyTotal : null;
-      const payoutTotal = salesTotal ? Math.round(salesTotal * PAYOUT_RATE) : null;
-
-      const profit = (payoutTotal!=null) ? (payoutTotal - buyTotal) : null;
-      const margin = (payoutTotal && payoutTotal>0 && profit!=null) ? (profit / payoutTotal) : null;
-
-      return { qtyTotal, avg, buyTotal: qtyTotal>0 ? buyTotal : null, salesTotal, payoutTotal, profit, margin };
-    }
-    function renderSummary(){
-      const s = computeStats();
-      document.getElementById("sumQty").textContent = s.qtyTotal ? s.qtyTotal.toLocaleString("ja-JP") : "—";
-      document.getElementById("sumAvg").textContent = s.avg!=null ? yen(s.avg) : "—";
-      document.getElementById("sumBuyTotal").textContent = s.buyTotal!=null ? yen(s.buyTotal) : "—";
-      document.getElementById("sumSalesTotal").textContent = s.salesTotal!=null ? yen(s.salesTotal) : "—";
-      document.getElementById("sumPayoutTotal").textContent = s.payoutTotal!=null ? yen(s.payoutTotal) : "—";
-      if (s.profit==null){
-        document.getElementById("sumProfit").textContent = "—";
-      } else {
-        const pct = (s.margin!=null) ? ` (${(s.margin*100).toFixed(1)}%)` : "";
-        document.getElementById("sumProfit").textContent = `${yen(s.profit)}${pct}`;
-      }
-    }
-
-    function clampInt(v, min, max){
-      const n = Math.floor(Number(v));
-      if (!Number.isFinite(n)) return min;
-      return Math.min(max, Math.max(min, n));
-    }
-
-    // 予測値：act30 を基準に、日数×係数で 3 パターンを作る
-    function computePredBase(days){
-      const act30 = Number(document.getElementById("act30")?.textContent) || 0;
-      const perDay = act30 / 30;
-      return Math.round(perDay * days);
-    }
-    function predVariants(base){
-      // ※プロトタイプ用：係数はここで調整できます
-      return {
-        risk:  Math.max(0, Math.round(base * 0.85)),
-        profit:Math.max(0, Math.round(base * 1.00)),
-        attack:Math.max(0, Math.round(base * 1.20)),
-      };
-    }
-
-    let ACTIVE_SCENARIO = "profit"; // 標準
-
-    function setGauge(elId, numId, stateId, value){
-      const g = document.getElementById(elId);
-      const n = document.getElementById(numId);
-      const s = document.getElementById(stateId);
-      if(!g || !n || !s) return;
-      const v = Math.max(0, Math.min(100, Number(value)||0));
-      g.style.setProperty('--p', v);
-      n.textContent = String(v);
-
-      // 状態：シンプルに2段階（注意/安定）
-      let st = 'stable';
-      let label = '安定';
-      if(v >= 50){ st='warn'; label='注意'; }
-      if(v >= 70){ st='danger'; label='注意'; }
-      g.dataset.state = st;
-      s.textContent = label;
-    }
-
-    function initGauges(){
-      // ひとまずダミー値（後で実ロジックに差し替えOK）
-      setGauge('g_recent','g_recent_num','g_recent_state', 62);
-      setGauge('g_count','g_count_num','g_count_state', 38);
-      setGauge('g_both','g_both_num','g_both_state', 54);
-    }
-
-    function setScenario(next){
-      ACTIVE_SCENARIO = next;
-
-      // 上のチェック（見た目）
-      [
-        {id:"opt-risk", val:"risk"},
-        {id:"opt-profit", val:"profit"},
-        {id:"opt-attack", val:"attack"},
-      ].forEach(x => {
-        const el = document.getElementById(x.id);
-        if (!el) return;
-        el.setAttribute("data-active", String(x.val === ACTIVE_SCENARIO));
-      });
-
-      // 各枠のハイライト
-      document.querySelectorAll(".vrow").forEach(r => {
-        const scn = r.getAttribute("data-scn");
-        r.setAttribute("data-active", String(scn === ACTIVE_SCENARIO));
-      });
-
-      // 右上の表示（予測〇日）も選択中の値に合わせる
-      renderPrediction();
-    }
-
-    function renderPrediction(){
-      const daysEl = document.getElementById("predDays");
-      if (!daysEl) return;
-
-      const days = clampInt(daysEl.value, 1, 999);
-      daysEl.value = String(days);
-
-      // 〇日
-      const baseAny = computePredBase(days);
-      const any = predVariants(baseAny);
-      document.getElementById("predVarRisk").textContent = String(any.risk);
-      document.getElementById("predVarProfit").textContent = String(any.profit);
-      document.getElementById("predVarAttack").textContent = String(any.attack);
-
-      // 90日
-      const base90 = computePredBase(90);
-      const v90 = predVariants(base90);
-      document.getElementById("pred90Risk").textContent = String(v90.risk);
-      document.getElementById("pred90Profit").textContent = String(v90.profit);
-      document.getElementById("pred90Attack").textContent = String(v90.attack);
-
-      // 30日
-      const base30 = computePredBase(30);
-      const v30 = predVariants(base30);
-      document.getElementById("pred30Risk").textContent = String(v30.risk);
-      document.getElementById("pred30Profit").textContent = String(v30.profit);
-      document.getElementById("pred30Attack").textContent = String(v30.attack);
-
-      // ハイライトを確実に反映
-      document.querySelectorAll(".vrow").forEach(r => {
-        const scn = r.getAttribute("data-scn");
-        r.setAttribute("data-active", String(scn === ACTIVE_SCENARIO));
-      });
-    }
-
-
-    /* Modal */
-    const overlay = document.getElementById("overlay");
-    const openModalBtn = document.getElementById("openModalBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const okBtn = document.getElementById("okBtn");
-
-    function renderModal(){
-      const list = document.getElementById("modalList");
-      list.innerHTML = "";
-      const items = flattenShopOffersSorted();
-
-      if (items.length === 0){
-        const card = document.createElement("div");
-        card.className = "card shop-other";
-        card.innerHTML = `
-          <div class="card-head"><div>表示できるショップがありません</div><div>&nbsp;</div></div>
-          <div class="meta">
-            <div class="pill"><span>価格</span><span style="font-weight:1000;">¥—</span></div>
-            <div class="pill"><span>数量</span><span style="font-weight:1000;">—</span></div>
-          </div>`;
-        list.appendChild(card);
-        return;
-      }
-
-      items.forEach(({shop, offer}, idx) => {
-        const card = document.createElement("div");
-        card.className = `card ${shopClass(shop.slug)}`;
-        card.innerHTML = `
-          <div class="card-head">
-            <div>${idx+1}. ショップ名：${escapeHTML(shop.shop)}</div>
-            <div style="font-size:10px; font-weight:1000; opacity:.86;">&nbsp;</div>
-          </div>
-          <div class="meta">
-            <div class="pill"><span>価格</span><span style="font-weight:1000;">${yen(offer.price)}</span></div>
-            <div class="pill" data-stepper-host></div>
-          </div>`;
-        const host = card.querySelector("[data-stepper-host]");
-        const st = renderStepper(offer.qty,
-          ()=>{ incQty(offer.id, -1); refreshModalOnly(); },
-          ()=>{ incQty(offer.id, +1); refreshModalOnly(); }
-        );
-        st.style.minWidth = "100%";
-        st.style.maxWidth = "100%";
-        host.appendChild(st);
-        list.appendChild(card);
-      });
-    }
-
-    function openModal(){
-      if (flattenShopOffersSorted().length === 0) return;
-      renderModal();
-      overlay.classList.add("open");
-    }
-    function closeModal(){ overlay.classList.remove("open"); }
-    function refreshModalOnly(){
-      if (overlay.classList.contains("open")) renderModal();
-      renderAll(false);
-    }
-
-    openModalBtn.addEventListener("click", openModal);
-    closeBtn.addEventListener("click", closeModal);
-    okBtn.addEventListener("click", () => { renderAll(); closeModal(); });
-    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeModal(); });
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && overlay.classList.contains("open")) closeModal();
-    });
-
-    document.getElementById("predDays")?.addEventListener("input", renderPrediction);
-
-    // シナリオ切替（チェックしたものが目立つ）
-    document.querySelectorAll('input[name="scenario"]').forEach(r => {
-      r.addEventListener('change', (e) => setScenario(e.target.value));
-    });
-
-
-    function renderAll(rerenderModalToo=true){
-      shopData.forEach(sortOffersByPrice);
-      renderTop3();
-      renderSummary();
-      renderPrediction();
-      renderManual(); // 初回も確実に反映
-      if (rerenderModalToo && overlay.classList.contains("open")) renderModal();
-    }
-    // DOM描画後に1回強制反映
-    initGauges();
-    renderAll();
-    setScenario('profit');
-    requestAnimationFrame(renderPrediction);
-  </script>
+</div>
 </body>
 </html>
