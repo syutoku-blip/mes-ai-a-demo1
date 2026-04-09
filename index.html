@@ -159,7 +159,7 @@
       .category-card:hover .card { transform: translateY(-4px); }
       .card {
         position: relative; border-radius: 28px; padding: 24px; transition: .25s ease; background: rgba(255,255,255,.92);
-        border: 1px solid var(--line); box-shadow: var(--shadow);
+        border: 1px solid var(--line); box-shadow: var(--shadow); display: block;
       }
       .icon-chip { width: 48px; height: 48px; border-radius: 16px; background: #f8fafc; display: grid; place-items: center; font-size: 20px; }
       .card h3 { margin: 18px 0 0; font-size: 20px; line-height: 1.1; letter-spacing: -.03em; font-weight: 900; }
@@ -340,19 +340,35 @@
         <div class="container categories">
           <div class="category-card">
             <div class="category-glow" style="background:linear-gradient(135deg,#dbeafe,#cffafe)"></div>
-            <div class="card"><div class="icon-chip">📢</div><h3>NEWS</h3><p>掲示板のように最新情報を一覧で確認</p></div>
+            <a href="#news" class="card">
+              <div class="icon-chip">📢</div>
+              <h3>NEWS</h3>
+              <p>掲示板のように最新情報を一覧で確認</p>
+            </a>
           </div>
           <div class="category-card">
             <div class="category-glow" style="background:linear-gradient(135deg,#fce7f3,#ffe4e6)"></div>
-            <div class="card"><div class="icon-chip">📘</div><h3>Guide Book</h3><p>食品・化粧品別に外部ブログへ導線</p></div>
+            <a href="guide_book.html" class="card">
+              <div class="icon-chip">📘</div>
+              <h3>Guide Book</h3>
+              <p>食品・化粧品別に外部ブログへ導線</p>
+            </a>
           </div>
           <div class="category-card">
             <div class="category-glow" style="background:linear-gradient(135deg,#dcfce7,#ecfccb)"></div>
-            <div class="card"><div class="icon-chip">🧾</div><h3>Checklist</h3><p>大きなビジュアルから外部チェックへ</p></div>
+            <a href="#checklist" class="card">
+              <div class="icon-chip">🧾</div>
+              <h3>Checklist</h3>
+              <p>大きなビジュアルから外部チェックへ</p>
+            </a>
           </div>
           <div class="category-card">
             <div class="category-glow" style="background:linear-gradient(135deg,#ede9fe,#fae8ff)"></div>
-            <div class="card"><div class="icon-chip">🚚</div><h3>Services</h3><p>認証取得や物流などの支援をセル表示</p></div>
+            <a href="#services" class="card">
+              <div class="icon-chip">🚚</div>
+              <h3>Services</h3>
+              <p>認証取得や物流などの支援をセル表示</p>
+            </a>
           </div>
         </div>
       </section>
