@@ -20,7 +20,6 @@
         --green-soft: #dcfce7;
         --shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
         --shadow-lg: 0 32px 80px rgba(15, 23, 42, 0.12);
-        --radius: 28px;
       }
 
       * { box-sizing: border-box; }
@@ -149,142 +148,9 @@
         color: white;
         box-shadow: 0 12px 24px rgba(2,6,23,.18);
       }
-      .btn-primary {
-        background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 55%, #8b5cf6 100%);
-        color: white;
-        box-shadow: 0 16px 30px rgba(56,189,248,.28);
-      }
-      .btn-light {
-        background: white;
-        color: var(--text);
-        border: 1px solid var(--line);
-      }
-
-      .hero {
-        padding: 56px 0 18px;
-      }
-      .hero-grid {
-        display: grid;
-        grid-template-columns: 1.05fr .95fr;
-        gap: 42px;
-        align-items: center;
-      }
-      .pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        border-radius: 999px;
-        padding: 10px 16px;
-        border: 1px solid #bae6fd;
-        background: #f0f9ff;
-        color: #0284c7;
-        font-size: 14px;
-        font-weight: 800;
-      }
-      .hero-title {
-        margin: 18px 0 0;
-        font-size: clamp(42px, 7vw, 76px);
-        line-height: .98;
-        letter-spacing: -.05em;
-        font-weight: 900;
-      }
-      .gradient-text {
-        background: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 35%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-      }
-      .hero-copy {
-        margin-top: 20px;
-        max-width: 660px;
-        color: var(--muted);
-        font-size: 18px;
-        line-height: 1.9;
-      }
-      .hero-actions {
-        margin-top: 28px;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 14px;
-      }
-
-      .hero-card-wrap {
-        position: relative;
-      }
-      .hero-card-bg {
-        position: absolute;
-        inset: -16px 10px 14px -14px;
-        border-radius: 34px;
-        transform: rotate(2deg);
-        background: linear-gradient(135deg, rgba(186,230,253,.95) 0%, rgba(224,231,255,.96) 48%, rgba(251,207,232,.90) 100%);
-      }
-      .hero-card {
-        position: relative;
-        border-radius: 34px;
-        background: rgba(255,255,255,.95);
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow-lg);
-        padding: 28px;
-      }
-      .hero-card-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 16px;
-      }
-      .hero-kicker {
-        margin: 0;
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--muted);
-      }
-      .hero-card h2 {
-        margin: 6px 0 0;
-        font-size: 30px;
-        line-height: 1.02;
-        letter-spacing: -.04em;
-        font-weight: 900;
-      }
-      .hero-icon {
-        width: 94px;
-        height: 94px;
-        object-fit: contain;
-      }
-      .hero-points {
-        margin-top: 22px;
-        display: grid;
-        gap: 14px;
-      }
-      .hero-point {
-        border-radius: 22px;
-        padding: 16px 18px;
-      }
-      .hero-point small {
-        display: block;
-        font-size: 11px;
-        letter-spacing: .16em;
-        text-transform: uppercase;
-        font-weight: 800;
-        margin-bottom: 7px;
-      }
-      .hero-point h4 {
-        margin: 0;
-        font-size: 17px;
-        line-height: 1.35;
-        font-weight: 900;
-      }
-      .hero-point p {
-        margin: 6px 0 0;
-        font-size: 14px;
-        line-height: 1.75;
-        color: var(--muted);
-      }
-      .food-bg { background: var(--blue-soft); }
-      .cosmetics-bg { background: var(--pink-soft); }
-      .other-bg { background: var(--green-soft); }
 
       .section {
-        padding: 70px 0 0;
+        padding: 24px 0 0;
       }
       .section-header {
         display: flex;
@@ -342,41 +208,6 @@
         border-color: transparent;
         background: linear-gradient(135deg, #38bdf8 0%, #60a5fa 55%, #8b5cf6 100%);
         box-shadow: 0 16px 30px rgba(56,189,248,.22);
-      }
-
-      .info-strip {
-        margin-top: 20px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0,1fr));
-        gap: 16px;
-      }
-      .info-card {
-        border-radius: 22px;
-        background: rgba(255,255,255,.92);
-        border: 1px solid var(--line);
-        box-shadow: var(--shadow);
-        padding: 18px;
-      }
-      .info-card small {
-        display: block;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 800;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-      }
-      .info-card strong {
-        display: block;
-        margin-top: 8px;
-        font-size: 22px;
-        letter-spacing: -.03em;
-      }
-      .info-card span {
-        display: block;
-        margin-top: 6px;
-        font-size: 14px;
-        line-height: 1.7;
-        color: var(--muted);
       }
 
       .content-grid {
@@ -504,26 +335,15 @@
       .empty.show { display: block; }
 
       @media (max-width: 1080px) {
-        .hero-grid,
         .content-grid {
           grid-template-columns: 1fr 1fr;
-        }
-        .hero-grid {
-          grid-template-columns: 1fr;
-        }
-        .info-strip {
-          grid-template-columns: 1fr;
         }
       }
       @media (max-width: 760px) {
         .container { width: min(100% - 28px, 1200px); }
         .nav { display: none; }
         .content-grid { grid-template-columns: 1fr; }
-        .section { padding-top: 54px; }
-        .hero { padding-top: 30px; }
-        .hero-copy { font-size: 16px; }
-        .hero-card { padding: 22px; }
-        .hero-card h2 { font-size: 26px; }
+        .section { padding-top: 18px; }
         .guide-card-footer {
           align-items: flex-start;
           flex-direction: column;
@@ -550,7 +370,7 @@
           </div>
 
           <nav class="nav">
-            <a href="#top">Top</a>
+            <a href="index.html">Top</a>
             <a href="#library">Guide Book</a>
             <a href="#food">Food</a>
             <a href="#cosmetics">Cosmetics</a>
@@ -560,8 +380,6 @@
           <button class="btn btn-dark">Contact</button>
         </div>
       </header>
-
-      <section style="height:24px"></section>
 
       <section class="section" id="library">
         <div class="container">
@@ -581,19 +399,6 @@
             <button class="filter-chip" data-filter="food">食品関連</button>
             <button class="filter-chip" data-filter="cosmetics">化粧品関連</button>
             <button class="filter-chip" data-filter="other">その他</button>
-          </div>
-
-          
-            <div class="info-card">
-              <small>Current Category</small>
-              <strong id="current-category">All</strong>
-              <span>選択中のカテゴリに応じてカードを絞り込み</span>
-            </div>
-            <div class="info-card">
-              <small>External Links</small>
-              <strong>Blog Ready</strong>
-              <span>各カードから外部のブログ記事へ遷移する想定</span>
-            </div>
           </div>
 
           <div class="content-grid" id="guide-grid">
@@ -752,19 +557,7 @@
     <script>
       const chips = document.querySelectorAll('.filter-chip');
       const cards = document.querySelectorAll('.guide-card');
-      const currentCategory = document.getElementById('current-category');
-      const countAll = document.getElementById('count-all');
       const emptyState = document.getElementById('empty-state');
-      const targetButtons = document.querySelectorAll('[data-filter-target]');
-
-      countAll.textContent = cards.length;
-
-      function labelFor(category) {
-        if (category === 'food') return 'Food';
-        if (category === 'cosmetics') return 'Cosmetics';
-        if (category === 'other') return 'Other';
-        return 'All';
-      }
 
       function applyFilter(category) {
         let visible = 0;
@@ -779,20 +572,11 @@
           if (match) visible += 1;
         });
 
-        currentCategory.textContent = labelFor(category);
         emptyState.classList.toggle('show', visible === 0);
       }
 
       chips.forEach((chip) => {
         chip.addEventListener('click', () => applyFilter(chip.dataset.filter));
-      });
-
-      targetButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-          const target = button.dataset.filterTarget;
-          applyFilter(target);
-          document.getElementById('library').scrollIntoView({ behavior: 'smooth' });
-        });
       });
 
       applyFilter('all');
